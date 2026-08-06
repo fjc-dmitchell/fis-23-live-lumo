@@ -1,0 +1,89 @@
+<fetchPlans xmlns="http://jmix.io/schema/core/fetch-plans">
+    <fetchPlan entity="fis_Activity" name="activity-search-fetch-plan" extends="_base">
+        <property name="fund" fetchPlan="_base">
+            <property name="titleAndCode"/>
+        </property>
+        <property name="branch" fetchPlan="_base">
+            <property name="titleAndCode"/>
+        </property>
+        <property name="group" fetchPlan="_base">
+            <property name="titleAndCode"/>
+        </property>
+        <property name="division" fetchPlan="_instance_name">
+            <property name="titleAndCode"/>
+            <property name="titleAndBudgetOrg"/>
+        </property>
+        <property name="titleAndCode"/>
+        <property name="costOrg" fetchPlan="_base"/>
+    </fetchPlan>
+    <fetchPlan entity="fis_FundControlNotice" name="fundControlNotice-search-fetch-plan" extends="_base">
+        <property name="obligation" fetchPlan="_base">
+            <property name="activity" fetchPlan="_base">
+                <property name="fund" fetchPlan="_base"/>
+                <property name="branch" fetchPlan="_base"/>
+                <property name="group" fetchPlan="_base"/>
+            </property>
+            <property name="objectClass" fetchPlan="_base">
+                <property name="objectCategory" fetchPlan="_base"/>
+            </property>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="fis_Invoice" name="invoice-search-fetch-plan" extends="_base">
+        <property name="obligation" fetchPlan="_base">
+            <property name="activity" fetchPlan="_base">
+                <property name="fund" fetchPlan="_base"/>
+                <property name="branch" fetchPlan="_base"/>
+                <property name="group" fetchPlan="_base"/>
+            </property>
+            <property name="objectClass" fetchPlan="_base">
+                <property name="objectCategory" fetchPlan="_base"/>
+            </property>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="fis_Obligation" name="obligation-search-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_base"/>
+        <property name="objectClass" fetchPlan="_base">
+            <property name="objectCategory" fetchPlan="_base"/>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="fis_ObjectClass" name="objectClass-search-fetch-plan" extends="_base">
+        <property name="objectCategory" fetchPlan="_base"/>
+    </fetchPlan>
+<!--    <fetchPlan entity="fis_Ape" name="ape-search-fetch-plan" extends="_base">-->
+<!--        <property name="division" fetchPlan="_base"/>-->
+<!--        <property name="activity" fetchPlan="_base">-->
+<!--            <property name="fund" fetchPlan="_base"/>-->
+<!--        </property>-->
+<!--    </fetchPlan>-->
+    <fetchPlan entity="fis_Obligation" name="obligation-pivot-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_base"/>
+        <property name="objectClass" fetchPlan="_base">
+            <property name="objectCategory" fetchPlan="_base"/>
+        </property>
+        <property name="aoSyncString"/>
+    </fetchPlan>
+    <fetchPlan entity="fis_ActivityProjection" name="activityProjection-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_instance_name">
+            <property name="fund" fetchPlan="_base"/>
+        </property>
+        <property name="objectClass" fetchPlan="_instance_name">
+            <property name="objectCategory" fetchPlan="_base"/>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="fis_Activity" name="division-obligations-report-fetch-plan" extends="_base">
+        <property name="projections" fetchPlan="_base"/>
+        <property name="obligations" fetchPlan="_base">
+            <property name="invoices" fetchPlan="_base"/>
+            <property name="objectClass" fetchPlan="_base">
+                <property name="objectCategory" fetchPlan="_base"/>
+            </property>
+        </property>
+    </fetchPlan>
+    <fetchPlan entity="fis_Obligation" name="obligation-report-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_base">
+            <property name="fund" fetchPlan="_base"/>
+            <property name="branch" fetchPlan="_base"/>
+            <property name="costOrg" fetchPlan="_base"/>
+        </property>
+    </fetchPlan>
+</fetchPlans>
