@@ -1,8 +1,100 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
+    <menu id="dashboard" icon="vaadin:chart" title="msg://gov.fjc.fis/menu_config.dashboard.title">
+        <item view="fis_StatusOfFundsDashboardView"
+              title="msg://gov.fjc.fis.view.dashboard.statusoffundsdashboard/statusOfFundsDashboardView.title"/>
+        <item view="fis_ReconciliationDashboardView"
+              title="msg://gov.fjc.fis.view.dashboard.reconciliationdashboard/reconciliationDashboardView.title"/>
+        <item view="fis_SpendingChartDashboardView"
+              title="msg://gov.fjc.fis.view.dashboard.spendingchartdashboard/spendingChartDashboardView.title"/>
+        <item view="fis_JitfDashboardView" title="msg://gov.fjc.fis.view.dashboard.jitfdashboard/jitfDashboardView.title"/>
+    </menu>
+    <menu opened="true" id="primary" title="msg://gov.fjc.fis/menu_config.primary.title">
+        <item view="fis_Appropriation.list" title="msg://gov.fjc.fis.view.appropriation/appropriationListView.title"/>
+        <item view="fis_Division.list" title="msg://gov.fjc.fis.view.division/divisionListView.title"/>
+        <item view="fis_Activity.list" title="msg://gov.fjc.fis.view.activity/activityListView.title"/>
+        <item view="fis_Obligation.list" title="msg://gov.fjc.fis.view.obligation/obligationListView.title"/>
+        <item view="fis_Invoice.list" title="msg://gov.fjc.fis.view.invoice/invoiceListView.title"/>
+        <item view="fis_FundControlNotice.list"
+              title="msg://gov.fjc.fis.view.fundcontrolnotice/fundControlNoticeListView.title"/>
+        <item view="fis_FileAttachment.list"
+              title="msg://gov.fjc.fis.view.fileattachment/fileAttachmentListView.title"/>
+    </menu>
+    <menu id="secondary" title="msg://gov.fjc.fis/menu_config.secondary.title">
+        <item view="fis_JitfTransfer.list" title="msg://gov.fjc.fis.view.jitftransfer/jitfTransferListView.title"/>
+        <item view="fis_Branch.list" title="msg://gov.fjc.fis.view.branch/branchListView.title"/>
+        <item view="fis_Group.list" title="msg://gov.fjc.fis.view.group/groupListView.title"/>
+        <item view="fis_ObjectCategory.list" title="msg://gov.fjc.fis.view.objectcategory/ObjectCategoryListView.title"/>
+        <item view="fis_ObjectClass.list" title="msg://gov.fjc.fis.view.objectclass/objectClassListView.title"/>
+        <item view="fis_Fund.list" title="msg://gov.fjc.fis.view.fund/fundListView.title"/>
+        <item view="fis_Vendor.list" title="msg://gov.fjc.fis.view.vendor/vendorListView.title"/>
+        <item view="fis_ActivityProjection.list"
+              title="msg://gov.fjc.fis.view.activityprojection/activityProjectionListView.title"/>
+        <item view="fis_ActivityReimbursement.list"
+              title="msg://gov.fjc.fis.view.activityreimbursement/activityReimbursementListView.title"/>
+        <item view="fis_FileAttachmentCategory.list"
+              title="msg://gov.fjc.fis.view.fileattachmentcategory/fileAttachmentCategoryListView.title"/>
+        <item view="fis_DivisionAllocationAudit.list"
+              title="msg://gov.fjc.fis.view.divisionallocationaudit/divisionAllocationAuditListView.title"/>
+        <item view="fis_ActivityProjectionAudit.list"
+              title="msg://gov.fjc.fis.view.activityprojectionaudit/activityProjectionAuditListView.title"/>
+    </menu>
+    <menu id="jifms" title="msg://gov.fjc.fis/menu_config.jifms.title">
+        <item view="fis_Document.list" title="msg://gov.fjc.fis.view.document/documentListView.title"/>
+        <item view="fis_DocumentAudit.list" title="msg://gov.fjc.fis.view.documentaudit/documentAuditListView.title"/>
+        <item view="fis_DocumentException.list"
+              title="msg://gov.fjc.fis.view.documentexception/documentExceptionListView.title"/>
+    </menu>
+    <menu id="salaryProjections" title="msg://gov.fjc.fis/menu_config.salaryProjections.title" icon="vaadin:users">
+        <item view="fis_Position.list" title="msg://gov.fjc.fis.view.position/positionListView.title"/>
+        <item view="fis_PositionAction.list"
+              title="msg://gov.fjc.fis.view.positionaction/positionActionListView.title"/>
+        <item view="fis_PositionAudit.list" title="msg://gov.fjc.fis.view.positionaudit/positionAuditListView.title"/>
+        <item view="fis_BonusProjection.list"
+              title="msg://gov.fjc.fis.view.bonusprojection/bonusProjectionListView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openSalaryProjectionsReport" title="Projections Report" icon="MONEY"/>
+        <item view="fis_Employee.list" title="msg://gov.fjc.fis.view.employee/employeeListView.title"/>
+        <item view="fis_PayPeriod.list" title="msg://gov.fjc.fis.view.payperiod/payPeriodListView.title"/>
+        <item view="fis_PayAdjustment.list" title="msg://gov.fjc.fis.view.payadjustment/payAdjustmentListView.title"/>
+        <item view="fis_ActionCode.list" title="msg://gov.fjc.fis.view.actioncode/actionCodeListView.title"/>
+        <item view="fis_PayGrade.list" title="msg://gov.fjc.fis.view.paygrade/payGradeListView.title"/>
+        <item view="fis_Department.list" title="msg://gov.fjc.fis.view.department/departmentListView.title"/>
+        <item view="fis_LocalityArea.list" title="msg://gov.fjc.fis.view.localityarea/localityAreaListView.title"/>
+    </menu>
+    <menu id="foundation" title="msg://gov.fjc.fis/menu_config.foundation.title">
+        <item view="fis_Donor.list" title="msg://gov.fjc.fis.view.donor/donorListView.title"/>
+        <item view="fis_Division.foundation-list" title="msg://gov.fjc.fis.view.division/divisionListView.title"/>
+        <item view="fis_Activity.foundation-list" title="msg://gov.fjc.fis.view.activity/activityListView.title"/>
+        <item view="fis_Obligation.foundation-list" title="msg://gov.fjc.fis.view.obligation/obligationListView.title"/>
+        <item view="fis_Invoice.foundation-list" title="msg://gov.fjc.fis.view.invoice/invoiceListView.title"/>
+        <item view="fis_FundControlNotice.foundation-list"
+              title="msg://gov.fjc.fis.view.fundcontrolnotice/fundControlNoticeListView.title"/>
+    </menu>
+    <menu id="fjcreports" title="msg://gov.fjc.fis/menu_config.fjcreports.title" icon="vaadin:file-table">
+        <item bean="fis_ReportRouter" beanMethod="openStatusOfFundsReport"
+              title="msg://gov.fjc.fis.view.report.statusoffundsreport/statusOfFundsReportView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openEducationProgramsReport"
+              title="Education Programs"/>
+        <item bean="fis_ReportRouter" beanMethod="openEducationBranchReport"
+              title="msg://gov.fjc.fis.view.report.educationbranchreport/educationBranchReportView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openBudgetRequestReport"
+              title="msg://gov.fjc.fis.view.report.budgetrequestreport/budgetRequestReportView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openDivisionObligationsReport"
+              title="msg://gov.fjc.fis.view.report.divisionobligationsreport/divisionObligationsReportView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openOpenObligationsReport"
+              title="msg://gov.fjc.fis.view.report.openobligationsreport/openObligationsReportView.title"/>
+        <item bean="fis_ReportRouter" beanMethod="openOpenTravelObligationsReport"
+              title="msg://gov.fjc.fis.view.report.opentravelobligationsreport/openTravelObligationsReportView.title"/>
+        <item bean="fis_EducationProgramsAnalysis" beanMethod="generateReportData" title="Program Analysis"/>
+        <item bean="fis_EducationProgramsAnalysis" beanMethod="generateCalendarYearReportData"
+              title="Program Analysis for Mike"/>
+    </menu>
     <menu id="application" title="msg://gov.fjc.fis/menu.application.title" opened="true">
         <item view="fis_User.list" title="msg://gov.fjc.fis.view.user/UserListView.title"/>
+        <item view="fis_UserMessage.list" title="msg://gov.fjc.fis.view.usermessage/userMessageListView.title"/>
     </menu>
+    <item view="flowui_UserSettingsItem.list"
+          title="msg://gov.fjc.fis.view.usersettingsitem/userSettingsItemListView.title"/>
 
 </menu-config>
