@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://educationProgramsReportView.title">
+    <data>
+        <collection id="appropriationsDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="appropriationsDl" readOnly="true"/>
+        </collection>
+        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
+            <loader id="branchesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <layout>
+        <vbox classNames="jmix-main-view-navigation bordered-panel" width="100%" spacing="false">
+            <entityComboBox id="bfySelectorField" itemsContainer="appropriationsDc" required="true"
+                            metaClass="fis_Appropriation" label="Fiscal Year" width="8em"/>
+            <entityComboBox id="branchSelectorField" itemsContainer="branchesDc" title="Branch"
+                            metaClass="fis_Branch" label="Branch" width="35em">
+                <actions>
+                    <action id="entity_clear" type="entity_clear" icon="vaadin:close-small"/>
+                </actions>
+            </entityComboBox>
+        </vbox>
+        <hbox>
+            <button id="cancelBtn" text="Cancel"/>
+            <button id="executeBtn" text="Run Report" enabled="false"/>
+        </hbox>
+    </layout>
+</view>

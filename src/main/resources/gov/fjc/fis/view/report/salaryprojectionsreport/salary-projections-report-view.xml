@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://salaryProjectionsReportView.title">
+    <data>
+        <collection id="appropriationsDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="appropriationsDl" readOnly="true"/>
+        </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+        <collection id="payPeriodsDc" class="gov.fjc.fis.entity.personnel.PayPeriod">
+            <loader id="payPeriodsDl" readOnly="true"/>
+        </collection>
+
+    </data>
+    <layout>
+        <vbox classNames="jmix-main-view-navigation bordered-panel" spacing="false" width="100%">
+<!--            <textField id="bfyField" label="Fiscal Year" datatype="string" readOnly="true"/>-->
+            <entityComboBox id="bfySelectorField" itemsContainer="appropriationsDc" required="true"
+                            metaClass="fis_Appropriation" label="Fiscal Year" width="8em"/>
+            <entityComboBox id="divisionSelectorField" itemsContainer="divisionsDc" title="Division"
+                            metaClass="fis_Division" label="Division" width="35em" required="true"/>
+            <entityComboBox id="payPeriodField" itemsContainer="payPeriodsDc" required="true"
+                            metaClass="fis_PayPeriod" label="Starting Pay Period" width="8em"/>
+            <numberField id="bonusAmountField" label="Bonus $"/>
+            <numberField id="ficaRateField" label="FICA Percent"
+                         helperText="for Temps, Bonus, Payouts"
+                         step="0.1"
+                         min="0"
+                         max="100" required="true"/>
+            <numberField id="benefitsRateField" label="Benefits Percent"
+                         helperText="for Permanent Employees"
+                         step="0.1"
+                         min="0"
+                         max="100" required="true"/>
+            <radioButtonGroup id="outputType" itemsEnum="gov.fjc.fis.entity.OutputType"/>
+        </vbox>
+
+        <hbox>
+            <button id="cancelBtn" text="Cancel"/>
+            <button id="executeBtn" text="Run Report" enabled="false"/>
+        </hbox>
+    </layout>
+</view>

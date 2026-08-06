@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="activitiesDc" class="gov.fjc.fis.entity.Activity">
+            <loader id="activitiesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" padding="false" spacing="false">
+            <hbox id="buttonsPanel" classNames="buttons-panel">
+                <button action="activitiesDataGrid.read" text="View Activity"/>
+                <button id="excelExportBtn" action="activitiesDataGrid.excelExport"/>
+                <gridColumnVisibility dataGrid="activitiesDataGrid" icon="COG"/>
+                <simplePagination id="pagination" dataLoader="activitiesDl" autoLoad="true"/>
+            </hbox>
+            <dataGrid id="activitiesDataGrid" dataContainer="activitiesDc" minWidth="1250px" width="100%"
+                      emptyStateText="No activities found"
+                      themeNames="column-borders compact row-stripes">
+                <actions>
+                    <action id="read" type="list_read">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
+                    <action id="excelExport" type="grdexp_excelExport">
+                        <properties>
+                            <property name="availableExportModes" value="ALL_ROWS"/>
+                        </properties>
+                    </action>
+                </actions>
+                <columns>
+                    <column property="fund.fundCode" visible="false"/>
+                    <column property="division.appropriation.budgetFiscalYear" visible="false" header="BFY"/>
+                    <column property="division.divisionCode" visible="false" header="Division"/>
+                    <column property="activityNumber" visible="false"/>
+                    <column property="titleAndCode" header="Activity" width="500px" resizable="true"/>
+                    <column property="projectedAmount" visible="false" header="Projected" textAlign="END"/>
+                    <column property="reimbursedAmount" visible="false" header="Reimbursed" textAlign="END"/>
+                    <column property="obligatedAmount" visible="false" header="Obligated" textAlign="END"/>
+                    <column property="branch.branchCode" visible="false" header="Branch" textAlign="END"/>
+                    <column property="group.groupCode" visible="false" header="Group" textAlign="END"/>
+                    <column property="city" width="160px"/>
+                    <column property="state" width="85px"/>
+                    <column property="startDate" width="120px"/>
+                    <column property="endDate" width="120px"/>
+                    <column property="programDirector" width="200px"/>
+                    <column property="numberParticipants" visible="false"/>
+                    <column property="numberPrograms" visible="false"/>
+                    <column property="numberFaculty" visible="false"/>
+                    <column property="sortCode" visible="false"/>
+                    <column property="memo" visible="false"/>
+                    <column property="note" visible="false"/>
+                    <column property="trainingProject" visible="false"/>
+                    <column property="reportNote" visible="false"/>
+                    <column property="addedToPlan" visible="false"/>
+                    <column property="initialProjection" visible="false"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+    </content>
+</fragment>

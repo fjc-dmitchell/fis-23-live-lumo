@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment"
+          xmlns:pvttbl="http://jmix.io/schema/pvttbl/ui">
+    <data>
+        <collection id="reconciliationDtoesDc" class="gov.fjc.fis.entity.dto.ReconciliationDto">
+            <loader id="reconciliationDtoesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root">
+            <tabSheet id="reconTabSheet" width="100%" minHeight="50em">
+                <tab id="pivotTab" label="Pivot Table">
+                    <vbox>
+<!--                        <button id="pivotExportBtn" text="Export Pivot Table"/>-->
+                        <pvttbl:pivotTable id="pivotTable"
+                                           dataContainer="reconciliationDtoesDc" visible="true" showUI="false">
+                            <pvttbl:properties>
+                                <pvttbl:property name="amount"/>
+                                <pvttbl:property name="majorObjectClass" localizedName="Object Class"/>
+                                <pvttbl:property name="budgetOrg" localizedName="Budget Org."/>
+                            </pvttbl:properties>
+                            <pvttbl:aggregation mode="SUM">
+                                <pvttbl:property name="amount"/>
+                            </pvttbl:aggregation>
+                            <pvttbl:columns>
+                                <pvttbl:column value="budgetOrg"/>
+                            </pvttbl:columns>
+                            <pvttbl:rows>
+                                <pvttbl:row value="majorObjectClass"/>
+                            </pvttbl:rows>
+                        </pvttbl:pivotTable>
+                    </vbox>
+                </tab>
+                <tab id="dataTab" label="Raw data">
+                    <vbox>
+                        <hbox id="buttonsPanel" classNames="buttons-panel">
+                            <button id="excelExportBtn" action="reconciliationDataGrid.excelExport"/>
+                            <simplePagination id="pagination" dataLoader="reconciliationDtoesDl"
+                                              itemsPerPageVisible="false"/>
+                        </hbox>
+                        <dataGrid id="reconciliationDataGrid" dataContainer="reconciliationDtoesDc" minWidth="100px"
+                                  width="100%" minHeight="600px" themeNames="column-borders compact row-stripes"
+                                  columnReorderingAllowed="true">
+                            <actions>
+                                <action id="excelExport" type="grdexp_excelExport"/>
+                            </actions>
+                            <columns resizable="true">
+                                <column property="budgetFiscalYear" header="BFY"/>
+                                <column property="fundCode" header="Fund"/>
+                                <column property="budgetOrg" header="Budget Org." width="120px"/>
+                                <column property="documentNumber" header="DIN"/>
+                                <column property="majorObjectClass" header="MOC"/>
+                                <column property="budgetObjectClass" header="BOC"/>
+                                <column property="documentDate" header="Doc. Date"/>
+                                <column property="amount" textAlign="END"/>
+                                <column property="vendor" width="300px"/>
+                                <column property="ein" header="Tax ID"/>
+                                <column property="aoSyncDate" header="JIFMS Sync" width="130px"/>
+                            </columns>
+                        </dataGrid>
+                    </vbox>
+                </tab>
+            </tabSheet>
+        </vbox>
+    </content>
+</fragment>

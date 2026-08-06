@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://appropriationListView.title"
+      focusComponent="appropriationsDataGrid">
+    <data>
+        <collection id="appropriationsDc"
+                    class="gov.fjc.fis.entity.Appropriation">
+            <fetchPlan extends="_base">
+                <property name="totalAmount"/>
+                <property name="totalAdjustment"/>
+            </fetchPlan>
+            <loader id="appropriationsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+        <settings auto="true"/>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" enabled="false"/>
+            <button id="editBtn" action="appropriationsDataGrid.edit"/>
+            <button id="excelExportBtn" action="appropriationsDataGrid.excelExport"/>
+            <button id="removeBtn" action="appropriationsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="appropriationsDl" autoLoad="true"/>
+        </hbox>
+        <dataGrid id="appropriationsDataGrid"
+                  width="890px"
+                  minHeight="20em"
+                  dataContainer="appropriationsDc" themeNames="column-borders compact row-stripes"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns>
+                <column property="budgetFiscalYear" header="BFY" width="80px"/>
+                <column property="oneYearAmount" header="One Year" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="twoYearAmount" header="Two Year" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="totalAmount" header="Appropriation" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="totalAdjustment" header="Adjustments" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="reimbursedAmount" header="Reimbursed" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="authority" header="Authority" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://vendorDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="vendorDc"
+                  class="gov.fjc.fis.entity.Vendor">
+            <fetchPlan extends="_base"/>
+            <loader id="vendorDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" classNames="overflow-auto">
+            <div classNames="grid-panel">
+                <vbox classNames="contrast-panel">
+                    <formLayout id="form" width="100%">
+                        <responsiveSteps>
+                            <responsiveStep minWidth="0" columns="1"/>
+                            <responsiveStep minWidth="40em" columns="2"/>
+                        </responsiveSteps>
+
+                        <formLayout id="formLeft" dataContainer="vendorDc" width="100%">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="20em" columns="2"/>
+                            </responsiveSteps>
+                            <textField id="nameField" property="name" colspan="2"/>
+                            <textField id="vendorCodeField" property="vendorCode"/>
+                            <textField id="addressCodeField" property="addressCode"/>
+                        </formLayout>
+
+                        <formLayout id="formRight" dataContainer="vendorDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="20em" columns="2"/>
+                            </responsiveSteps>
+                            <textField id="dunsField" property="duns"/>
+                            <textField id="cageField" property="cage"/>
+                            <textField id="einField" property="ein"/>
+                            <checkbox id="activeField" property="active" label="Active"/>
+                        </formLayout>
+                        <formLayout id="memoForm" dataContainer="vendorDc" colspan="2">
+                            <textArea id="memoField" property="memo" minHeight="5em" colspan="2"/>
+                        </formLayout>
+
+                    </formLayout>
+                    <details id="addressDetails" summaryText="Address" width="100%">
+                        <formLayout id="addressForm" width="100%">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="40em" columns="2"/>
+                            </responsiveSteps>
+                            <formLayout id="addressFormLeft" dataContainer="vendorDc" width="100%">
+                                <responsiveSteps>
+                                    <responsiveStep minWidth="0" columns="1"/>
+                                </responsiveSteps>
+                                <textField id="address1Field" property="address1"/>
+                                <textField id="address2Field" property="address2"/>
+                            </formLayout>
+
+                            <formLayout id="addressFormRight" dataContainer="vendorDc" width="100%">
+                                <responsiveSteps>
+                                    <responsiveStep minWidth="0" columns="1"/>
+                                    <responsiveStep minWidth="20em" columns="2"/>
+                                </responsiveSteps>
+                                <textField id="cityField" property="city" colspan="2"/>
+                                <textField id="stateField" property="state"/>
+                                <textField id="zipCodeField" property="zipCode"/>
+                            </formLayout>
+                        </formLayout>
+                    </details>
+                </vbox>
+            </div>
+            <details id="obligationDetails" opened="true" visible="true" summaryText="Obligations">
+                <vbox classNames="contrast-panel">
+                    <fragment id="obligationFragment"
+                              class="gov.fjc.fis.view.obligationfragment.ObligationFragment"/>
+                </vbox>
+            </details>
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

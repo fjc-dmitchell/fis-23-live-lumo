@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://userSettingsItemDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="userSettingsItemDc"
+                  class="io.jmix.flowuidata.entity.UserSettingsItem">
+            <fetchPlan extends="_base"/>
+            <loader id="userSettingsItemDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="userSettingsItemDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <textField id="usernameField" property="username"/>
+                    <textField id="keyField" property="key"/>
+                    <codeEditor id="valueField" height="30.5em" property="value" mode="JSON" showPrintMargin="false"
+                                showLineNumbers="false" showGutter="false" textWrap="true" theme="GITHUB" colspan="2"/>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

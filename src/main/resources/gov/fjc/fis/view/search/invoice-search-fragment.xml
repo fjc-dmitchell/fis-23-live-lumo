@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="invoicesDc" class="gov.fjc.fis.entity.Invoice" provided="true">
+            <loader id="invoicesDl" readOnly="true" provided="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" spacing="false" padding="false">
+            <hbox>
+                <propertyFilter id="invoiceNumberSearch" property="invoiceNumber" operation="STARTS_WITH"
+                                dataLoader="invoicesDl" operationTextVisible="false" label="Invoice Number"
+                                autoApply="false"/>
+                <propertyFilter id="invoiceAmountSearch" property="amount" operation="EQUAL" dataLoader="invoicesDl"
+                                operationEditable="true" label="Invoice Amount" autoApply="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="invoiceDateSearch" property="invoiceDate" operation="EQUAL"
+                                dataLoader="invoicesDl" operationEditable="true" label="Invoice Date" autoApply="false"/>
+                <propertyFilter id="invoicePaidDateSearch" property="paymentDate" operation="EQUAL"
+                                dataLoader="invoicesDl" operationEditable="true" label="Paid Date" autoApply="false"/>
+            </hbox>
+            <hbox id="objectClassBox" alignItems="CENTER">
+                <span text="Obligation Category"/>
+                <hbox id="mocBox" spacing="false"/>
+                <span text="Obligation BOC"/>
+                <hbox id="bocBox" spacing="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="obligationDocnumSearch" property="obligation.documentNumber" operation="CONTAINS"
+                                dataLoader="invoicesDl" label="Obligation DIN" autoApply="false"/>
+                <propertyFilter id="obligationVendorSearch" property="obligation.vendor" operation="CONTAINS"
+                                dataLoader="invoicesDl" operationTextVisible="false" label="Obligation Vendor"
+                                width="25em" autoApply="false"/>
+                <propertyFilter id="obligationStatusSearch" property="obligation.status" operation="EQUAL"
+                                dataLoader="invoicesDl" label="Obligation Status" width="15em" autoApply="false"/>
+            </hbox>
+        </vbox>
+    </content>
+</fragment>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://documentExceptionListView.title"
+      focusComponent="documentExceptionsDataGrid">
+    <data>
+        <collection id="documentExceptionsDc"
+                    class="gov.fjc.fis.entity.DocumentException">
+            <fetchPlan extends="_base"/>
+            <loader id="documentExceptionsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_DocumentException e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="documentExceptionsDataGrid.createAction"/>
+            <button id="editButton" action="documentExceptionsDataGrid.editAction"/>
+            <button id="excelExportButton" action="documentExceptionsDataGrid.excelExportAction"/>
+            <button id="removeButton" action="documentExceptionsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="documentExceptionsDl"/>
+        </hbox>
+        <dataGrid id="documentExceptionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="documentExceptionsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="fundCode" width="120px"/>
+                <column property="bbfy" width="120px"/>
+                <column property="budgetOrg" width="140px"/>
+                <column property="budgetObjectClass" width="120px"/>
+                <column property="documentType" width="130px"/>
+                <column property="documentNumber" flexGrow="2"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

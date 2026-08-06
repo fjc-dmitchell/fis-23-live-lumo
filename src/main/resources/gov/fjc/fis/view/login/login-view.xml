@@ -3,7 +3,10 @@
       focusComponent="login"
       title="msg://LoginView.title">
     <layout justifyContent="CENTER" alignItems="CENTER" classNames="jmix-login-main-layout">
+        <div classNames="fis-login"/>
         <loginForm id="login"
+                   localesVisible="false"
+                   rememberMeVisible="false"
                    forgotPasswordButtonVisible="false">
             <form title="msg://loginForm.headerTitle"
                   username="msg://loginForm.username"
@@ -16,5 +19,9 @@
                           username="msg://loginForm.errorUsername"
                           password="msg://loginForm.errorPassword"/>
         </loginForm>
+        <vbox spacing="false" padding="false">
+            <p text="Login using your FJC Windows credentials" alignSelf="CENTER"/>
+            <p text="Authorized Users Only" alignSelf="CENTER"/>
+        </vbox>
     </layout>
 </view>

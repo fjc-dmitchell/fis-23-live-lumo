@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="activityProjectionsDc" class="gov.fjc.fis.entity.ActivityProjection">
+            <loader id="activityProjectionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root">
+            <hbox id="buttonsPanel" classNames="buttons-panel">
+<!--                <button id="editBtn" action="activityProjectionsDataGrid.edit"/>-->
+                <button id="excelExportBtn" action="activityProjectionsDataGrid.excelExport"/>
+                <gridColumnVisibility dataGrid="activityProjectionsDataGrid" icon="COG"/>
+                <simplePagination id="pagination" dataLoader="activityProjectionsDl" autoLoad="true"/>
+            </hbox>
+            <dataGrid id="activityProjectionsDataGrid" emptyStateText="There are no open projections"
+                      dataContainer="activityProjectionsDc" themeNames="column-borders compact row-stripes">
+                <actions>
+                    <action id="edit" type="list_edit">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
+                    <action id="excelExport" type="grdexp_excelExport">
+                        <properties>
+                            <property name="availableExportModes" value="ALL_ROWS"/>
+                        </properties>
+                    </action>
+                </actions>
+                <columns resizable="true">
+                    <column property="activity.division.divisionCode" header="Division" width="105px"/>
+                    <column property="activity.division.title" header="Division Title" width="240px" visible="false"/>
+                    <column property="activity.fund.fundCode" header="Fund" width="105px" visible="false"/>
+                    <column property="activity.activityNumber" header="Activity" width="105px"/>
+                    <column property="activity.title" header="Activity Title" width="350px"/>
+                    <column property="objectClass.budgetObjectClass" header="BOC" width="105px"/>
+                    <column property="objectClass.title" header="Object Class Title" width="240px"/>
+                    <column property="amount" header="Projection" textAlign="END" width="120px"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+    </content>
+</fragment>

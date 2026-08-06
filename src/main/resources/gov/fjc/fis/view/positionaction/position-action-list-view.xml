@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://positionActionListView.title"
+      focusComponent="positionActionsDataGrid">
+    <data>
+        <collection id="positionActionsDc"
+                    class="gov.fjc.fis.entity.personnel.PositionAction">
+            <fetchPlan extends="_base">
+                <property name="position" fetchPlan="_instance_name">
+                    <property name="jlCostOrgCd"/>
+                </property>
+            </fetchPlan>
+            <loader id="positionActionsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_PositionAction e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <settings auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+        <action id="showDivisionAction"/>
+    </actions>
+    <layout>
+        <details id="searchForm" opened="true" summaryText="Search and Filter" themeNames="filled">
+            <tabSheet id="searchTabSheet">
+                <tab id="divisionSearch" label="Quick Search">
+                    <vbox>
+                        <hbox width="100%">
+                            <button id="showAll" width="170px" text="Show All"/>
+                            <hbox id="divisionSearchButtons">
+                                <button id="showDiv1Btn" action="showDivisionAction" text="Show JXXXXXF (GA)"/>
+                                <button id="showDiv2Btn" action="showDivisionAction" text="Show JXXXXXA (ED)"/>
+                                <button id="showDiv3Btn" action="showDivisionAction" text="Show JXXXXXD (EIS)"/>
+                                <button id="showDiv4Btn" action="showDivisionAction" text="Show JXXXXXC (RES)"/>
+                                <button id="showDiv5Btn" action="showDivisionAction" text="Show JXXXXXB (ITO)"/>
+                            </hbox>
+                            <hbox id="otherSearchButtons">
+                                <button id="showPriorAction" visible="false"/>
+                            </hbox>
+                        </hbox>
+                    </vbox>
+                </tab>
+                <!--                <tab id="customSearchTab" label="Custom Search">-->
+                <!--                    <vbox id="searchvbox" width="100%" themeNames="spacing-xs" spacing="false" padding="false">-->
+                <!--                    </vbox>-->
+                <!--                </tab>-->
+            </tabSheet>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="positionActionsDataGrid.create"/>
+            <button id="editBtn" action="positionActionsDataGrid.edit"/>
+            <button id="excelExportBtn" action="positionActionsDataGrid.excelExport"/>
+            <button id="removeBtn" action="positionActionsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="positionActionsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="positionActionsDl" autoLoad="true"/>
+        </hbox>
+        <dataGrid id="positionActionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="positionActionsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="position.jlCostOrgCd"/>
+                <column property="position.positionNbr"/>
+                <column property="position.name" visible="false"/>
+                <column property="actionCode"/>
+                <column property="effectiveDate" textAlign="END"/>
+                <column property="stdHours" textAlign="END"/>
+                <column property="hourlyRt" textAlign="END"/>
+                <column property="totalPay" textAlign="END"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

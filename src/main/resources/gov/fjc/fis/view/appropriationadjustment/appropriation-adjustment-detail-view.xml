@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://appropriationAdjustmentDetailView.title"
+      focusComponent="titleField">
+    <data>
+        <instance id="appropriationAdjustmentDc"
+                  class="gov.fjc.fis.entity.AppropriationAdjustment">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+                <property name="totalAmount"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout width="25em">
+        <formLayout id="form" dataContainer="appropriationAdjustmentDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1" labelsPosition="TOP"/>
+            </responsiveSteps>
+            <datePicker id="adjustmentDateField" property="adjustmentDate" datatype="localDate" width="10em"/>
+            <textField id="titleField" property="title"/>
+            <textField id="oneYearAmountField" property="oneYearAmount" width="10em"/>
+            <textField id="twoYearAmountField" property="twoYearAmount" width="10em"/>
+<!--            <textField id="totalAmountField" property="totalAmount" tabIndex="-1"/>-->
+        </formLayout>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

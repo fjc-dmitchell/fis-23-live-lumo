@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://documentAuditListView.title"
+      focusComponent="documentAuditsDataGrid">
+    <data>
+        <collection id="documentAuditsDc"
+                    class="gov.fjc.fis.entity.DocumentAudit">
+            <fetchPlan extends="_base">
+                <property name="fcnAmount"/>
+            </fetchPlan>
+            <loader id="documentAuditsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+        <action id="showDivisionAction"/>
+        <action id="showStatusAction"/>
+    </actions>
+    <layout>
+        <details id="searchForm" opened="true" summaryText="Search and Filter" themeNames="filled">
+            <tabSheet id="searchTabSheet">
+                <tab id="divisionSearch" label="Quick Search">
+                    <vbox>
+                        <hbox width="100%">
+                            <button id="showBfyBtn" width="170px"/>
+                            <hbox id="divisionSearchButtons">
+                                <button id="showDiv1Btn" action="showDivisionAction" text="Show JXXXXXF (GA)"/>
+                                <button id="showDiv2Btn" action="showDivisionAction" text="Show JXXXXXA (ED)"/>
+                                <button id="showDiv3Btn" action="showDivisionAction" text="Show JXXXXXD (EIS)"/>
+                                <button id="showDiv4Btn" action="showDivisionAction" text="Show JXXXXXC (RES)"/>
+                                <button id="showDiv9Btn" action="showDivisionAction" text="Show JXXMAPP (OBBBA)"/>
+                            </hbox>
+                        </hbox>
+                        <hbox width="100%">
+                            <button id="showTodayBtn" text="Show Today's Documents"/>
+                            <button id="showRejectBtn" action="showStatusAction" text="Show Rejected Documents"/>
+                            <button id="showInsertBtn" action="showStatusAction" text="Show Created Documents"/>
+                            <button id="showUpdateBtn" action="showStatusAction" text="Show Updated Documents"/>
+                            <button id="showFcnBtn" text="Show potential FCNs"/>
+                        </hbox>
+                    </vbox>
+                </tab>
+<!--                <tab id="customSearchTab" label="Custom Search">-->
+<!--                    <vbox id="searchvbox" width="100%" themeNames="spacing-xs" spacing="false" padding="false">-->
+<!--                    </vbox>-->
+<!--                </tab>-->
+            </tabSheet>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="editButton" action="documentAuditsDataGrid.editAction"/>
+            <button id="excelExportButton" action="documentAuditsDataGrid.excelExportAction"/>
+            <gridColumnVisibility dataGrid="documentAuditsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="documentAuditsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="documentAuditsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="documentAuditsDc"
+                  columnReorderingAllowed="true" themeNames="compact row-stripes">
+            <actions>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+            </actions>
+            <columns resizable="true">
+                <column property="processDate" header="Date" textAlign="END" width="120px"/>
+                <column property="processStatus" header="Status" visible="false" flexGrow="1"/>
+                <column property="loggedChanges" header="Changes" width="585px"/>
+                <column property="fcnAmount" header="FCN" textAlign="END" width="110px" sortable="false">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+
+                <column property="documentDocumentType" header="Type" flexGrow="1"/>
+                <column property="documentBbfy" header="BBFY" textAlign="CENTER" width="110px"/>
+                <column property="documentEbfy" visible="false" header="EBFY" textAlign="CENTER" width="110px"/>
+                <column property="documentFundCode" header="Fund" textAlign="CENTER" width="110px"/>
+                <column property="documentBudgetOrg" header="BudgetOrg" width="110px"/>
+                <column property="documentDocumentNumber" header="Doc. Number" width="100px"/>
+                <column property="documentBudgetObjectClass" header="BOC" textAlign="CENTER" width="105px"/>
+                <column property="documentDocumentCreationDate" header="Created" textAlign="END" width="120px"/>
+                <column property="documentTitle" header="Title" width="495px"/>
+                <column property="documentProject" header="Project" textAlign="CENTER" width="105px"/>
+                <column property="documentAmount" header="Amount" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="documentTravelStartDate" header="Travel Start" textAlign="END" width="120px"/>
+                <column property="documentTravelEndDate" header="Travel End" textAlign="END" width="120px"/>
+                <column property="documentLastModifiedBy" header="Last modified by" width="265px"/>
+
+                <!--                <column property="documentCostorg"/>-->
+                <!--                <column property="documentDoctype"/>-->
+                <!--                <column property="documentDocdate"/>-->
+                <!--                <column property="documentCreatedate"/>-->
+                <!--                <column property="documentTitle"/>-->
+                <!--                <column property="documentProject"/>-->
+                <!--                <column property="documentAmount"/>-->
+                <!--                <column property="documentLinenumber"/>-->
+                <!--                <column property="documentTaxid"/>-->
+                <!--                <column property="documentTaxidType"/>-->
+                <!--                <column property="documentAddressCode"/>-->
+                <!--                <column property="documentVendorCode"/>-->
+                <!--                <column property="documentVendorName"/>-->
+                <!--                <column property="documentStartDate"/>-->
+                <!--                <column property="documentEndDate"/>-->
+                <!--                <column property="documentExpendedAmount"/>-->
+                <!--                <column property="documentClosedAmount"/>-->
+                <!--                <column property="documentClosedDate"/>-->
+                <!--                <column property="documentMoc"/>-->
+                <!--                <column property="documentFjc"/>-->
+
+                <column property="obligationDocumentNumber" header="Doc ID" width="110px"/>
+                <!--                <column property="obligationDocumentType"/>-->
+                <column property="obligationActivityNumber" header="Activity" textAlign="CENTER" width="105px"/>
+                <column property="obligationBudgetObjectClass" header="BOC" textAlign="CENTER" width="105px"/>
+                <column property="obligationAmount" header="Amount" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <!--                <column property="obligationDocumentDate"/>-->
+                <!--                <column property="obligationProcessDate"/>-->
+                <column property="obligationVendor" header="Vendor" width="435px"/>
+                <!--                <column property="obligationStatus"/>-->
+                <!--                <column property="obligationEin"/>-->
+
+                <!--                <column property="obligationModifiedDate"/>-->
+                <!--                <column property="obligationDivisionCode"/>-->
+                <!--                <column property="obligationCategory"/>-->
+                <!--                <column property="obligationAddressCode"/>-->
+                <!--                <column property="obligationVendorCode"/>-->
+                <column property="obligationTravelStartDate" header="Travel Start" textAlign="END" width="120px"/>
+                <column property="obligationTravelEndDate" header="Travel End" textAlign="END" width="120px"/>
+
+                <column property="currentActivityNumber" header="Activity" textAlign="CENTER" width="105px"/>
+                <column property="currentProjectionBoc" header="BOC" textAlign="CENTER" width="105px"/>
+                <column property="currentProjectionAmountBefore" header="Before" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="currentProjectionAmountAfter" header="After" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+
+                <column property="previousActivityNumber" header="Activity" textAlign="CENTER" width="105px"/>
+                <column property="previousProjectionBoc" header="BOC" textAlign="CENTER" width="105px"/>
+                <column property="previousProjectionAmountBefore" header="Before" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="previousProjectionAmountAfter" header="After" textAlign="END" width="110px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://divisionListView.title"
+      focusComponent="divisionsDataGrid">
+    <data>
+        <collection id="divisionsDc"
+                    class="gov.fjc.fis.entity.Division">
+            <fetchPlan extends="_base">
+                <property name="fund" fetchPlan="_base"/>
+                <property name="totalAmount"/>
+            </fetchPlan>
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="divisionsDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="divisionsDataGrid.createAction"/>
+            <button id="editBtn" action="divisionsDataGrid.editAction"/>
+            <button id="excelExportBtn" action="divisionsDataGrid.excelExportAction"/>
+            <button id="removeBtn" action="divisionsDataGrid.removeAction"/>
+            <gridColumnVisibility dataGrid="divisionsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="divisionsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="divisionsDataGrid"
+                  width="1200px"
+                  minHeight="20em"
+                  dataContainer="divisionsDc"
+                  columnReorderingAllowed="true"
+                  themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="appropriation" header="BFY" width="70px"/>
+                <column property="divisionCode" header="Division" textAlign="CENTER" width="90px"/>
+                <column property="title" width="300px"/>
+                <column property="fund.fundCode" header="Default Fund" width="110px"/>
+                <column property="budgetOrg" width="120px"/>
+                <column property="oneYearAmount" header="One Year" textAlign="END" width="120px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="twoYearAmount" header="Two Year" textAlign="END" width="120px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="totalAmount" header="Total" textAlign="END" width="120px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="sortCode" textAlign="END" width="100px"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

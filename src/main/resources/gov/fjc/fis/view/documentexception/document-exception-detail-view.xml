@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://documentExceptionDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="documentExceptionDc"
+                  class="gov.fjc.fis.entity.DocumentException">
+            <fetchPlan extends="_base"/>
+            <loader id="documentExceptionDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+        <vbox id="formWrapper" classNames="contrast-panel" maxWidth="55em">
+        <formLayout id="form" dataContainer="documentExceptionDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+            </responsiveSteps>
+            <formItem>
+                <textField id="fundCodeField" property="fundCode"/>
+            </formItem>
+            <formItem>
+                <textField id="bbfyField" property="bbfy"/>
+            </formItem>
+            <formItem>
+                <textField id="budgetOrgField" property="budgetOrg"/>
+            </formItem>
+            <formItem>
+                <textField id="budgetObjectClassField" property="budgetObjectClass"/>
+            </formItem>
+            <formItem>
+                <textField id="documentTypeField" property="documentType"/>
+            </formItem>
+            <formItem>
+                <textField id="documentNumberField" property="documentNumber"/>
+            </formItem>
+        </formLayout>
+        </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveCloseAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

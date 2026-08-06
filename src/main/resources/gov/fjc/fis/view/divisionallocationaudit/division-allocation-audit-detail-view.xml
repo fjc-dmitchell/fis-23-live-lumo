@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://divisionAllocationAuditDetailView.title"
+      focusComponent="closeButton">
+    <data>
+        <instance id="divisionAllocationAuditDc"
+                  class="gov.fjc.fis.entity.DivisionAllocationAudit">
+            <fetchPlan extends="_base">
+                <property name="objectCategory" fetchPlan="_base">
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="twoYearChangeAmount"/>
+                <property name="oneYearChangeAmount"/>
+                <property name="createdByString"/>
+                <property name="division" fetchPlan="_base">
+                    <property name="titleAndCode"/>
+                </property>
+            </fetchPlan>
+            <loader id="divisionAllocationAuditDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <vbox padding="false" spacing="false">
+            <hbox>
+                <nativeLabel text="Audit Type" alignSelf="CENTER" width="6em"/>
+                <textField id="changeTypeField" property="changeType" dataContainer="divisionAllocationAuditDc"
+                           width="6em"/>
+            </hbox>
+            <hbox>
+                <nativeLabel text="Division" alignSelf="CENTER" width="6em"/>
+                <textField id="divisionField" property="division.titleAndCode"
+                           dataContainer="divisionAllocationAuditDc" width="18em"/>
+            </hbox>
+            <hbox>
+                <nativeLabel text="Category" alignSelf="CENTER" width="6em"/>
+                <textField id="categoryField" property="objectCategory.titleAndCode"
+                           dataContainer="divisionAllocationAuditDc" width="18em"/>
+            </hbox>
+            <hbox>
+                <nativeLabel text="Attributes" alignSelf="CENTER" width="6em"/>
+                <textField id="updatedAttributesField" property="updatedAttributes"
+                           dataContainer="divisionAllocationAuditDc" width="18em"/>
+            </hbox>
+            <hbox>
+                <textField id="oldOneYearAmountField" property="oldOneYearAmount"
+                           dataContainer="divisionAllocationAuditDc" label="Old One Year Amount" width="10em"/>
+                <textField id="newOneYearAmountField" property="newOneYearAmount"
+                           dataContainer="divisionAllocationAuditDc" label="New One Year Amount" width="10em"/>
+                <textField id="oneYearChangeAmountField" property="oneYearChangeAmount"
+                           dataContainer="divisionAllocationAuditDc" label="One Year Change" width="10em"/>
+            </hbox>
+            <hbox>
+                <textField id="oldTwoYearAmountField" property="oldTwoYearAmount"
+                           dataContainer="divisionAllocationAuditDc" label="Old Two Year Amount" width="10em"/>
+                <textField id="newTwoYearAmountField" property="newTwoYearAmount"
+                           dataContainer="divisionAllocationAuditDc" label="New Two Year Amount" width="10em"/>
+                <textField id="twoYearChangeAmountField" property="twoYearChangeAmount"
+                           dataContainer="divisionAllocationAuditDc" label="Two Year Change" width="10em"/>
+            </hbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="closeButton" action="closeAction" text="Close"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://employeeDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="employeeDc"
+                  class="gov.fjc.fis.entity.personnel.Employee">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="employeeDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="employeeDc">
+            <textField id="emplidField" property="emplid"/>
+            <textField id="nameField" property="name"/>
+            <textField id="jobcodeField" property="jobcode"/>
+            <textField id="positionNbrField" property="positionNbr"/>
+            <textField id="jobtitleField" property="jobtitle"/>
+            <textField id="emplTypeField" property="emplType"/>
+            <textField id="regTempField" property="regTemp"/>
+            <textField id="fullPartTimeField" property="fullPartTime"/>
+            <textField id="stdHoursField" property="stdHours"/>
+            <datePicker id="gvtApptExpirDtField" property="gvtApptExpirDt"/>
+            <textField id="jlBudCatgCdField" property="jlBudCatgCd"/>
+            <textField id="jlCostOrgCdField" property="jlCostOrgCd"/>
+            <textField id="deptIdField" property="deptId"/>
+            <textField id="paygroupField" property="paygroup"/>
+            <textField id="gradeField" property="grade"/>
+            <textField id="stepField" property="step"/>
+            <textField id="hourlyRtField" property="hourlyRt"/>
+            <textField id="gvtBiweeklyRtField" property="gvtBiweeklyRt"/>
+            <textField id="annualRtField" property="annualRt"/>
+            <textField id="gvtComprateField" property="gvtComprate"/>
+            <textField id="gvtLocalityAdjField" property="gvtLocalityAdj"/>
+            <textField id="gvtWorkSchedField" property="gvtWorkSched"/>
+            <textField id="createdByStringField" property="createdByString"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

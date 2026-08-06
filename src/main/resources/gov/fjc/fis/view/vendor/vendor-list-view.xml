@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://vendorListView.title"
+      focusComponent="vendorsDataGrid">
+    <data>
+        <collection id="vendorsDc"
+                    class="gov.fjc.fis.entity.Vendor">
+            <fetchPlan extends="_base"/>
+            <loader id="vendorsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Vendor e order by e.name]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <details summaryText="Filters" opened="true" themeNames="filled">
+            <hbox id="searchBox">
+                <propertyFilter id="namePropertyFilter"
+                                property="name"
+                                operation="CONTAINS"
+                                operationEditable="true"
+                                dataLoader="vendorsDl"/>
+                <propertyFilter id="cityPropertyFilter"
+                                property="city"
+                                operation="CONTAINS"
+                                operationEditable="false"
+                                dataLoader="vendorsDl"/>
+                <propertyFilter property="vendorCode" operation="CONTAINS" dataLoader="vendorsDl"/>
+                <propertyFilter property="active" operation="EQUAL" dataLoader="vendorsDl"/>
+            </hbox>
+            <hbox>
+                <button id="clearSearchBtn" text="Clear"
+                        icon="vaadin:eraser"/>
+            </hbox>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="vendorsDataGrid.create"/>
+            <button id="editButton" action="vendorsDataGrid.edit"/>
+            <button id="excelExportButton" action="vendorsDataGrid.excelExport"/>
+            <button id="removeButton" action="vendorsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="vendorsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="vendorsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="vendorsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="vendorsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="active"/>
+                <column property="vendorCode" width="150px"/>
+                <column property="addressCode" width="125px"/>
+                <column property="name" width="550px"/>
+                <column property="city" width="180px"/>
+                <column property="state" width="110px"/>
+                <column property="address1" width="400px"/>
+                <column property="address2" visible="false"/>
+                <column property="zipCode" width="150px"/>
+                <column property="ein" width="150px"/>
+                <column property="duns" width="150px"/>
+                <column property="cage" width="150px"/>
+
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

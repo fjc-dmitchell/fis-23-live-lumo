@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://positionListView.title"
+      focusComponent="positionsDataGrid">
+    <data>
+        <collection id="positionsDc"
+                    class="gov.fjc.fis.entity.personnel.Position">
+            <fetchPlan extends="_base"/>
+            <loader id="positionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+        <action id="showDivisionAction"/>
+    </actions>
+    <layout>
+        <details id="searchForm" opened="true" summaryText="Search and Filter" themeNames="filled">
+            <tabSheet id="searchTabSheet">
+                <tab id="divisionSearch" label="Quick Search">
+                    <vbox>
+                        <hbox width="100%">
+                            <button id="showAll" width="170px" text="Show All"/>
+                            <hbox id="divisionSearchButtons">
+                                <button id="showDiv1Btn" action="showDivisionAction" text="Show JXXXXXF (GA)"/>
+                                <button id="showDiv2Btn" action="showDivisionAction" text="Show JXXXXXA (ED)"/>
+                                <button id="showDiv3Btn" action="showDivisionAction" text="Show JXXXXXD (EIS)"/>
+                                <button id="showDiv4Btn" action="showDivisionAction" text="Show JXXXXXC (RES)"/>
+                                <button id="showDiv5Btn" action="showDivisionAction" text="Show JXXXXXB (ITO)"/>
+                            </hbox>
+                            <hbox id="otherSearchButtons">
+                                <button id="showActions" text="Show positions having Actions"/>
+                            </hbox>
+                        </hbox>
+                    </vbox>
+                </tab>
+                <!--                <tab id="customSearchTab" label="Custom Search">-->
+                <!--                    <vbox id="searchvbox" width="100%" themeNames="spacing-xs" spacing="false" padding="false">-->
+                <!--                    </vbox>-->
+                <!--                </tab>-->
+            </tabSheet>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="positionsDataGrid.create"/>
+            <button id="editBtn" action="positionsDataGrid.edit"/>
+            <button id="excelExportBtn" action="positionsDataGrid.excelExport"/>
+            <button id="removeBtn" action="positionsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="positionsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="positionsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="positionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="positionsDc"
+                  emptyStateText="Click search button to view positions"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" selectionMode="SINGLE">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="positionNbr" header="Position" width="100px"/>
+                <column property="name" header="Employee Name" width="250px"/>
+                <column property="jobtitle" header="Title" width="250px"/>
+                <column property="status" width="90px" textAlign="CENTER"/>
+                <column property="jlCostOrgCd" header="Division" width="120px"/>
+                <column property="totalPay" textAlign="END" header="Total Pay" width="100px">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="hourlyRt" textAlign="END" header="Hourly" width="100px">
+                    <numberRenderer numberFormat="#0.00"/>
+                </column>
+                <column property="stdHours" textAlign="END" width="100px"/>
+                <column property="grade" width="90px" textAlign="CENTER"/>
+                <column property="regTemp" header="R/T" width="90px" textAlign="CENTER"/>
+                <column property="gvtWorkSched" header="F/P/I" width="100px" textAlign="CENTER"/>
+                <column property="gvtApptExpirDt" header="NTE" flexGrow="1" width="90px"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

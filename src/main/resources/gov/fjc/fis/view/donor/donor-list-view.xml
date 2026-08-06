@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://donorListView.title"
+      focusComponent="donorsDataGrid">
+    <data>
+        <collection id="donorsDc"
+                    class="gov.fjc.fis.entity.Donor">
+            <fetchPlan extends="_base"/>
+            <loader id="donorsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Donor e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <details summaryText="Filters" opened="true">
+            <propertyFilter property="organization" operation="CONTAINS" operationEditable="true"
+                            dataLoader="donorsDl"/>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="donorsDataGrid.create"/>
+            <button id="editBtn" action="donorsDataGrid.edit"/>
+            <button id="excelExportBtn" action="donorsDataGrid.excelExport"/>
+            <button id="removeBtn" action="donorsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="donorsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="donorsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="donorsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="donorsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="organization" flexGrow="0" width="320px"/>
+                <column property="address1" visible="false"/>
+                <column property="address2" visible="false"/>
+                <column property="city" visible="false"/>
+                <column property="state" visible="false"/>
+                <column property="zipCode" visible="false"/>
+                <column property="contact"/>
+                <column property="phone"/>
+                <column property="fax" visible="false"/>
+                <column property="email" visible="false"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

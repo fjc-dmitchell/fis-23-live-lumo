@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://payPeriodDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="payPeriodDc"
+                  class="gov.fjc.fis.entity.personnel.PayPeriod">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+                <property name="endDate"/>
+            </fetchPlan>
+            <loader id="payPeriodDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="payPeriodDc">
+            <textField id="payYearField" property="payYear"/>
+            <textField id="payPeriodField" property="payPeriod"/>
+            <datePicker id="startDateField" property="startDate"/>
+            <textField id="createdByStringField" property="createdByString"/>
+            <datePicker id="endDateField" property="endDate"/>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

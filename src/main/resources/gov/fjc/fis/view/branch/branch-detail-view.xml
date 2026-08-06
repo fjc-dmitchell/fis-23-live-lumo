@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://branchDetailView.title"
+      focusComponent="titleField">
+    <data>
+        <instance id="branchDc" class="gov.fjc.fis.entity.Branch">
+            <loader id="branchDl"/>
+        </instance>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division" fetchPlan="_base">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="branchDc">
+                    <vbox>
+                        <hbox>
+                            <textField id="budgetFiscalYearField" width="10em"
+                                       label="Budget Fiscal Year" datatype="string" readOnly="true"/>
+                            <entityComboBox id="divisionsComboBox" itemsContainer="divisionsDc" dataContainer="branchDc"
+                                            property="division" label="Division" width="25em"/>
+                        </hbox>
+                        <hbox>
+                            <textField id="branchCodeField" property="branchCode" width="10em" label="Branch Code"
+                                       dataContainer="branchDc"/>
+                            <textField id="titleField" property="title" width="33em" label="Title"
+                                       dataContainer="branchDc"/>
+                            <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"
+                                       dataContainer="branchDc"/>
+                        </hbox>
+                    </vbox>
+                </formLayout>
+            </vbox>
+            <vbox classNames="contrast-panel">
+                <details id="activityDetails" opened="true" visible="false" summaryText="Activities"/>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment"
+          xmlns:charts="http://jmix.io/schema/charts/ui">
+    <data>
+        <collection id="categorySofDc" class="gov.fjc.fis.entity.dto.ObjectCategoryDto">
+            <loader id="categorySofDl" readOnly="true"/>
+        </collection>
+        <collection id="categorySpendDc" class="gov.fjc.fis.entity.dto.ObjectCategoryDto">
+            <loader id="categorySpendDl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" height="100%">
+            <vbox padding="false" spacing="false" height="100%" width="100%" minHeight="50em" minWidth="50em">
+                <comboBox id="appropriationType" itemsEnum="gov.fjc.fis.entity.AppropriationType" width="17em"/>
+                <charts:chart id="allocationsChart" minWidth="45em" width="100%" minHeight="25em"
+                              backgroundColor="transparent">
+                    <charts:legend right="0" orientation="VERTICAL" selector="false"/>
+                    <charts:title/>
+                    <charts:tooltip trigger="ITEM"/>
+                    <charts:series>
+                        <charts:pie name="Allocations" radius="30% 60%" selectedOffset="-40">
+                            <charts:label formatter="{b} : {d}%"/>
+                        </charts:pie>
+                    </charts:series>
+                </charts:chart>
+
+                <charts:chart id="spendingChart" minWidth="45em" width="100%" minHeight="25em"
+                              backgroundColor="transparent">
+                    <charts:legend right="0" orientation="VERTICAL" selector="false"/>
+                    <charts:title/>
+                    <charts:tooltip trigger="ITEM"/>
+                    <charts:series>
+                        <charts:pie name="Spending" radius="30% 60%" selectedOffset="-40">
+                            <charts:label formatter="{b} : {d}%"/>
+                        </charts:pie>
+                    </charts:series>
+                </charts:chart>
+            </vbox>
+        </vbox>
+    </content>
+</fragment>

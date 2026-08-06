@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="obligationsDc" class="gov.fjc.fis.entity.Obligation" provided="true">
+            <loader id="obligationsDl" readOnly="true" provided="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" spacing="false" padding="false">
+            <hbox id="objectClassBox" alignItems="CENTER">
+                <span text="Category (MOC)"/>
+                <hbox id="mocBox" spacing="false"/>
+                <span text="Object Class (BOC)"/>
+                <hbox id="bocBox" spacing="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="docnumSearch" property="documentNumber" operation="CONTAINS"
+                                dataLoader="obligationsDl"
+                                label="Document ID" width="18em" autoApply="false"/>
+                <propertyFilter id="vendorSearch" property="vendor" operation="CONTAINS" dataLoader="obligationsDl"
+                                label="Vendor" width="25em" autoApply="false"/>
+                <propertyFilter id="actnumSearch" property="activity.activityNumber" operation="CONTAINS"
+                                dataLoader="obligationsDl" label="Activity Number" width="13em" autoApply="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="amountSearch" property="amount" operation="EQUAL" dataLoader="obligationsDl"
+                                label="Amount" operationEditable="true" width="17em" autoApply="false"/>
+                <propertyFilter id="statusSearch" property="status" operation="EQUAL" dataLoader="obligationsDl"
+                                label="Status" width="11em" autoApply="false"/>
+                <propertyFilter id="bpoSearch" property="blanketPurchaseOrder" operation="EQUAL"
+                                dataLoader="obligationsDl"
+                                label="Blanket Purchase Order" width="17em" autoApply="false"/>
+                <propertyFilter id="docTypeSearch" property="documentType" operation="EQUAL"
+                                dataLoader="obligationsDl"
+                                label="Document Type" width="22em" autoApply="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="programStartSearch" property="activity.startDate" operation="GREATER_OR_EQUAL"
+                                dataLoader="obligationsDl" label="Program Start Date" operationEditable="true"
+                                autoApply="false"/>
+                <propertyFilter id="programEndSearch" property="activity.endDate" operation="LESS_OR_EQUAL"
+                                dataLoader="obligationsDl" label="Program End Date" operationEditable="true"
+                                autoApply="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="travelStartSearch" property="travelStartDate" operation="GREATER_OR_EQUAL"
+                                dataLoader="obligationsDl" label="Travel Start Date" operationEditable="true"
+                                autoApply="false"/>
+                <propertyFilter id="travelEndSearch" property="travelEndDate" operation="LESS_OR_EQUAL"
+                                dataLoader="obligationsDl" label="Travel End Date" operationEditable="true"
+                                autoApply="false"/>
+            </hbox>
+        </vbox>
+    </content>
+</fragment>

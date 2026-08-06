@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://actionCodeDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="actionCodeDc"
+                  class="gov.fjc.fis.entity.personnel.ActionCode">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="actionCodeDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="actionCodeDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <textField id="natureOfActionCodeField" property="natureOfActionCode"/>
+                    <textField id="titleField" property="title"/>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveCloseAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

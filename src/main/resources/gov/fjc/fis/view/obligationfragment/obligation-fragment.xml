@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="obligationsDc" class="gov.fjc.fis.entity.Obligation">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base"/>
+                <property name="objectClass" fetchPlan="_base"/>
+                <property name="costOrg" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="obligationsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" padding="false" spacing="false">
+            <hbox id="buttonsPanel" classNames="buttons-panel">
+                <button action="obligationsDataGrid.read" text="View Obligation"/>
+                <button id="excelExportBtn" action="obligationsDataGrid.excelExport"/>
+                <gridColumnVisibility dataGrid="obligationsDataGrid" icon="COG"/>
+                <simplePagination id="pagination" dataLoader="obligationsDl" autoLoad="true"/>
+            </hbox>
+            <dataGrid id="obligationsDataGrid" dataContainer="obligationsDc" minWidth="1250px" width="100%" aggregatable="true"
+                      emptyStateText="No obligations found">
+                <actions>
+                    <action id="create" type="list_create"/>
+                    <action id="edit" type="list_edit"/>
+                    <action id="excelExport" type="grdexp_excelExport">
+                        <properties>
+                            <property name="availableExportModes" value="ALL_ROWS"/>
+                        </properties>
+                    </action>
+                    <action id="read" type="list_read"/>
+                    <action id="remove" type="list_remove"/>
+                </actions>
+                <columns resizable="true">
+                    <column property="activity.titleAndCode" width="275px" flexGrow="0" header="Activity"/>
+                    <column property="documentNumber" header="Doc ID" width="200px" flexGrow="0"/>
+                    <column property="objectClass.budgetObjectClass" header="BOC"/>
+                    <column property="vendor" width="275px"/>
+                    <column property="documentDate" header="Date"/>
+                    <column property="statusString" header="Status"/>
+                    <column property="amount" textAlign="END">
+                    <aggregation type="SUM">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
+                    </column>
+                </columns>
+            </dataGrid>
+        </vbox>
+    </content>
+</fragment>

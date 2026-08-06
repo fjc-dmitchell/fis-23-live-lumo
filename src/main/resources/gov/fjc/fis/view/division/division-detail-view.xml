@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://divisionDetailView.title"
+      focusComponent="divisionCodeField">
+    <data>
+        <instance id="divisionDc"
+                  class="gov.fjc.fis.entity.Division">
+            <fetchPlan extends="_base">
+                <property name="allocations" fetchPlan="_base"/>
+                <property name="auditAllocations" fetchPlan="_base"/>
+                <property name="totalAmount"/>
+                <property name="createdByString"/>
+                <property name="fund" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="divisionDl"/>
+            <collection id="allocationsDc" property="allocations"/>
+            <collection id="auditDc" property="auditAllocations"/>
+        </instance>
+        <collection id="fundsDc" class="gov.fjc.fis.entity.Fund">
+            <loader id="fundsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="divisionDc">
+                    <vbox width="100%" colspan="2" padding="false" spacing="false">
+                        <hbox>
+                            <entityPicker id="appropriationField" property="appropriation" label="Budget Fiscal Year"
+                                          width="10em"/>
+                            <textField id="divisionCodeField" property="divisionCode" label="Division Code"
+                                       datatype="char" width="10em"/>
+                            <textField id="titleField" property="title" label="Title" width="25em"/>
+                            <textField id="sortCodeField" property="sortCode" label="Sort Code" width="6em"/>
+                        </hbox>
+                        <hbox>
+                            <textField id="oneYearAmountField" property="oneYearAmount" label="One Year Allocation"
+                                       width="10em"/>
+                            <textField id="twoYearAmountField" property="twoYearAmount" label="Two Year Allocation"
+                                       width="10em"/>
+                            <textField id="totalAmountField" property="totalAmount" label="Total Allocation"
+                                       width="10em" datatype="decimal"/>
+                            <entityComboBox id="fundsComboBox" itemsContainer="fundsDc" property="fund"
+                                            label="Default Fund" width="13em"/>
+                            <textField id="budgetOrgField" property="budgetOrg" label="Budget Org." width="7em"/>
+
+                        </hbox>
+                    </vbox>
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <p id="allocationWarning" text="Warning: division allocations do not equal category allocations"
+                       classNames="text-error"/>
+                </formLayout>
+            </vbox>
+            <vbox classNames="contrast-panel">
+                <tabSheet width="100%">
+                    <tab id="allocationsTab" label="Allocations">
+                        <vbox>
+                            <hbox id="buttonsPanel" classNames="buttons-panel">
+                                <button action="allocationsDataGrid.createAction"/>
+                                <button action="allocationsDataGrid.editAction"/>
+                                <button action="allocationsDataGrid.removeAction"/>
+                                <button id="updateDivisionAllocations" icon="REFRESH"
+                                        text="Update division allocations from BOC allocations"/>
+                            </hbox>
+                            <dataGrid id="allocationsDataGrid" dataContainer="allocationsDc" aggregatable="true"
+                                      width="875px"
+                                      minHeight="15em"
+                                      themeNames="column-borders compact row-stripes">
+                                <actions>
+                                    <action id="createAction" type="list_create">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="editAction" type="list_edit">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="removeAction" type="list_remove"/>
+                                </actions>
+                                <columns>
+                                    <column property="objectCategory.majorObjectClass" header="MOC" visible="false"/>
+                                    <column property="objectCategory.titleAndCode" header="Category" width="375px"/>
+                                    <column property="oneYearAmount" header="One Year" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                    <column property="twoYearAmount" header="Two Year" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                    <column property="totalAmount" header="Total" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+                            <p id="allocationRule" text="Note: prior to 2014, there were no two-year BOC allocations"
+                               classNames="text-error" visible="false"/>
+                        </vbox>
+                    </tab>
+                    <tab id="auditTab" label="Allocations History">
+                        <vbox>
+                            <hbox id="auditButtonsPanel" classNames="buttons-panel">
+                                <button id="excelExportBtn" action="auditDataGrid.excelExport"
+                                        text="Export allocation audit"/>
+                            </hbox>
+                            <vbox>
+                                <dataGrid id="auditDataGrid" dataContainer="auditDc" width="900px"
+                                          minHeight="20em"
+                                          themeNames="column-borders compact row-stripes">
+                                    <actions>
+                                        <action id="viewAuditAction" type="list_read">
+                                            <properties>
+                                                <property name="openMode" value="DIALOG"/>
+                                            </properties>
+                                        </action>
+                                        <action id="excelExport" type="grdexp_excelExport"/>
+                                    </actions>
+                                    <columns>
+                                        <column property="auditDate" header="Date" width="150px">
+                                            <localDateTimeRenderer format="MM/dd/yyyy HH:mm"/>
+                                        </column>
+                                        <column property="createdBy" visible="false"/>
+                                        <column property="changeType" header="Type" width="100px"/>
+                                        <column property="objectCategory.majorObjectClass" header="MOC" width="70px"
+                                                textAlign="CENTER"/>
+                                        <column property="oldOneYearAmount" textAlign="END" header="Old One Year Amount" visible="false"/>
+                                        <column property="newOneYearAmount" textAlign="END" header="New One Year Amount" visible="false"/>
+                                        <column property="oneYearChangeAmount" header="One Year change" textAlign="END"
+                                                width="150px"/>
+                                        <column property="oldTwoYearAmount" textAlign="END" header="Old Two Year Amount" visible="false"/>
+                                        <column property="newTwoYearAmount" textAlign="END" header="New Two Year Amount" visible="false"/>
+                                        <column property="twoYearChangeAmount" header="Two Year Change" textAlign="END"
+                                                width="150px"/>
+                                        <column property="updatedAttributes" header="Updated Attributes" width="280px"/>
+                                    </columns>
+                                </dataGrid>
+                            </vbox>
+                        </vbox>
+                    </tab>
+                </tabSheet>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

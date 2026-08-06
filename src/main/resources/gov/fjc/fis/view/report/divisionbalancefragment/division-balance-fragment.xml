@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="divisionBalancesDc" class="gov.fjc.fis.entity.dto.DivisionDto">
+            <loader id="divisionBalancesDl" readOnly="true"/>
+        </collection>
+        <collection id="divisionBalances2Dc" class="gov.fjc.fis.entity.dto.DivisionDto">
+            <loader id="divisionBalances2Dl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root">
+            <details id="oneYearDetails" opened="true">
+                <dataGrid id="oneYearDataGrid" dataContainer="divisionBalancesDc"
+                          aggregatable="true" selectionMode="SINGLE"
+                          themeNames="no-row-borders column-borders compact row-stripes"
+                          allRowsVisible="true" width="955px">
+                    <columns>
+                        <column property="title" header="Division" textAlign="START" width="335px" sortable="false"/>
+                        <column property="oneYearAllocations" header="Allocations" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="oneYearProjections" header="Projections" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="oneYearReimbursements" header="Reimbursements" textAlign="END" width="135px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="oneYearObligations" header="Obligations" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="oneYearBalance" header="Balance" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                    </columns>
+                </dataGrid>
+                <p id="oneYearWarning" classNames="fjc-warning" visible="false"/>
+            </details>
+            <details id="twoYearDetails" opened="true">
+                <dataGrid id="twoYearDataGrid" dataContainer="divisionBalances2Dc"
+                          aggregatable="true" selectionMode="SINGLE"
+                          themeNames="no-row-borders column-borders compact row-stripes"
+                          allRowsVisible="true" width="955px">
+                    <columns>
+                        <column property="title" header="Division" textAlign="START" width="335px" sortable="false"/>
+                        <column property="twoYearAllocations" header="Allocations" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="twoYearProjections" header="Projections" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="twoYearReimbursements" header="Reimbursements" textAlign="END" width="135px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="twoYearObligations" header="Obligations" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                        <column property="twoYearBalance" header="Balance" textAlign="END" width="120px"
+                                sortable="false">
+                            <numberRenderer numberFormat="#,##0"/>
+                            <aggregation type="SUM">
+                                <formatter>
+                                    <number format="#,##0"/>
+                                </formatter>
+                            </aggregation>
+                        </column>
+                    </columns>
+                </dataGrid>
+                <p id="twoYearWarning" classNames="fjc-warning" visible="false"/>
+            </details>
+        </vbox>
+    </content>
+</fragment>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://activityProjectionAuditListView.title"
+      focusComponent="activityProjectionAuditsDataGrid">
+    <data>
+        <collection id="activityProjectionAuditsDc"
+                    class="gov.fjc.fis.entity.ActivityProjectionAudit">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base">
+                    <property name="fund" fetchPlan="_base"/>
+                    <property name="branch" fetchPlan="_base"/>
+                    <property name="group" fetchPlan="_base"/>
+                </property>
+                <property name="objectClass" fetchPlan="_base"/>
+                <property name="auditDate"/>
+            </fetchPlan>
+            <loader id="activityProjectionAuditsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_ActivityProjectionAudit e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <header text="This view will include a division search and show the audit trail of all activity projection changes. Requested by Nanticha 8/26/25"/>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="excelExportButton" action="activityProjectionAuditsDataGrid.excelExportAction"/>
+            <button id="readButton" action="activityProjectionAuditsDataGrid.readAction"/>
+            <gridColumnVisibility dataGrid="activityProjectionAuditsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="activityProjectionAuditsDl" autoLoad="true"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"
+                              itemsPerPageDefaultValue="250"/>
+        </hbox>
+        <dataGrid id="activityProjectionAuditsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="activityProjectionAuditsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="readAction" type="list_read"/>
+            </actions>
+            <columns resizable="true">
+                <column property="activity.fund.fundCode" visible="false" header="fund"/>
+                <column property="activity.division.appropriation.budgetFiscalYear" header="BFY"/>
+                <column property="activity.division.divisionCode" header="Division"/>
+                <column property="activity.activityNumber" header="Activity"/>
+                <column property="activity.title"/>
+                <column property="activity.group.groupCode" visible="false" header="Group"/>
+                <column property="activity.branch.branchCode" visible="false" header="Branch"/>
+                <column property="objectClass.budgetObjectClass" header="BOC"/>
+                <column property="oldAmount" textAlign="END" width="150px" flexGrow="0">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="newAmount" textAlign="END" width="150px" flexGrow="0">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="changeType"/>
+                <column property="auditDate"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

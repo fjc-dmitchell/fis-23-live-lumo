@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://payGradeDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="payGradeDc"
+                  class="gov.fjc.fis.entity.personnel.PayGrade">
+            <fetchPlan extends="_base">
+                <property name="rates" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="payGradeDl"/>
+            <collection id="ratesDc" property="rates"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="payGradeDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+                    <textField id="setidField" property="setid"/>
+                    <textField id="salAdminPlanField" property="salAdminPlan"/>
+                    <textField id="gradeField" property="grade"/>
+                    <textField id="gradeTitleJpnField" property="gradeTitleJpn"/>
+                    <textField id="descrField" property="descr"/>
+                    <textField id="descrshortField" property="descrshort"/>
+                </formLayout>
+            </vbox>
+            <h4 text="msg://gov.fjc.fis.entity/PayGrade.rates"/>
+            <hbox id="buttonsPanel" classNames="buttons-panel">
+                <button action="ratesDataGrid.create"/>
+                <button action="ratesDataGrid.edit"/>
+                <button action="ratesDataGrid.remove"/>
+            </hbox>
+            <dataGrid id="ratesDataGrid" dataContainer="ratesDc" width="1050px" minHeight="20em"
+                      themeNames="column-borders row-stripes">
+                <actions>
+                    <action id="create" type="list_create">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
+                    <action id="edit" type="list_edit">
+                        <properties>
+                            <property name="openMode" value="DIALOG"/>
+                        </properties>
+                    </action>
+                    <action id="remove" type="list_remove"/>
+                </actions>
+                <columns>
+                    <column property="effdate" header="Effective" textAlign="END" width="125px" sortable="false"/>
+                    <column property="minRtAnnual" header="Min." textAlign="END" width="110px" sortable="false">
+                        <numberRenderer numberFormat="#,##0"/>
+                    </column>
+                    <column property="maxRtAnnual" header="Max." textAlign="END" width="110px" sortable="false">
+                        <numberRenderer numberFormat="#,##0"/>
+                    </column>
+                    <column property="quartile1Range" header="Quartile 1" textAlign="CENTER" width="175px"
+                            sortable="false"/>
+                    <column property="quartile2Range" header="Quartile 2" textAlign="CENTER" width="175px"
+                            sortable="false"/>
+                    <column property="quartile3Range" header="Quartile 3" textAlign="CENTER" width="175px"
+                            sortable="false"/>
+                    <column property="quartile4Range" header="Quartile 4" textAlign="CENTER" width="175px"
+                            sortable="false"/>
+                </columns>
+            </dataGrid>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

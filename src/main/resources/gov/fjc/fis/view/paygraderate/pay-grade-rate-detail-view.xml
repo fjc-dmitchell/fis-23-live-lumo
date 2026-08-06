@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://payGradeRateDetailView.title"
+      focusComponent="effdateField">
+    <data>
+        <instance id="payGradeRateDc"
+                  class="gov.fjc.fis.entity.personnel.PayGradeRate">
+            <fetchPlan extends="_base">
+                <property name="payGrade" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="payGradeRateDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="payGradeRateDc" width="400px">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+            </responsiveSteps>
+            <formItem>
+                <textField id="payGradeField" property="payGrade" readOnly="true"/>
+            </formItem>
+            <formItem label="Effective Date">
+                <datePicker id="effdateField" property="effdate"/>
+            </formItem>
+            <formItem label="Min. Base">
+                <textField id="minRtAnnualField" property="minRtAnnual"/>
+            </formItem>
+            <formItem label="Max. Base">
+                <textField id="maxRtAnnualField" property="maxRtAnnual"/>
+            </formItem>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

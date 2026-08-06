@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="categorySofDc" class="gov.fjc.fis.entity.dto.ObjectCategoryDto">
+            <loader id="categorySofDl" readOnly="true"/>
+        </collection>
+        <collection id="categorySof2Dc" class="gov.fjc.fis.entity.dto.ObjectCategoryDto">
+            <loader id="categorySof2Dl" readOnly="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root">
+            <vbox padding="false">
+                <details id="oneYearDetails" summaryText="One Year Appropriation" opened="true">
+                    <dataGrid id="categoryDtoesDataGrid1" dataContainer="categorySofDc"
+                              aggregatable="true" selectionMode="SINGLE"
+                              themeNames="no-row-borders column-borders compact row-stripes"
+                              allRowsVisible="true" width="950px">
+                        <actions/>
+                        <columns sortable="false">
+                            <column property="titleAndCode" header="Object Class" width="240px"/>
+                            <column property="totalOneYearAllocations" header="Allocations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalOneYearProjections" header="Projections" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalOneYearObligations" header="Obligations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalOneYearReimbursements" header="Reimburse." textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalOneYearBalance" header="Balance" textAlign="END">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                        </columns>
+                    </dataGrid>
+                </details>
+                <details id="twoYearDetails" summaryText="Two Year Appropriation" opened="true">
+                    <dataGrid id="categoryDtoesDataGrid2" dataContainer="categorySof2Dc"
+                              aggregatable="true" selectionMode="SINGLE"
+                              themeNames="no-row-borders column-borders compact row-stripes"
+                              allRowsVisible="true" width="950px">
+                        <actions/>
+                        <columns sortable="false">
+                            <column property="titleAndCode" header="Object Class" width="240px"/>
+                            <column property="totalTwoYearAllocations" header="Allocations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalTwoYearProjections" header="Projections" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalTwoYearObligations" header="Obligations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalTwoYearReimbursements" header="Reimburse." textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="totalTwoYearBalance" header="Balance" textAlign="END">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                        </columns>
+                    </dataGrid>
+                </details>
+                <details id="obbbaDetails" summaryText="OBBBA appropriation (JXXMAPP)" visible="false" opened="true">
+                    <dataGrid id="mandatoryCategoryGrid" dataContainer="categorySofDc"
+                              aggregatable="true" selectionMode="SINGLE"
+                              themeNames="no-row-borders column-borders compact row-stripes"
+                              allRowsVisible="true" width="950px">
+                        <actions/>
+                        <columns sortable="false">
+                            <column property="titleAndCode" header="Object Class" width="240px"/>
+                            <column property="mandatoryAllocated" header="Allocations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="mandatoryProjected" header="Projections" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="mandatoryObligated" header="Obligations" textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="mandatoryReimbursed" header="Reimburse." textAlign="END"
+                                    width="135px">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                            <column property="mandatoryBalance" header="Balance" textAlign="END" key="mandatoryBalance">
+                                <numberRenderer numberFormat="#,##0"/>
+                                <aggregation type="SUM">
+                                    <formatter>
+                                        <number format="#,##0"/>
+                                    </formatter>
+                                </aggregation>
+                            </column>
+                        </columns>
+                    </dataGrid>
+                </details>
+            </vbox>
+        </vbox>
+    </content>
+</fragment>

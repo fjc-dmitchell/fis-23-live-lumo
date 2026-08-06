@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://localityAreaListView.title"
+      focusComponent="localityAreasDataGrid">
+    <data>
+        <collection id="localityAreasDc"
+                    class="gov.fjc.fis.entity.personnel.LocalityArea">
+            <fetchPlan extends="_base"/>
+            <loader id="localityAreasDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="localityAreasDataGrid.createAction"/>
+            <button id="editButton" action="localityAreasDataGrid.editAction"/>
+            <button id="excelExportButton" action="localityAreasDataGrid.excelExportAction"/>
+            <button id="removeButton" action="localityAreasDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="localityAreasDl"/>
+        </hbox>
+        <dataGrid id="localityAreasDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="localityAreasDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="effdt" width="120px" flexGrow="0" header="Effective"/>
+                <column property="gvtLocalityArea" width="90px" flexGrow="0" header="Code"/>
+                <column property="descr" width="320px" flexGrow="0" header="Description"/>
+                <column property="gvtLocalityPct" flexGrow="1" header="Rate"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

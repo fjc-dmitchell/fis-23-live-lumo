@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://obligationLookupView.title"
+      focusComponent="obligationsDataGrid">
+    <data>
+        <collection id="obligationsDc"
+                    class="gov.fjc.fis.entity.Obligation">
+            <fetchPlan extends="_base">
+                <property name="objectClass" fetchPlan="_base"/>
+                <property name="costOrg" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="obligationsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Obligation e]]>
+                    <condition>
+                        <and>
+                            <c:jpql>
+                                <c:where>e.activity.division.appropriation = :appropriationFilterField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.activity.fund in :fundFilterField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.activity.division = :divisionFilterField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.activity = :activityFilterField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.objectClass.objectCategory = :categoryFilterField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.objectClass = :objectClassFilterField</c:where>
+                            </c:jpql>
+                        </and>
+                    </condition>
+                </query>
+            </loader>
+        </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="activitiesDc" class="gov.fjc.fis.entity.Activity">
+            <loader id="activitiesDl" readOnly="true"/>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="objectClassesDc" class="gov.fjc.fis.entity.ObjectClass">
+            <loader id="objectClassesDl" readOnly="true"/>
+            <fetchPlan extends="_base"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox classNames="filled">
+                <hbox colspan="3">
+                    <textField id="budgetFiscalYearField" width="9em"
+                               label="Budget Fiscal Year" datatype="string" readOnly="true"/>
+                    <entityComboBox id="divisionSearchField" itemsContainer="divisionsDc"
+                                    label="Division" width="25em" metaClass="fis_Division"/>
+                    <entityComboBox id="activitySearchField" itemsContainer="activitiesDc"
+                                    label="Activity" width="32em" metaClass="fis_Activity"/>
+                </hbox>
+                <hbox colspan="2">
+                    <entityComboBox id="categorySearchField" itemsContainer="categoriesDc"
+                                    label="Category (MOC)" width="25em" metaClass="fis_ObjectCategory"/>
+                    <entityComboBox id="objectClassSearchField" itemsContainer="objectClassesDc"
+                                    property="budgetObjectClass" label="Object Class (BOC)" width="32em"
+                                    metaClass="fis_ObjectClass"/>
+                </hbox>
+                <hbox>
+                    <button id="clearSearchBtn" text="Clear" icon="vaadin:eraser"/>
+                </hbox>
+            </vbox>
+            <vbox classNames="contrast-panel ">
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <simplePagination id="pagination" dataLoader="obligationsDl" autoLoad="true"
+                                      itemsPerPageDefaultValue="250"
+                                      itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+                </hbox>
+                <dataGrid id="obligationsDataGrid"
+                          width="100%"
+                          minHeight="20em"
+                          dataContainer="obligationsDc"
+                          columnReorderingAllowed="true"
+                          themeNames="column-borders compact row-stripes">
+                    <actions>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="documentNumber" header="DIN" flexGrow="0" width="130px"/>
+                        <column property="objectClass.budgetObjectClass" header="BOC" flexGrow="0" width="90px"/>
+                        <column property="vendor" flexGrow="0" width="430px" autoWidth="true"/>
+                        <column property="amount" textAlign="END" flexGrow="0" width="130px"/>
+                        <column property="activity.activityNumber" header="Activity" width="90px" flexGrow="0"/>
+                        <column property="documentDate" header="Date" textAlign="END" width="120px" flexGrow="0"/>
+                        <column property="statusString" header="Status" textAlign="CENTER" width="110px" flexGrow="0"/>
+                        <column property="travelStartDate" header="Travel Start" flexGrow="0" width="125px"/>
+                        <column property="blanketPurchaseOrder" header="BPO" flexGrow="1"/>
+                    </columns>
+                </dataGrid>
+            </vbox>
+        </vbox>
+        <hbox id="lookupActions">
+            <button id="selectButton" action="selectAction" text="Select"/>
+            <button id="discardButton" action="discardAction" text="Cancel"/>
+        </hbox>
+    </layout>
+</view>

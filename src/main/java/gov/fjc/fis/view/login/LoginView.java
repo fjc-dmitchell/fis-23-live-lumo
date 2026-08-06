@@ -107,8 +107,22 @@ public class LoginView extends StandardView implements LocaleChangeObserver {
                             .withLocale(login.getSelectedLocale())
                             .withRememberMe(login.isRememberMe())
             );
-        } catch (final BadCredentialsException | DisabledException | LockedException | AccessDeniedException e) {
+        } catch (final BadCredentialsException | AccessDeniedException e) {
             log.warn("Login failed for user '{}': {}", event.getUsername(), e.toString());
+            event.getSource().setError(true);
+        } catch (final LockedException e) {
+            log.warn("Login failed for user '{}': {}", event.getUsername(), e.toString());
+            notifications.create("Your Windows account is locked. Please try again later.")
+                    .withType(Notifications.Type.ERROR)
+                    .withDuration(3000)
+                    .show();
+            event.getSource().setError(true);
+        } catch (final DisabledException e) {
+            log.warn("Login failed for user '{}': {}", event.getUsername(), e.toString());
+            notifications.create("Your FIS account is disabled.")
+                    .withType(Notifications.Type.ERROR)
+                    .withDuration(3000)
+                    .show();
             event.getSource().setError(true);
         }
     }

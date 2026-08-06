@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="attachmentsDc" class="gov.fjc.fis.entity.FileAttachment" provided="true">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base"/>
+                <property name="obligation" fetchPlan="_base">
+                    <property name="activity" fetchPlan="_base"/>
+                </property>
+                <property name="invoice" fetchPlan="_base">
+                    <property name="obligation" fetchPlan="_base"/>
+                </property>
+                <property name="title"/>
+                <property name="formattedSize"/>
+                <property name="fileName"/>
+                <property name="attachedTo"/>
+                <property name="category" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="attachmentsDl"/>
+        </collection>
+        <collection id="fileAttachmentCategoriesDc" class="gov.fjc.fis.entity.FileAttachmentCategory">
+            <loader id="fileAttachmentCategoriesDl" readOnly="true">
+<!--                <query>-->
+<!--                    <![CDATA[select e from fis_FileAttachmentCategory e]]>-->
+<!--                </query>-->
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" spacing="false" padding="false">
+            <p id="unsavedMessage" text="File attachments cannot be added until the entity is saved." visible="false"/>
+            <vbox id="attachmentsBox" spacing="false" padding="false">
+<!--                <h4 text="msg://gov.fjc.fis.entity/Invoice.attachments"/>-->
+                <hbox id="buttonsPanel" classNames="buttons-panel">
+                    <button action="attachmentsDataGrid.editAction"/>
+                    <button action="attachmentsDataGrid.removeAction"/>
+                    <!--                    <button id="downloadButton" text="Download (0)" enabled="false"/>-->
+                    <fileStorageUploadField id="fileAttachField"
+                                            property="fileReference"
+                                            acceptedFileTypes="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/png,image/jpeg,text/plain"
+                                            incorrectFileTypeText="Valid file types are pdf, xlsx, docx, png, jpg, and txt"
+                                            fileTooBigText="File cannot be larger than 100MB"
+                                            uploadText="Drop file or click to upload" uploadIcon="vaadin:upload"
+                                            fileStoragePutMode="MANUAL"/>
+                    <gridColumnVisibility id="gridVisibility" dataGrid="attachmentsDataGrid" icon="COG"
+                                          exclude="fileName"/>
+
+                </hbox>
+                <dataGrid id="attachmentsDataGrid" dataContainer="attachmentsDc" width="100%" minHeight="6.5em"
+                          selectionMode="SINGLE" emptyStateText="There are no file attachments"
+                          detailsVisibleOnClick="false" themeNames="compact" allRowsVisible="true">
+                    <actions>
+                        <action id="removeAction" type="list_remove"/>
+                        <action id="editAction" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                            </properties>
+                        </action>
+                    </actions>
+                    <columns resizable="true">
+                        <column property="fileName" width="150px"/>
+                        <column property="attachedTo" header="Entity"/>
+                        <column property="category" width="150px"/>
+                        <column property="title"/>
+                        <column property="contentLength" header="Size (bytes)" visible="false" textAlign="END"/>
+                        <column property="formattedSize" header="Size" textAlign="END"/>
+                    </columns>
+                </dataGrid>
+            </vbox>
+        </vbox>
+    </content>
+</fragment>

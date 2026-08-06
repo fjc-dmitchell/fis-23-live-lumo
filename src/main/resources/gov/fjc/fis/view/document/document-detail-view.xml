@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://documentDetailView.title"
+      focusComponent="headerForm">
+    <data>
+        <instance id="documentDc"
+                  class="gov.fjc.fis.entity.Document">
+            <fetchPlan extends="_base"/>
+            <loader id="documentDl" readOnly="true"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout alignItems="STRETCH"
+            padding="false" spacing="false"
+            expand="contentBox">
+
+        <vbox id="contentBox" classNames="overflow-auto">
+            <div classNames="grid-panel">
+
+                <vbox classNames="contrast-panel">
+                    <vbox classNames="bordered-panel">
+
+                        <h5 text="Header"/>
+                        <formLayout id="headerForm" dataContainer="documentDc">
+                            <textField id="docTypeDescField" readOnly="true" label="Document Type"/>
+                            <textField id="linenumberField" property="lineNumber"/>
+                            <textField id="docnumberField" property="documentNumber"/>
+                            <datePicker id="docdateField" property="documentDate"/>
+                            <textField id="amountField" property="amount"/>
+                            <textField id="bocField" property="budgetObjectClass"/>
+
+                            <textField id="projectField" property="project" label="Project (FJC Activity)"/>
+                            <textField id="fjcField" property="fjc" label="FJC (typically used for BPO)"/>
+
+                            <textField id="moduserField" property="lastModifiedBy" label="Last Modified by"/>
+                            <datePicker id="createdateField" property="documentCreationDate"/>
+
+
+                        </formLayout>
+                    </vbox>
+
+                    <vbox classNames="bordered-panel">
+                        <h5 text="Accounting Dimensions"/>
+                        <formLayout id="dimensionsForm" dataContainer="documentDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="30em" columns="2"/>
+                            </responsiveSteps>
+                            <textField id="fundField" property="fundCode"/>
+                            <textField id="bbfyField" property="bbfy" label="BBFY"/>
+                            <textField id="ebfyField" property="ebfy" label="EBFY"/>
+                            <textField id="budgetorgField" property="budgetOrg"/>
+                            <textField id="costorgField" property="costOrg"/>
+                        </formLayout>
+                    </vbox>
+
+
+                    <vbox classNames="bordered-panel">
+                        <h5 text="Vendor"/>
+                        <formLayout id="vendorForm" dataContainer="documentDc">
+                            <textField id="titleField" property="title"/>
+                            <textField id="addressCodeField" property="addressCode"/>
+                            <textField id="vendorNameField" property="vendorName"/>
+                            <textField id="vendorCodeField" property="vendorCode"/>
+                            <textField id="taxidField" property="taxId"/>
+                            <textField id="taxidTypeField" property="taxIdType"/>
+                        </formLayout>
+                    </vbox>
+
+                </vbox>
+
+                <vbox classNames="contrast-panel">
+
+                    <vbox id="travelBox" classNames="bordered-panel" visible="false">
+                        <h5 text="Travel Dates"/>
+                        <formLayout id="travelForm" dataContainer="documentDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="20em" columns="2"/>
+                            </responsiveSteps>
+                            <datePicker id="travelStartDateField" property="travelStartDate" label="Start Date"/>
+                            <datePicker id="travelEndDateField" property="travelEndDate" label="End Date"/>
+                        </formLayout>
+                    </vbox>
+
+                    <vbox id="statusBox" classNames="bordered-panel">
+                        <h5 text="Status"/>
+                        <formLayout id="statusForm" dataContainer="documentDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                                <responsiveStep minWidth="20em" columns="2"/>
+                            </responsiveSteps>
+                            <textField id="closedAmountField" property="closedAmount"/>
+                            <datePicker id="closedDateField" property="closedDate"/>
+                        </formLayout>
+                    </vbox>
+
+                    <vbox classNames="contrast-panel">
+                        <formLayout id="form2" dataContainer="documentDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1"/>
+                            </responsiveSteps>
+                            <textField id="orderedAmountField" property="orderedAmount"/>
+                            <textField id="expendedAmountField" property="expendedAmount"/>
+                            <textField id="outstandingAmountField" property="outstandingAmount"/>
+                            <textField id="prepaidAmountField" property="prepaidAmount"/>
+                            <textField id="refundedAmountField" property="refundedAmount"/>
+                        </formLayout>
+                    </vbox>
+                </vbox>
+
+            </div>
+
+        </vbox>
+        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

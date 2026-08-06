@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://positionAuditListView.title"
+      focusComponent="positionAuditsDataGrid">
+    <data>
+        <collection id="positionAuditsDc"
+                    class="gov.fjc.fis.entity.personnel.PositionAudit">
+            <fetchPlan extends="_base"/>
+            <loader id="positionAuditsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_PositionAudit e order by e.changedDate desc, e.positionNbr ASC]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="excelExportButton" action="positionAuditsDataGrid.excelExportAction"/>
+            <gridColumnVisibility dataGrid="positionAuditsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="positionAuditsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"/>
+        </hbox>
+        <dataGrid id="positionAuditsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="positionAuditsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+            </actions>
+            <columns resizable="true">
+                <column property="changedDate"/>
+                <column property="positionNbr"/>
+                <column property="name"/>
+                <column property="fieldName"/>
+                <column property="oldValue"/>
+                <column property="newValue"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="fundsDc" class="gov.fjc.fis.entity.Fund">
+            <loader id="fundsDl" readOnly="true"/>
+        </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+        <collection id="objectClassesDc" class="gov.fjc.fis.entity.ObjectClass">
+            <loader id="objectClassesDl" readOnly="true"/>
+        </collection>
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+        </collection>
+        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
+            <loader id="branchesDl" readOnly="true"/>
+        </collection>
+        <collection id="groupsDc" class="gov.fjc.fis.entity.Group">
+            <loader id="groupsDl" readOnly="true"/>
+        </collection>
+        <collection id="fileAttachmentCategoriesDc" class="gov.fjc.fis.entity.FileAttachmentCategory">
+            <loader id="fileAttachmentCategoriesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_FileAttachmentCategory e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+
+    <actions>
+        <action id="showDivisionAction"/>
+        <action id="showSubsetAction"/>
+    </actions>
+
+    <content>
+        <vbox id="root" padding="false">
+
+            <details id="searchForm" opened="true" summaryText="Search and Filter" themeNames="filled">
+                <tabSheet id="searchTabSheet">
+                    <tab id="divisionSearch" label="Quick Search">
+                        <hbox width="100%">
+                            <button id="showBfyBtn" width="190px" themeNames="primary contrast"/>
+                            <hbox id="divisionSearchButtons">
+                                <button id="showDiv1Btn" action="showDivisionAction" text="Show GA"/>
+                                <button id="showDiv2Btn" action="showDivisionAction" text="Show Education"/>
+                                <button id="showDiv3Btn" action="showDivisionAction" text="Show EIS"/>
+                                <button id="showDiv4Btn" action="showDivisionAction" text="Show Research"/>
+                                <button id="showDiv5Btn" action="showDivisionAction" text="Show ITO"/>
+                                <button id="showDiv6Btn" action="showDivisionAction" text="Show JED"/>
+                                <button id="showDiv7Btn" action="showDivisionAction" text="Show MPO"/>
+                                <button id="showDiv8Btn" action="showDivisionAction" text="Show JITF"/>
+                                <button id="showDiv9Btn" action="showDivisionAction" text="Show OBBBA"/>
+                            </hbox>
+                        </hbox>
+                    </tab>
+                    <tab id="customSearchTab" label="Custom Search" visible="false">
+                        <vbox id="searchvbox" width="100%" themeNames="spacing-xs" spacing="false" padding="false">
+                            <hbox id="bfyBox" width="100%" alignItems="CENTER">
+                                <span text="Budget Fiscal Years"/>
+                                <textField id="fiscalYearsField" datatype="string" readOnly="true"
+                                           width="60em"/>
+                            </hbox>
+                            <hbox id="divFundBox" width="100%" alignItems="CENTER">
+                                <span text="Division"/>
+                                <entityComboBox id="divisionSearchField" itemsContainer="divisionsDc"
+                                                metaClass="fis_Division" width="30em">
+                                    <actions>
+                                        <action id="clearDivision" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+                                <span text="Fund"/>
+                                <entityComboBox id="fundSearchField" itemsContainer="fundsDc"
+                                                metaClass="fis_Fund" width="16em">
+                                    <actions>
+                                        <action id="clearFund" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+                            </hbox>
+
+                            <hbox id="bocBox" width="100%" visible="false">
+                                <entityComboBox id="categorySearchField" itemsContainer="categoriesDc"
+                                                metaClass="fis_ObjectCategory" width="22em">
+                                    <actions>
+                                        <action id="clearMoc" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+                                <entityComboBox id="objectClassSearchField" itemsContainer="objectClassesDc"
+                                                metaClass="fis_ObjectClass" width="32em">
+                                    <actions>
+                                        <action id="clearBoc" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+                            </hbox>
+
+                            <hbox id="branchBox" visible="false" width="100%">
+                                <span text="Branch"/>
+                                <entityComboBox id="branchSearchField" itemsContainer="branchesDc"
+                                                metaClass="fis_Branch" width="30em">
+                                    <actions>
+                                        <action id="clearBranch" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+
+                                <span text="Group"/>
+                                <entityComboBox id="groupSearchField" itemsContainer="groupsDc"
+                                                metaClass="fis_Group" width="35em">
+                                    <actions>
+                                        <action id="clearGroup" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </entityComboBox>
+                            </hbox>
+
+                            <vbox id="subFragmentSearchBox" spacing="false" themeNames="spacing-xs" padding="false"
+                                  visible="false"/>
+
+                            <hbox id="fileCategoryBox" visible="false" width="100%">
+                                <multiSelectComboBoxPicker id="fileCategorySearchField"
+                                                           itemsContainer="fileAttachmentCategoriesDc"
+                                                           metaClass="fis_FileAttachmentCategory" width="60em">
+                                    <actions>
+                                        <action id="clearFileCategory" type="entity_clear" icon="vaadin:close-small"/>
+                                    </actions>
+                                </multiSelectComboBoxPicker>
+                            </hbox>
+                            <hbox>
+                                <button id="customSearchBtn" text="Search"
+                                        icon="vaadin:search" themeNames="primary contrast"/>
+                                <button id="clearSearchBtn" text="Clear"
+                                        icon="vaadin:eraser"/>
+                            </hbox>
+                        </vbox>
+                    </tab>
+                    <tab id="subsetTab" label="Subset Search" visible="false">
+                        <vbox>
+                            <h1>Select rows and click button</h1>
+                            <hbox>
+                                <button id="showSubsetBtn" action="showSubsetAction" text="Show Subset (0)"
+                                        enabled="false" width="175px"/>
+                                <button id="showActivityBtn" action="showSubsetAction" text="Show Activity"
+                                        enabled="false"/>
+                                <button id="showBranchBtn" action="showSubsetAction" text="Show Branch"
+                                        enabled="false"/>
+                                <button id="showGroupBtn" action="showSubsetAction" text="Show Group" enabled="false"/>
+                            </hbox>
+                        </vbox>
+                    </tab>
+                </tabSheet>
+            </details>
+        </vbox>
+    </content>
+</fragment>

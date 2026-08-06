@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://departmentDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="departmentDc"
+                  class="gov.fjc.fis.entity.personnel.Department">
+            <fetchPlan extends="_base"/>
+            <loader id="departmentDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="departmentDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                        <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+                    </responsiveSteps>
+                    <formItem>
+                        <textField id="deptidField" property="deptid"/>
+                    </formItem>
+                    <formItem>
+                        <datePicker id="effdtField" property="effdt"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="effStatusField" property="effStatus"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="descrField" property="descr"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="descrshortField" property="descrshort"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="jlCostOrgCdField" property="jlCostOrgCd"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="jlBudCatgCdField" property="jlBudCatgCd"/>
+                    </formItem>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

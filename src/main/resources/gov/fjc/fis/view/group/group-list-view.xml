@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="Division - Groups"
+      focusComponent="groupsDataGrid">
+    <data>
+        <collection id="groupsDc"
+                    class="gov.fjc.fis.entity.Group">
+            <loader id="groupsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="groupsDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="groupsDataGrid.create"/>
+            <button id="editBtn" action="groupsDataGrid.edit"/>
+            <button id="excelExportBtn" action="groupsDataGrid.excelExport"/>
+            <button id="removeBtn" action="groupsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="groupsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="groupsDataGrid"
+                  width="909px"
+                  minHeight="20em"
+                  dataContainer="groupsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="division.appropriation.budgetFiscalYear" header="BFY" width="70px"
+                        textAlign="CENTER"/>
+                <column property="division.divisionCode" header="Division" width="105px" textAlign="CENTER"/>
+                <column property="groupCode" header="Group" width="100px" textAlign="CENTER"/>
+                <column property="title" width="450px"/>
+                <column property="sortCode" header="Sort" width="100px" textAlign="CENTER"/>
+
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://openObligationsReportView.title">
+    <data>
+        <collection id="appropriationsDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="appropriationsDl" readOnly="true"/>
+        </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
+            <loader id="branchesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <layout>
+        <vbox classNames="jmix-main-view-navigation bordered-panel" width="100%" spacing="false">
+            <entityComboBox id="bfySelectorField" itemsContainer="appropriationsDc" required="true"
+                            metaClass="fis_Appropriation" label="Fiscal Year" width="8em"/>
+            <entityComboBox id="divisionSelectorField" itemsContainer="divisionsDc" title="Division"
+                            metaClass="fis_Division" label="Division" width="35em" required="true"/>
+            <entityComboBox id="branchSelectorField" itemsContainer="branchesDc" title="Branch"
+                            metaClass="fis_Branch" label="Branch" width="35em">
+                <actions>
+                    <action id="entity_clear" type="entity_clear" icon="vaadin:close-small"/>
+                </actions>
+            </entityComboBox>
+            <textField id="numberOfDaysField" datatype="int" helperText="enter 0 for all obligations"
+                       label="# days since program end" required="true" width="200px"/>
+        </vbox>
+        <hbox>
+            <button id="cancelBtn" text="Cancel"/>
+            <button id="executeBtn" text="Run Report" enabled="false"/>
+        </hbox>
+    </layout>
+</view>

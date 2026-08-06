@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://fileAttachmentListView.title"
+      focusComponent="fileAttachmentsDataGrid">
+    <data>
+        <collection id="fileAttachmentsDc"
+                    class="gov.fjc.fis.entity.FileAttachment">
+            <loader id="fileAttachmentsDl" readOnly="true"/>
+        </collection>
+<!--        <collection id="fileAttachmentsDc"-->
+<!--                    class="gov.fjc.fis.entity.FileAttachment">-->
+<!--            <fetchPlan extends="_base">-->
+<!--                <property fetchPlan="_base" name="activity">-->
+<!--                    <property name="fund" fetchPlan="_base"/>-->
+<!--                    <property name="branch" fetchPlan="_base"/>-->
+<!--                    <property name="group" fetchPlan="_base"/>-->
+<!--                </property>-->
+<!--                <property fetchPlan="_base" name="obligation"/>-->
+<!--                <property fetchPlan="_base" name="invoice"/>-->
+<!--                <property fetchPlan="_base" name="category"/>-->
+<!--                <property fetchPlan="_base" name="fundControlNotice"/>-->
+<!--                <property name="attachedTo"/>-->
+<!--                <property name="fileName"/>-->
+<!--                <property name="formattedSize"/>-->
+<!--                <property name="title"/>-->
+<!--            </fetchPlan>-->
+<!--            <loader id="fileAttachmentsDl" readOnly="true">-->
+<!--                <query>-->
+<!--                    <![CDATA[select e from fis_FileAttachment e]]>-->
+<!--                </query>-->
+<!--            </loader>-->
+<!--        </collection>-->
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="false"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="fileAttachmentsDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="fileAttachmentsDataGrid.createAction"/>
+            <button id="editButton" action="fileAttachmentsDataGrid.editAction"/>
+            <button id="excelExportButton" action="fileAttachmentsDataGrid.excelExportAction"/>
+            <button id="removeButton" action="fileAttachmentsDataGrid.removeAction"/>
+            <gridColumnVisibility dataGrid="fileAttachmentsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="fileAttachmentsDl" autoLoad="true" itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+
+
+        <dataGrid id="fileAttachmentsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="fileAttachmentsDc"
+                  columnReorderingAllowed="true"
+                  selectionMode="MULTI">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="attachedTo"/>
+                <column property="category"/>
+                <column property="activity.fund.fundCode" header="Fund" visible="false"/>
+                <column property="activity.division.appropriation.budgetFiscalYear" header="BFY"/>
+                <column property="activity.division.divisionCode" header="Division"/>
+                <column property="activity.branch.branchCode" header="Branch" visible="false"/>
+                <column property="activity.activityNumber" header="Activity"/>
+                <column property="activity.title" header="Activity Title"/>
+                <column property="obligation.documentNumber" header="Doc ID"/>
+                <column property="obligation.vendor"/>
+                <column property="obligation.documentDate"/>
+                <column property="invoice.invoiceNumber"/>
+                <column property="invoice.invoiceDate"/>
+                <column property="fileName"/>
+                <column property="contentLength" textAlign="END"/>
+                <column property="formattedSize" textAlign="END" visible="false"/>
+                <column property="activity" visible="false"/>
+                <column property="obligation" visible="false"/>
+                <column property="invoice" visible="false"/>
+                <column property="fundControlNotice" visible="false"/>
+                <column property="title" visible="false"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

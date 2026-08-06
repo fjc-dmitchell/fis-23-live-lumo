@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://positionActionDetailDialogView.title"
+      focusComponent="form">
+    <data>
+        <instance id="positionActionDc"
+                  class="gov.fjc.fis.entity.personnel.PositionAction">
+            <fetchPlan extends="_base">
+                <property name="position" fetchPlan="_instance_name">
+                    <property name="jlCostOrgCd"/>
+                </property>
+                <property name="createdByString"/>
+                <property name="annualRt"/>
+            </fetchPlan>
+            <loader id="positionActionDl"/>
+        </instance>
+        <collection id="payPeriodsDc" class="gov.fjc.fis.entity.personnel.PayPeriod">
+            <loader id="payPeriodsDl" readOnly="true"/>
+        </collection>
+        <collection id="actionCodesDc" class="gov.fjc.fis.entity.personnel.ActionCode">
+            <loader id="actionCodesDl" readOnly="true"/>
+        </collection>
+
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+        <vbox id="formWrapper" classNames="contrast-panel">
+        <formLayout id="form" dataContainer="positionActionDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="2" labelsPosition="ASIDE"/>
+            </responsiveSteps>
+<!--            <formItem>-->
+<!--                <entityPicker id="positionField" property="position" readOnly="true">-->
+<!--                    <actions>-->
+<!--                        <action id="entityLookupAction" type="entity_lookup"/>-->
+<!--                        <action id="entityClearAction" type="entity_clear"/>-->
+<!--                    </actions>-->
+<!--                </entityPicker>-->
+<!--            </formItem>-->
+
+            <formItem label="Effective Date" colspan="2">
+                <datePicker id="effectiveDateField" property="effectiveDate"
+                            width="5em" datatype="localDate"/>
+<!--                <entityComboBox id="payPeriodField" itemsContainer="payPeriodsDc" required="true"-->
+<!--                                property="payPeriod" width="8em"/>-->
+            </formItem>
+            <formItem label="Action" colspan="2">
+                <entityComboBox id="actionField" itemsContainer="actionCodesDc" required="true"
+                                property="actionCode" width="8em"/>
+            </formItem>
+<!--            <formItem>-->
+<!--                <textField id="gvtComprateField" property="gvtComprate"/>-->
+<!--            </formItem>-->
+<!--            <formItem>-->
+<!--                <textField id="gvtLocalityAdjField" property="gvtLocalityAdj"/>-->
+<!--            </formItem>-->
+
+            <formItem label="SF50 Total Pay">
+                <bigDecimalField id="totalPayField" property="totalPay"/>
+            </formItem>
+            <formItem label="Hourly Rt">
+                <bigDecimalField id="hourlyRtField" property="hourlyRt"/>
+            </formItem>
+            <formItem label="Std Hours">
+                <bigDecimalField id="stdHoursField" property="stdHours"/>
+            </formItem>
+            <formItem label="Annual Rate">
+                <bigDecimalField id="annualRtField" property="annualRt"/>
+            </formItem>
+            <formItem label="Lump sum" colspan="2">
+                <bigDecimalField id="lumpSumField" property="lumpSumPayment"/>
+            </formItem>
+
+<!--            <formItem>-->
+<!--                <textField id="totalPayField" property="totalPay"/>-->
+<!--            </formItem>-->
+        </formLayout>
+        </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveCloseAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

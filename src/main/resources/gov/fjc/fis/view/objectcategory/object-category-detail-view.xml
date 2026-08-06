@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://categoryDetailView.title"
+      focusComponent="titleField">
+    <data>
+        <instance id="categoryDc"
+                  class="gov.fjc.fis.entity.ObjectCategory">
+            <fetchPlan extends="_base">
+                <property name="budgetObjectClasses" fetchPlan="_base"/>
+                <property name="createdByString"/>
+                <property name="appropriation" fetchPlan="_base"/>
+                <property name="allocations" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader/>
+            <collection id="budgetObjectClassesDc" property="budgetObjectClasses"/>
+            <collection id="allocationsDc" property="allocations"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="categoryDc">
+                    <hbox colspan="2">
+                        <entityPicker id="appropriationField" property="appropriation" label="Budget Fiscal Year"
+                                      width="10em" colspan="2" dataContainer="categoryDc"/>
+                    </hbox>
+                    <hbox>
+                        <textField id="majorObjectClassField" property="majorObjectClass" width="10em"
+                                   label="Category (MOC)" dataContainer="categoryDc"/>
+                        <textField id="titleField" property="title" width="33em" label="Title"
+                                   dataContainer="categoryDc"/>
+                    </hbox>
+                </formLayout>
+            </vbox>
+            <vbox id="tabBox" classNames="contrast-panel" visible="false">
+                <tabSheet width="100%">
+                    <tab id="objectClassTab" label="Object Classes">
+                        <vbox>
+<!--                            <hbox id="buttonsPanel" classNames="buttons-panel">-->
+<!--                                <button action="budgetObjectClassesDataGrid.create"/>-->
+<!--                                <button action="budgetObjectClassesDataGrid.edit"/>-->
+<!--                                <button action="budgetObjectClassesDataGrid.remove"/>-->
+<!--                            </hbox>-->
+                            <dataGrid id="budgetObjectClassesDataGrid" dataContainer="budgetObjectClassesDc"
+                                      width="760px"
+                                      minHeight="20em" themeNames="column-borders compact row-stripes">
+                                <actions>
+                                    <action id="create" type="list_create">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="edit" type="list_edit">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="remove" type="list_remove"/>
+                                </actions>
+                                <columns>
+                                    <column property="budgetObjectClass" header="BOC" width="105px"/>
+                                    <column property="title" width="650px"/>
+                                </columns>
+                            </dataGrid>
+                        </vbox>
+                    </tab>
+                    <tab id="allocationsTab" label="Division Allocations">
+                        <vbox>
+                            <dataGrid id="allocationsGrid" dataContainer="allocationsDc" width="730px"
+                                      themeNames="column-borders compact row-stripes" aggregatable="true">
+                                <columns>
+                                    <column property="division.titleAndCode" header="Division" width="350px"/>
+                                    <column property="oneYearAmount" header="One Year" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                    <column property="twoYearAmount" header="Two Year" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                    <column property="totalAmount" header="Total" textAlign="END" width="125px">
+                                        <aggregation type="SUM"/>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+
+                        </vbox>
+                    </tab>
+                    <tab id="projectionsTab" label="Open Projections">
+                        <vbox id="projectionsBox"/>
+                    </tab>
+                </tabSheet>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

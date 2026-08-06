@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://statusOfFundsDashboardView.title">
+    <data>
+        <collection id="appropriationsDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="appropriationsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <layout>
+        <entityComboBox id="appropriationsComboBox" itemsContainer="appropriationsDc"
+                        metaClass="fis_Appropriation" label="Appropriation" width="8em"/>
+        <tabSheet id="dashboardTabSheet" width="100%" minHeight="50em">
+            <tab id="sof" label="Status of Funds: BOC">
+                <fragment id="sofFragment" class="gov.fjc.fis.view.report.statusoffundsfragment.StatusOfFundsFragment"/>
+            </tab>
+            <tab id="divisionBalances" label="Status of Funds: Division">
+                <fragment id="balanceFragment"
+                          class="gov.fjc.fis.view.report.divisionbalancefragment.DivisionBalanceFragment"/>
+            </tab>
+        </tabSheet>
+    </layout>
+</view>

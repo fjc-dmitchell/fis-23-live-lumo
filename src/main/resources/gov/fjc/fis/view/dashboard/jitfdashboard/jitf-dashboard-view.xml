@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://jitfDashboardView.title">
+    <data>
+        <collection id="jitfTransferDtoesDc" class="gov.fjc.fis.entity.dto.JitfTransferDto">
+            <loader id="jitfTransferDtoesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="excelExportBtn" action="jitfDtoesDataGrid.excelExport"/>
+        </hbox>
+        <dataGrid id="jitfDtoesDataGrid" dataContainer="jitfTransferDtoesDc" minWidth="100px" width="700px"
+                  allRowsVisible="true">
+            <actions>
+                <action id="excelExport" type="grdexp_excelExport"/>
+            </actions>
+            <columns>
+                <column property="budgetFiscalYear" width="100px" header="BFY"/>
+                <column property="carriedForward" textAlign="END" width="150px"/>
+                <column property="totalDeposits" textAlign="END" width="150px"/>
+                <column property="totalExpenses" textAlign="END" width="150px"/>
+                <column property="carryForward" textAlign="END" width="150px"/>
+            </columns>
+        </dataGrid>
+        <p text="Note: carrying amounts are currently calculated, not stored in FIS." classNames="fjc-warning"/>
+    </layout>
+</view>

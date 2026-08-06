@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://positionDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="positionDc"
+                  class="gov.fjc.fis.entity.personnel.Position">
+            <fetchPlan extends="_base">
+                <property name="actions" fetchPlan="_base">
+                    <property name="createdByString"/>
+                </property>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="positionDl"/>
+            <collection id="actionsDc" property="actions"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+        <vbox id="formWrapper" classNames="contrast-panel">
+            <hbox id="formsRow" width="100%" colspan="2">
+
+                <formLayout id="form" dataContainer="positionDc" width="50%">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0em" columns="1" labelsPosition="TOP"/>
+                        <responsiveStep minWidth="25em" columns="3" labelsPosition="TOP"/>
+
+                    </responsiveSteps>
+                    <textField id="positionNbrField" property="positionNbr"/>
+                    <textField id="jobtitleField" property="jobtitle" colspan="2"/>
+
+                    <textField id="emplidField" property="emplid"/>
+                    <textField id="nameField" property="name" colspan="2"/>
+
+                    <comboBox id="regTempComboBox" dataContainer="positionDc" property="regTemp" width="120"
+                              required="true"/>
+                    <comboBox id="gvtWorkSchedComboBox" property="gvtWorkSched" dataContainer="positionDc" width="125"
+                              required="true"/>
+                    <textField id="stdHoursField" property="stdHours"/>
+                </formLayout>
+                <formLayout id="form2" dataContainer="positionDc" width="50%">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0em" columns="1" labelsPosition="TOP"/>
+                        <responsiveStep minWidth="25em" columns="3" labelsPosition="TOP"/>
+                    </responsiveSteps>
+
+                    <comboBox id="divisionComboBox" property="jlCostOrgCd" dataContainer="positionDc" width="110"
+                              required="true" colspan="2"/>
+                    <comboBox id="statusComboBox" property="status" dataContainer="positionDc" required="true"/>
+
+                    <textField id="paygroupField" property="paygroup"/>
+                    <textField id="gradeField" property="grade"/>
+<!--                    <textField id="expirationField" property="gvtApptExpirDt" label="NTE date"/>-->
+                    <datePicker id="expirationField" property="gvtApptExpirDt" label="NTE date"/>
+                    <textField id="hourlyRtField" property="hourlyRt"/>
+                    <textField id="annualRtField" property="annualRt" readOnly="true"/>
+                    <textField id="totalPayField" property="totalPay"/>
+                </formLayout>
+            </hbox>
+            <formLayout id="memo" dataContainer="positionDc" width="100%">
+                <textArea id="memoField" property="memo" colspan="2"/>
+            </formLayout>
+        </vbox>
+            <!--        <h4 text="msg://gov.fjc.fis.entity.personnel/Position.actions"/>-->
+            <details opened="true" summaryText="Personnel Actions" minWidth="100%">
+                <hbox id="actionsButtonsPanel" classNames="buttons-panel">
+                    <button action="actionsDataGrid.createAction"/>
+                    <button action="actionsDataGrid.editAction"/>
+                    <button action="actionsDataGrid.removeAction"/>
+                </hbox>
+                <dataGrid id="actionsDataGrid" dataContainer="actionsDc" width="100%" minHeight="10em">
+                    <actions>
+                        <action id="createAction" type="list_create">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                                <property name="viewId" value="fis_PositionAction_dialog.detail"/>
+                            </properties>
+                        </action>
+                        <action id="editAction" type="list_edit">
+                            <properties>
+                                <property name="openMode" value="DIALOG"/>
+                                <property name="viewId" value="fis_PositionAction_dialog.detail"/>
+                            </properties>
+                        </action>
+                        <action id="removeAction" type="list_remove"/>
+                    </actions>
+                    <columns>
+                        <column property="effectiveDate"/>
+                        <column property="actionCode"/>
+                        <column property="stdHours"/>
+                        <column property="hourlyRt"/>
+                        <column property="annualRt"/>
+                        <column property="totalPay" header="Total Pay"/>
+                    </columns>
+                </dataGrid>
+            </details>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveCloseAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

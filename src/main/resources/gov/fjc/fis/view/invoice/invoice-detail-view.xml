@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://invoiceDetailView.title">
+    <data>
+        <instance id="invoiceDc"
+                  class="gov.fjc.fis.entity.Invoice">
+            <fetchPlan extends="_base">
+                <property name="obligation" fetchPlan="_base">
+                    <property name="objectClass" fetchPlan="_base">
+                        <property name="titleAndCode"/>
+                    </property>
+                    <property name="activity" fetchPlan="_base">
+                        <property name="division" fetchPlan="_base">
+                            <property name="titleAndCode"/>
+                        </property>
+                    </property>
+                </property>
+                <property name="attachments" fetchPlan="_base"/>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="invoiceDl"/>
+            <collection id="attachmentsDc" property="attachments"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout alignItems="STRETCH"
+            padding="false" spacing="false"
+            expand="contentBox">
+        <vbox id="contentBox" classNames="overflow-auto">
+            <div classNames="grid-panel">
+                <vbox classNames="contrast-panel">
+                    <details opened="true" summaryText="Invoice" minWidth="100%">
+                        <formLayout id="obligationLookupForm" dataContainer="invoiceDc">
+                            <entityComboBox id="docIdSuggestionField" dataContainer="invoiceDc"
+                                            property="obligation"
+                                            placeholder="Enter Document ID (DIN)" label="Obligation"
+                                            visible="false" colspan="2">
+                                <actions>
+                                    <action id="customLookup" type="entity_lookup"/>
+                                    <action id="entityClear" type="entity_clear"/>
+                                </actions>
+                            </entityComboBox>
+                        </formLayout>
+
+                        <formLayout id="invoiceInfoForm" dataContainer="invoiceDc">
+                            <textField id="invoiceNumberField" property="invoiceNumber" label="Invoice Number"
+                                       colspan="2"/>
+                            <datePicker id="invoiceDateField" property="invoiceDate" label="Invoice Date"/>
+                            <datePicker id="paymentDateField" property="paymentDate" label="Paid Date"/>
+                            <textField id="amountField" property="amount" label="Amount"/>
+                            <textArea id="memoField" property="memo" colspan="2"/>
+                        </formLayout>
+                    </details>
+                </vbox>
+                <vbox classNames="contrast-panel">
+                    <details opened="true" summaryText="Obligation" minWidth="100%">
+                        <textField id="budgetFiscalYearField" label="Budget Fiscal Year"
+                                   datatype="string" readOnly="true" colspan="2"/>
+                        <formLayout id="obligationInfoForm" dataContainer="invoiceDc" visible="false">
+
+                            <textField property="obligation.documentNumber" label="Document Number"
+                                       readOnly="true"/>
+                            <textField property="obligation.vendor" label="Vendor" readOnly="true"/>
+                            <textField property="obligation.objectClass.titleAndCode"
+                                       label="Object Class (BOC)"/>
+                            <textField property="obligation.activity.division.titleAndCode"
+                                       label="Division"/>
+                            <textField property="obligation.activity.titleAndCode" label="Activity"
+                                       colspan="2"/>
+                        </formLayout>
+                    </details>
+                </vbox>
+            </div>
+            <div classNames="grid-panel">
+                <vbox classNames="contrast-panel">
+                    <details opened="true" summaryText="Attachments" width="100%">
+                        <fragment id="attachmentFragment"
+                                  class="gov.fjc.fis.view.fileattachmentfragment.FileAttachmentFragment" colspan="2"/>
+                    </details>
+                </vbox>
+            </div>
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions"
+              classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

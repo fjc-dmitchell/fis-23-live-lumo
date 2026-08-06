@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://payGradeListView.title"
+      focusComponent="payGradesDataGrid">
+    <data>
+        <collection id="payGradesDc"
+                    class="gov.fjc.fis.entity.personnel.PayGrade">
+            <fetchPlan extends="_base"/>
+            <loader id="payGradesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_PayGrade e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="payGradesDataGrid.create"/>
+            <button id="editButton" action="payGradesDataGrid.edit"/>
+            <button id="removeButton" action="payGradesDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="payGradesDl"/>
+        </hbox>
+        <dataGrid id="payGradesDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="payGradesDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="setid" header="Set ID" textAlign="CENTER" flexGrow="0" width="90px"/>
+                <column property="grade" header="Grade" textAlign="CENTER" width="90px" flexGrow="0"/>
+                <column property="salAdminPlan" header="Plan" textAlign="CENTER" width="90px" flexGrow="0"/>
+                <column property="localityString" header="Locality" width="170px" flexGrow="0"/>
+                <column property="descr" header="Description" width="300px" flexGrow="0"/>
+                <column property="descrshort" flexGrow="1" header="Abbr."/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

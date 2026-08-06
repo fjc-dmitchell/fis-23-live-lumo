@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://fileAttachmentCategoryDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="fileAttachmentCategoryDc"
+                  class="gov.fjc.fis.entity.FileAttachmentCategory">
+            <fetchPlan extends="_base"/>
+            <loader id="fileAttachmentCategoryDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="fileAttachmentCategoryDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                    </responsiveSteps>
+                    <textField id="titleField" property="title"/>
+                    <checkbox id="activeField" property="active"/>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

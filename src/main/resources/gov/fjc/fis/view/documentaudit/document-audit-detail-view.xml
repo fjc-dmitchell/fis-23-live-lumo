@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://documentAuditDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="documentAuditDc"
+                  class="gov.fjc.fis.entity.DocumentAudit">
+            <fetchPlan extends="_base"/>
+            <loader id="documentAuditDl" readOnly="true"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout alignItems="STRETCH"
+            padding="false" spacing="false"
+            expand="contentBox">
+        <vbox id="contentBox" classNames="overflow-auto">
+            <formLayout id="header" dataContainer="documentAuditDc">
+                <responsiveSteps>
+                    <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                    <responsiveStep minWidth="60em" columns="4" labelsPosition="ASIDE"/>
+                </responsiveSteps>
+
+                <formItem label="Process Date">
+                    <datePicker id="processDateField" property="processDate"/>
+                </formItem>
+
+                <formItem label="Status" colspan="2">
+                    <textField id="processStatusString" datatype="string" readOnly="true" width="100%"/>
+                </formItem>
+
+                <formItem label="Process ID">
+                    <textField id="processIdString" datatype="string" readOnly="true"/>
+                </formItem>
+
+                <formItem colspan="4">
+                    <textField id="loggedChangesField" property="loggedChanges"/>
+                </formItem>
+            </formLayout>
+
+            <vbox padding="false">
+                <button id="createExceptionBtn" text="Create Exception to prevent further processing" visible="false"/>
+                <button id="removeExceptionBtn" text="Remove Exception to allow further processing" visible="false"/>
+            </vbox>
+
+            <div classNames="grid-panel">
+
+                <vbox classNames="contrast-panel">
+                    <details opened="true" summaryText="Processed JIFMS document" minWidth="100%">
+
+
+                        <formLayout id="form" dataContainer="documentAuditDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                                <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+                            </responsiveSteps>
+
+                            <formItem label="Fund">
+                                <textField id="documentFundField" property="documentFundCode"/>
+                            </formItem>
+
+                            <formItem label="BBFY/EBFY">
+                                <textField id="bfyString" datatype="string" readOnly="true"/>
+                            </formItem>
+
+                            <formItem label="Budget Org.">
+                                <textField id="documentBudgetorgField" property="documentBudgetOrg"/>
+                            </formItem>
+                            <formItem label="Cost Org.">
+                                <textField id="documentCostorgField" property="documentCostOrg"/>
+                            </formItem>
+
+                            <formItem label="Project">
+                                <textField id="documentProjectField" property="documentProject"/>
+                            </formItem>
+
+                            <formItem label="BOC">
+                                <textField id="documentBocField" property="documentBudgetObjectClass"/>
+                            </formItem>
+
+                            <formItem label="Doc. Number">
+                                <textField id="documentDocnumberField" property="documentDocumentNumber"/>
+                            </formItem>
+                            <formItem label="Doc. Type">
+                                <textField id="documentDoctypeField" property="documentDocumentType"/>
+                            </formItem>
+
+                            <formItem label="Amount">
+                                <textField id="documentAmountField" property="documentAmount"/>
+                            </formItem>
+
+                            <formItem label="Closed Date">
+                                <datePicker id="documentClosedDateField" property="documentClosedDate"/>
+                            </formItem>
+
+                            <formItem label="Title" colspan="2">
+                                <textField id="documentTitleField" property="documentTitle"/>
+                            </formItem>
+
+                            <formItem label="Travel Start">
+                                <datePicker id="documentStartDateField" property="documentTravelStartDate"/>
+                            </formItem>
+                            <formItem label="Travel End">
+                                <datePicker id="documentEndDateField" property="documentTravelEndDate"/>
+                            </formItem>
+
+                            <formItem label="Document Date">
+                                <datePicker id="documentDocdateField" property="documentDocumentDate"/>
+                            </formItem>
+
+                            <formItem label="Create Date">
+                                <datePicker id="documentCreatedateField" property="documentDocumentCreationDate"/>
+                            </formItem>
+
+                            <formItem label="TaxID">
+                                <textField id="documentTaxidField" property="documentTaxId"/>
+                            </formItem>
+                            <formItem label="TaxID Type">
+                                <textField id="documentTaxidTypeField" property="documentTaxIdType"/>
+                            </formItem>
+
+                            <formItem label="Vendor code">
+                                <textField id="documentVendorCodeField" property="documentVendorCode"/>
+                            </formItem>
+
+                            <formItem label="Address code">
+                                <textField id="documentAddressCodeField" property="documentAddressCode"/>
+                            </formItem>
+
+                            <formItem label="Vendor name" colspan="2">
+                                <textField id="documentVendorNameField" property="documentVendorName"/>
+                            </formItem>
+
+                            <formItem label="FJC">
+                                <textField id="documentFjcField" property="documentFjc"/>
+                            </formItem>
+
+                            <formItem label="Line #">
+                                <textField id="documentLinenumberField" property="documentLineNumber"/>
+                            </formItem>
+
+                            <formItem label="Expended">
+                                <textField id="documentExpendedAmountField" property="documentExpendedAmount"/>
+                            </formItem>
+                            <formItem label="Closed Amount">
+                                <textField id="documentClosedAmountField" property="documentClosedAmount"/>
+                            </formItem>
+
+                            <formItem colspan="2" label="Modified by">
+                                <textField id="documentModuserField" property="documentLastModifiedBy"/>
+                            </formItem>
+                        </formLayout>
+                    </details>
+                </vbox>
+
+                <vbox classNames="contrast-panel">
+                    <details opened="true" summaryText="Previous FIS obligation">
+                        <formLayout id="obligationForm" dataContainer="documentAuditDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                                <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+                            </responsiveSteps>
+
+                            <formItem colspan="2">
+                                <nativeLabel width="100%"/>
+                            </formItem>
+
+                            <formItem label="Division">
+                                <textField id="obligationDivisionCodeField" property="obligationDivisionCode"/>
+                            </formItem>
+
+                            <formItem>
+                                <nativeLabel width="100%"/>
+                            </formItem>
+
+                            <formItem label="Project">
+                                <textField id="obligationActivityNumberField" property="obligationActivityNumber"/>
+                            </formItem>
+                            <formItem label="BOC">
+                                <textField id="obligationObjectClassField" property="obligationBudgetObjectClass"/>
+                            </formItem>
+
+                            <formItem label="Doc ID">
+                                <textField id="obligationDocumentNumberField" property="obligationDocumentNumber"/>
+                            </formItem>
+
+                            <formItem label="Doc. Type">
+                                <textField id="obligationDocumentTypeField" property="obligationDocumentType"/>
+                            </formItem>
+
+                            <formItem label="Amount">
+                                <textField id="obligationAmountField" property="obligationAmount"/>
+                            </formItem>
+
+                            <formItem label="Status">
+                                <textField id="obligationStatusString" datatype="string" readOnly="true"/>
+                            </formItem>
+
+                            <formItem label="Vendor" colspan="2">
+                                <textField id="obligationVendorField" property="obligationVendor"/>
+                            </formItem>
+
+                            <formItem label="Travel Start">
+                                <datePicker id="obligationStartDateField" property="obligationTravelStartDate"/>
+                            </formItem>
+                            <formItem label="Travel End">
+                                <datePicker id="obligationEndDateField" property="obligationTravelEndDate"/>
+                            </formItem>
+
+                            <formItem label="Doc. Date">
+                                <datePicker id="obligationDocumentDateField" property="obligationDocumentDate"/>
+                            </formItem>
+                            <formItem label="Proc. Date">
+                                <datePicker id="obligationProcessDateField" property="obligationProcessDate"/>
+                            </formItem>
+
+                            <formItem label="EIN" colspan="2">
+                                <textField id="obligationEinField" property="obligationEin"/>
+                            </formItem>
+
+                            <formItem label="Vendor code">
+                                <textField id="obligationVendorCodeField" property="obligationVendorCode"/>
+                            </formItem>
+
+                            <formItem label="Address code">
+                                <textField id="obligationAddressCodeField" property="obligationAddressCode"/>
+                            </formItem>
+
+                            <!--                            <formItem label="Date Modified">-->
+                            <!--                                <dateTimePicker id="obligationModifiedDateField" property="obligationModifiedDate"/>-->
+                            <!--                            </formItem>-->
+
+                        </formLayout>
+                    </details>
+                    <details opened="true" summaryText="Activity Projection changes" minWidth="100%">
+                        <formLayout id="projectionform" dataContainer="documentAuditDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                                <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+                            </responsiveSteps>
+
+                            <formItem label="Current Activity">
+                                <textField id="currentActivityNumberField" property="currentActivityNumber"/>
+                            </formItem>
+                            <formItem label="Prev. Projection">
+                                <textField id="currentProjectionAmountBeforeField"
+                                           property="currentProjectionAmountBefore"/>
+                            </formItem>
+                            <formItem label="Obj. Class">
+                                <textField id="currentProjectionBocField" property="currentProjectionBoc"/>
+                            </formItem>
+                            <formItem label="Current Projection">
+                                <textField id="currentProjectionAmountAfterField"
+                                           property="currentProjectionAmountAfter"/>
+                            </formItem>
+
+                        </formLayout>
+
+                    </details>
+                    <details id="activityBocChange" opened="true"
+                             summaryText="Activity or BOC change (projection restoration)" minWidth="100%"
+                             visible="false">
+                        <formLayout id="projectionform2" dataContainer="documentAuditDc">
+                            <responsiveSteps>
+                                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                                <responsiveStep minWidth="40em" columns="2" labelsPosition="ASIDE"/>
+                            </responsiveSteps>
+                            <formItem label="Old Activity">
+                                <textField id="previousActivityNumberField" property="previousActivityNumber"/>
+                            </formItem>
+                            <formItem label="Prev. Projection">
+                                <textField id="previousProjectionAmountBeforeField"
+                                           property="previousProjectionAmountBefore"/>
+                            </formItem>
+
+                            <formItem label="Obj. Class">
+                                <textField id="previousProjectionBocField" property="previousProjectionBoc"/>
+                            </formItem>
+                            <formItem label="Current Projection">
+                                <textField id="previousProjectionAmountAfterField"
+                                           property="previousProjectionAmountAfter"/>
+                            </formItem>
+                        </formLayout>
+                    </details>
+                </vbox>
+            </div>
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions"
+              classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

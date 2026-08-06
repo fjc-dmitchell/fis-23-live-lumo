@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="obligationsDc" class="gov.fjc.fis.entity.Obligation" provided="true">
+            <loader id="obligationsDl" readOnly="true" provided="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" padding="false">
+            <propertyFilter dataLoader="obligationsDl" operation="STARTS_WITH" property="documentNumber"
+                            autoApply="false"/>
+            <propertyFilter dataLoader="obligationsDl" operation="CONTAINS" property="vendor" autoApply="false"/>
+            <button id="searchBtn" text="Search" action="search"/>
+        </vbox>
+    </content>
+    <actions>
+        <action id="search" text="Search"/>
+    </actions>
+</fragment>

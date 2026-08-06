@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://fundListView.title"
+      focusComponent="fundsDataGrid">
+    <data>
+        <collection id="fundsDc"
+                    class="gov.fjc.fis.entity.Fund">
+            <fetchPlan extends="_base"/>
+            <loader id="fundsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="fundsDataGrid.create"/>
+            <button id="editBtn" action="fundsDataGrid.edit"/>
+            <button id="excelExportBtn" action="fundsDataGrid.excelExport"/>
+            <button id="removeBtn" action="fundsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="fundsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="fundsDl"/>
+        </hbox>
+        <dataGrid id="fundsDataGrid"
+                  minHeight="20em"
+                  dataContainer="fundsDc" width="30em" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns>
+                <column property="fundCode" width="120px" flexGrow="0"/>
+                <column property="title" flexGrow="1"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

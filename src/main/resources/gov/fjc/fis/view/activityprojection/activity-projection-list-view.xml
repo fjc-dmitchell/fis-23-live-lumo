@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://activityProjectionListView.title"
+      focusComponent="activityProjectionsDataGrid">
+    <data>
+        <collection id="activityProjectionsDc"
+                    class="gov.fjc.fis.entity.ActivityProjection">
+            <fetchPlan>
+                <property name="activity" fetchPlan="_base">
+                    <property name="fund" fetchPlan="_base">
+                        <property name="titleAndCode"/>
+                    </property>
+                    <property name="branch" fetchPlan="_base">
+                        <property name="titleAndCode"/>
+                    </property>
+                    <property name="group" fetchPlan="_base">
+                        <property name="titleAndCode"/>
+                    </property>
+                </property>
+                <property name="objectClass" fetchPlan="_base">
+                    <property name="titleAndCode"/>
+                    <property name="objectCategory" fetchPlan="_base"/>
+                </property>
+                <property name="amount"/>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="activityProjectionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="activityProjectionsDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+<!--            <button id="createBtn" action="activityProjectionsDataGrid.create"/>-->
+            <button id="editBtn" action="activityProjectionsDataGrid.edit"/>
+            <button id="excelExportBtn" action="activityProjectionsDataGrid.excelExport"/>
+<!--            <button id="removeBtn" action="activityProjectionsDataGrid.remove"/>-->
+            <gridColumnVisibility dataGrid="activityProjectionsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="activityProjectionsDl" autoLoad="true"
+                              itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+<!--        width="1450px"-->
+        <dataGrid id="activityProjectionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="activityProjectionsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="activity.fund.fundCode" header="Fund" width="65px" visible="false" flexGrow="0"/>
+                <column property="activity.division.appropriation.budgetFiscalYear" header="BFY" width="70px"
+                        flexGrow="0"/>
+                <column property="activity.division.titleAndCode" header="Division" width="350px" flexGrow="0"/>
+                <column property="activity.titleAndCode" header="Activity" width="350px" flexGrow="1"/>
+                <column property="activity.group.titleAndCode" header="Group" width="350px" visible="false"
+                        flexGrow="0"/>
+                <column property="activity.branch.titleAndCode" header="Branch" width="350px" visible="false"
+                        flexGrow="0"/>
+                <column property="objectClass.budgetObjectClass" header="BOC" width="75px" visible="false"
+                        flexGrow="0"/>
+                <column property="objectClass.titleAndCode" header="Object Class" width="350px" flexGrow="0"/>
+                <column property="amount" header="Projection" textAlign="END" flexGrow="0"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

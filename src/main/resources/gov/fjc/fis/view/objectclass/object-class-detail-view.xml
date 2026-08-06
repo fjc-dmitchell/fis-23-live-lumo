@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://objectClassDetailView.title"
+      focusComponent="titleField">
+    <data>
+        <instance id="objectClassDc"
+                  class="gov.fjc.fis.entity.ObjectClass">
+            <fetchPlan extends="_base">
+                <property name="objectCategory" fetchPlan="_base"/>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader/>
+        </instance>
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="objectClassDc">
+                    <hbox colspan="2">
+                        <entityPicker id="appropriationField" property="objectCategory.appropriation"
+                                      label="Budget Fiscal Year"
+                                      width="10em" readOnly="true" dataContainer="objectClassDc"/>
+                    </hbox>
+                    <hbox colspan="2">
+                        <entityComboBox id="categoryField" property="objectCategory" label="Category (MOC)" width="33em"
+                                        itemsContainer="categoriesDc" dataContainer="objectClassDc"/>
+                    </hbox>
+                    <hbox>
+                        <textField id="budgetObjectClassField" property="budgetObjectClass" width="10em" label="BOC"
+                                   dataContainer="objectClassDc"/>
+                        <textField id="titleField" property="title" width="33em" label="Title"
+                                   dataContainer="objectClassDc"/>
+                    </hbox>
+                </formLayout>
+            </vbox>
+            <vbox id="tabBox" classNames="contrast-panel" visible="false">
+                <details id="projectionDetails" summaryText="Open Projections" width="100%" opened="true">
+                    <vbox id="projectionsBox"/>
+                </details>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

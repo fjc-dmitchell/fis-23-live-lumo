@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://invoiceListView.title"
+      focusComponent="invoicesDataGrid">
+    <data>
+        <collection id="invoicesDc" class="gov.fjc.fis.entity.Invoice">
+            <loader id="invoicesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="false"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="invoicesDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel" width="100%">
+
+            <button id="createBtn" action="invoicesDataGrid.create"/>
+            <button id="editBtn" action="invoicesDataGrid.edit"/>
+            <button id="excelExportBtn" action="invoicesDataGrid.excelExport"/>
+            <button id="removeBtn" action="invoicesDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="invoicesDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="invoicesDl" autoLoad="true" itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="invoicesDataGrid"
+                  minHeight="20em"
+                  dataContainer="invoicesDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes"
+                  multiSort="true">
+            <!--                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" width="1440px">-->
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="obligation.activity.fund.fundCode" header="Fund" visible="false"/>
+                <column property="obligation.activity.division.appropriation.budgetFiscalYear" header="BFY"
+                        width="70px"/>
+                <column property="obligation.activity.division.divisionCode" header="Division"
+                        width="90px" textAlign="CENTER"/>
+
+                <column property="obligation.activity.activityNumber" header="Activity"
+                        width="110px" visible="false"/>
+                <column property="obligation.activity.title" header="Activity Title"
+                        width="350px" visible="false"/>
+                <column property="obligation.activity.branch.branchCode" header="Branch"
+                        width="90px" visible="false"/>
+                <column property="obligation.activity.branch.title" header="Branch Title"
+                        width="350px" visible="false"/>
+                <column property="obligation.activity.group.groupCode" header="Group"
+                        width="90px" visible="false"/>
+                <column property="obligation.activity.group.title" header="Group Title"
+                        width="350px" visible="false"/>
+
+                <column property="obligation.documentNumber" header="Document ID" width="130px"/>
+                <column property="obligation.objectClass.budgetObjectClass" header="BOC" width="90px"/>
+                <column property="obligation.vendor" header="Vendor" width="350px"/>
+                <column property="obligation.statusString" header="Obl. Status" width="150px"/>
+                <column property="invoiceNumber" header="Invoice Number" width="250px"/>
+                <column property="invoiceDate" header="Invoice Date" textAlign="END" width="140px"/>
+                <column property="paymentDate" header="Payment Date" textAlign="END" width="140px"/>
+                <column property="amount" textAlign="END" width="140px"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

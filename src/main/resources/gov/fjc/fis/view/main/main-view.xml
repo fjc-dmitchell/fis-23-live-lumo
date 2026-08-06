@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <mainView xmlns="http://jmix.io/schema/tabmod/main-view"
           title="msg://MainView.title">
+    <data>
+        <collection id="bfyEntryDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="bfyEntryDl" readOnly="true"/>
+            <fetchPlan extends="_base"/>
+        </collection>
+        <collection id="bfySearchDc" class="gov.fjc.fis.entity.Appropriation">
+            <loader id="bfySearchDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Appropriation e order by e.budgetFiscalYear desc]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <actions>
         <action id="logoutAction" text="msg:///actions.logout.text" type="logout"/>
     </actions>
@@ -32,6 +50,28 @@
         </navigationBar>
         <drawerLayout>
             <section id="section" classNames="jmix-main-view-section">
+
+                <div id="applicationTitlePlaceholder" classNames="jmix-main-view-title-holder"/>
+                <!--                <vbox classNames="bordered-panel bfy-selector-box" width="100%" spacing="false" css="margin-bottom: 15px;">-->
+                <vbox classNames="bordered-panel bfy-selector-box" width="100%" spacing="false"
+                      css="margin-bottom: 15px;">
+                    <h5 text="Budget Fiscal Year" css="font-family: sans-serif;"/>
+                    <hbox spacing="true">
+                        <entityComboBox id="bfyEntry" itemsContainer="bfyEntryDc" width="140px"
+                                        metaClass="fis_Appropriation" property="budgetFiscalYear" label="Data Entry"
+                                        css="font-family: sans-serif;"/>
+                    </hbox>
+                    <multiSelectComboBoxPicker id="bfySearch" itemsContainer="bfySearchDc"
+                                               metaClass="fis_Appropriation" property="budgetFiscalYear" width="140px"
+                                               label="Search" css="font-family: sans-serif;">
+                        <tooltip text="Specifying search years will override the default search year"
+                                 position="BOTTOM"/>
+                        <actions>
+                            <action id="entity_clear" type="entity_clear" icon="vaadin:close-small"/>
+                        </actions>
+                    </multiSelectComboBoxPicker>
+                </vbox>
+
                 <nav id="navigation"
                      classNames="jmix-main-view-navigation"
                      ariaLabel="msg://navigation.ariaLabel">
@@ -51,17 +91,24 @@
                     <action id="closeAllTabsAction" type="tabmod_closeAllTabs"/>
                 </actions>
             </mainTabSheet>
-            <initialLayout id="initialLayout" classNames="jmix-initial-layout">
-                <div classNames="jmix-initial-layout-content">
-                    <h1 text="msg://applicationTitle.text"
-                        classNames="jmix-initial-layout-title"/>
-                    <image resource="public/images/logo.png"
-                           classNames="jmix-initial-layout-logo"/>
-                </div>
+<!--            <initialLayout id="initialLayout" classNames="jmix-initial-layout">-->
+            <initialLayout id="initialLayout">
+<!--                <div classNames="jmix-initial-layout-content">-->
+<!--                    <h1 text="msg://applicationTitle.text"-->
+<!--                        classNames="jmix-initial-layout-title"/>-->
+<!--                    <image resource="public/images/logo.png"-->
+<!--                           classNames="jmix-initial-layout-logo"/>-->
+<!--                </div>-->
                 <!--
                     This is the work area - central part of the view.
                     Put your components here.
                 -->
+                <vbox id="root">
+                    <header text="Welcome to the FJC Financial Information System"
+                            css="font-size: 22px;"/>
+                    <hr/>
+                    <vbox id="messageBox" spacing="false" padding="false" width="100%"/>
+                </vbox>
             </initialLayout>
         </workArea>
     </appLayout>

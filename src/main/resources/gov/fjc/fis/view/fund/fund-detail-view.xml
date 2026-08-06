@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://fundDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="fundDc"
+                  class="gov.fjc.fis.entity.Fund">
+            <fetchPlan extends="_base"/>
+            <loader id="fundDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="fundDc" colspan="2">
+                    <textField id="fundCodeField" property="fundCode" width="200px"/>
+                    <textField id="titleField" property="title"/>
+                    <textArea id="memoField" property="memo" minHeight="5em" colspan="2"/>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

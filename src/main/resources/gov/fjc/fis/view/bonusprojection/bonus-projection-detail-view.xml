@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://bonusProjectionDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="bonusProjectionDc"
+                  class="gov.fjc.fis.entity.personnel.BonusProjection">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="bonusProjectionDl"/>
+        </instance>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="bonusProjectionDc" width="40em">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                    </responsiveSteps>
+                    <formItem label="Fiscal Year">
+                        <hbox>
+                            <textField id="budgetFiscalYearField" readOnly="true" datatype="string" width="6em"/>
+                        </hbox>
+                    </formItem>
+                    <formItem>
+                        <entityComboBox id="divisionsComboBox" itemsContainer="divisionsDc"
+                                        dataContainer="bonusProjectionDc"
+                                        property="division"/>
+                    </formItem>
+                    <formItem label="Projected">
+                        <hbox>
+                            <textField id="projectionField" property="projection" width="10em"
+                                       dataContainer="bonusProjectionDc"/>
+                        </hbox>
+                    </formItem>
+                    <formItem label="Awarded">
+                        <hbox>
+                            <textField id="awardedField" property="awarded" width="10em"
+                                       dataContainer="bonusProjectionDc"/>
+                        </hbox>
+                    </formItem>
+                    <formItem>
+                        <textArea id="memoField" property="memo"/>
+                    </formItem>
+                    <formItem label="Final">
+                        <checkbox id="statusField" property="status"/>
+                    </formItem>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveCloseAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://foundationDivisionListView.title"
+      focusComponent="divisionsDataGrid">
+    <data>
+        <collection id="divisionsDc"
+                    class="gov.fjc.fis.entity.Division">
+            <fetchPlan extends="_base"/>
+            <loader id="divisionsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Division e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createButton" action="divisionsDataGrid.createAction"/>
+            <button id="editButton" action="divisionsDataGrid.editAction"/>
+            <button id="excelExportButton" action="divisionsDataGrid.excelExportAction"/>
+            <button id="removeButton" action="divisionsDataGrid.removeAction"/>
+            <simplePagination id="pagination" dataLoader="divisionsDl"/>
+        </hbox>
+        <dataGrid id="divisionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="divisionsDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="createAction" type="list_create"/>
+                <action id="editAction" type="list_edit"/>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+                <action id="removeAction" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="appropriation"/>
+                <column property="divisionCode"/>
+                <column property="budgetOrg"/>
+                <column property="title"/>
+                <column property="oneYearAmount"/>
+                <column property="twoYearAmount"/>
+                <column property="sortCode"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

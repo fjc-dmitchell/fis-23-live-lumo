@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://bonusProjectionListView.title"
+      focusComponent="bonusProjectionsDataGrid">
+    <data>
+        <collection id="bonusProjectionsDc"
+                    class="gov.fjc.fis.entity.personnel.BonusProjection">
+            <fetchPlan extends="_base">
+                <property name="division" fetchPlan="_instance_name">
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="bonusProjectionsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_BonusProjection e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="bonusProjectionsDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="bonusProjectionsDataGrid.create"/>
+            <button id="editBtn" action="bonusProjectionsDataGrid.edit"/>
+            <button id="excelExportBtn" action="bonusProjectionsDataGrid.excelExport"/>
+            <button id="removeBtn" action="bonusProjectionsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="bonusProjectionsDl" autoLoad="true"/>
+        </hbox>
+        <dataGrid id="bonusProjectionsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="bonusProjectionsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="division.appropriation.budgetFiscalYear" header="BFY" width="85px" flexGrow="0"/>
+                <column property="division.titleAndCode" width="220px" header="Division" flexGrow="0"/>
+                <column property="projection" textAlign="END" width="110px" flexGrow="0">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="awarded" textAlign="END" width="110px" flexGrow="0">
+                    <numberRenderer numberFormat="#,##0"/>
+                </column>
+                <column property="status" header="Final" textAlign="CENTER" flexGrow="0" width="100px"/>
+                <column property="memo" width="300px" flexGrow="1"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

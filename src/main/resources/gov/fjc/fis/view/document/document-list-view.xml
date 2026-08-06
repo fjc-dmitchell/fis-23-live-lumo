@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://documentListView.title"
+      focusComponent="documentsDataGrid">
+    <data>
+        <collection id="documentsDc"
+                    class="gov.fjc.fis.entity.Document">
+            <fetchPlan extends="_base">
+                <property name="bfyString"/>
+            </fetchPlan>
+            <loader id="documentsDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_Document e order by e.documentCreationDate desc]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <details id="searchForm" summaryText="Search and Filter" themeNames="filled" opened="true">
+            <tabSheet id="searchTabSheet">
+                <tab id="customSearchTab" label="Custom Search">
+                    <vbox id="searchvbox" width="100%" themeNames="spacing-xs" spacing="false" padding="false">
+
+                        <vbox id="customSearchBox" spacing="false" themeNames="spacing-xs" padding="false"/>
+                        <hbox>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="bbfy" width="5em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="ebfy" width="5em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="CONTAINS" property="budgetOrg"
+                                            width="10em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="project" width="6em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="CONTAINS" property="title"/>
+                            <propertyFilter dataLoader="documentsDl" operation="CONTAINS" property="vendorName"/>
+                        </hbox>
+                        <hbox width="6em">
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="documentType"
+                                            labelPosition="TOP" width="6em"/>
+
+                            <propertyFilter dataLoader="documentsDl" operation="STARTS_WITH" property="documentNumber"
+                                            label="DIN starts with" width="8em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="budgetObjectClass" width="6em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="documentDate"
+                                            operationEditable="true" width="13em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="GREATER" property="amount" width="12em"
+                                            operationEditable="true"/>
+                        </hbox>
+                        <hbox>
+                            <propertyFilter dataLoader="documentsDl" operation="GREATER" property="closedAmount"
+                                            operationEditable="true" width="12em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="closedDate"
+                                            operationEditable="true" width="13em"/>
+
+                            <propertyFilter dataLoader="documentsDl" operation="GREATER_OR_EQUAL"
+                                            property="travelStartDate"
+                                            operationEditable="true" width="13em"/>
+                            <propertyFilter dataLoader="documentsDl" operation="LESS_OR_EQUAL" property="travelEndDate"
+                                            operationEditable="true" width="13em"/>
+                        </hbox>
+                        <details opened="false" summaryText="Less common filters">
+                            <hbox>
+                                <propertyFilter dataLoader="documentsDl" operation="CONTAINS" property="fundCode"
+                                                width="7em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="taxId"
+                                                width="8em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="taxIdType"
+                                                width="8em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="addressCode"
+                                                width="8em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="vendorCode"
+                                                width="8em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="lineNumber"
+                                                width="5em"/>
+                            </hbox>
+                            <hbox>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="costOrg"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="documentCreationDate"
+                                                width="13em"
+                                                operationEditable="true"/>
+                                <propertyFilter dataLoader="documentsDl" operation="CONTAINS" property="lastModifiedBy"/>
+                                <propertyFilter dataLoader="documentsDl" operation="EQUAL" property="fjc" width="5em"/>
+                            </hbox>
+                            <hbox>
+                                <propertyFilter dataLoader="documentsDl" operation="GREATER" property="expendedAmount"
+                                                operationEditable="true" width="12em"/>
+
+                                <propertyFilter dataLoader="documentsDl" operation="GREATER" property="orderedAmount"
+                                                operationEditable="true" width="12em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="GREATER"
+                                                property="outstandingAmount"
+                                                operationEditable="true" width="12em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="GREATER" property="prepaidAmount"
+                                                operationEditable="true" width="12em"/>
+                                <propertyFilter dataLoader="documentsDl" operation="GREATER" property="refundedAmount"
+                                                operationEditable="true" width="12em"/>
+                            </hbox>
+                        </details>
+                        <hbox>
+                            <button id="clearSearchBtn" text="Clear"
+                                    icon="vaadin:eraser"/>
+                        </hbox>
+                    </vbox>
+                </tab>
+            </tabSheet>
+        </details>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="documentsDataGrid.create"/>
+            <button id="editBtn" action="documentsDataGrid.edit"/>
+            <button id="excelExportBtn" action="documentsDataGrid.excelExport"/>
+            <button id="removeBtn" action="documentsDataGrid.remove"/>
+            <simplePagination id="pagination" dataLoader="documentsDl" autoLoad="true"/>
+        </hbox>
+        <dataGrid id="documentsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="documentsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" selectionMode="SINGLE">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="documentType"/>
+                <column property="fundCode"/>
+                <column property="bfyString" width="135px"/>
+                <column property="budgetOrg" width="120px"/>
+                <column property="documentNumber" width="175px"/>
+                <column property="budgetObjectClass"/>
+                <column property="title" width="450px"/>
+                <column property="vendorName" width="570px"/>
+                <column property="project"/>
+                <column property="documentDate" textAlign="END" width="150px"/>
+                <column property="amount" textAlign="END" width="150px"/>
+                <column property="closedAmount" textAlign="END" width="150px"/>
+                <column property="expendedAmount" textAlign="END" width="160px"/>
+                <column property="travelStartDate" textAlign="END" width="150px"/>
+                <column property="travelEndDate" textAlign="END" width="150px"/>
+                <column property="lineNumber" width="90px" textAlign="END"/>
+                <column property="closedDate" textAlign="END" width="130px"/>
+                <column property="taxId" width="130px"/>
+                <column property="taxIdType" width="125px"/>
+                <column property="addressCode" width="130px"/>
+                <column property="vendorCode"/>
+                <column property="costOrg"/>
+                <column property="documentCreationDate" textAlign="END"/>
+                <column property="lastModifiedBy" width="200px"/>
+                <column property="fjc"/>
+                <column property="orderedAmount" textAlign="END" width="160px"/>
+                <column property="outstandingAmount" textAlign="END" width="165px"/>
+                <column property="prepaidAmount" textAlign="END" width="160px"/>
+                <column property="refundedAmount" textAlign="END" width="160px"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

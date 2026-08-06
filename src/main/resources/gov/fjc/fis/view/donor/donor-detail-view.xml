@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://donorDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="donorDc"
+                  class="gov.fjc.fis.entity.Donor">
+            <fetchPlan extends="_base"/>
+            <loader id="donorDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+
+                <formLayout id="form" width="100%">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                        <responsiveStep minWidth="40em" columns="2"/>
+                    </responsiveSteps>
+
+                    <formLayout id="formLeft" dataContainer="donorDc" width="100%">
+                        <responsiveSteps>
+                            <responsiveStep minWidth="0" columns="1"/>
+                            <responsiveStep minWidth="20em" columns="2"/>
+                        </responsiveSteps>
+                        <textField id="organizationField" property="organization" colspan="2"/>
+                        <textField id="contactField" property="contact" colspan="2"/>
+                        <textField id="emailField" property="email" colspan="2"/>
+                        <textField id="phoneField" property="phone"/>
+                        <textField id="faxField" property="fax"/>
+                    </formLayout>
+
+                    <formLayout id="formRight" dataContainer="donorDc">
+                        <responsiveSteps>
+                            <responsiveStep minWidth="0" columns="1"/>
+                            <responsiveStep minWidth="20em" columns="2"/>
+                        </responsiveSteps>
+                        <textField id="address1Field" property="address1" colspan="2"/>
+                        <textField id="address2Field" property="address2" colspan="2"/>
+                        <textField id="cityField" property="city" colspan="2"/>
+                        <textField id="stateField" property="state"/>
+                        <textField id="zipcodeField" property="zipCode"/>
+                    </formLayout>
+                    <formLayout id="memoForm" dataContainer="donorDc" colspan="2">
+                        <textArea id="memoField" property="memo" minHeight="5em" colspan="2"/>
+                    </formLayout>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

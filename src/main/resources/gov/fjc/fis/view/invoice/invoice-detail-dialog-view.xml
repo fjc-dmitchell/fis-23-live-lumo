@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://invoiceDetailDialogView.title"
+      focusComponent="form">
+    <data>
+        <instance id="invoiceDc"
+                  class="gov.fjc.fis.entity.Invoice">
+            <fetchPlan extends="_base">
+                <property name="createdByString"/>
+                <property name="attachments" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="invoiceDl"/>
+            <collection id="attachmentsDc" property="attachments"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox" width="1150px">
+        <vbox id="contentBox">
+            <vbox classNames="contrast-panel">
+                <formLayout id="form" dataContainer="invoiceDc">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="2" labelsPosition="ASIDE"/>
+                    </responsiveSteps>
+                    <formItem>
+                        <textField id="invoiceNumberField" property="invoiceNumber"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="amountField" property="amount"/>
+                    </formItem>
+                    <formItem>
+                        <datePicker id="invoiceDateField" property="invoiceDate"/>
+                    </formItem>
+                    <formItem>
+                        <datePicker id="paymentDateField" property="paymentDate"/>
+                    </formItem>
+                    <formItem colspan="2">
+                        <textArea id="memoField" property="memo"/>
+                    </formItem>
+                </formLayout>
+            </vbox>
+            <vbox classNames="contrast-panel">
+                <fragment id="attachmentFragment"
+                          class="gov.fjc.fis.view.fileattachmentfragment.FileAttachmentFragment" colspan="2"/>
+            </vbox>
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

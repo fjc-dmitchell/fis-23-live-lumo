@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://obligationDetailView.title">
+    <data>
+        <instance id="obligationDc"
+                  class="gov.fjc.fis.entity.Obligation">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base"/>
+                <property name="objectClass" fetchPlan="_base">
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="invoices" fetchPlan="_base"/>
+                <property name="fundControlNotices" fetchPlan="_base"/>
+                <!--                <property name="attachments" fetchPlan="_base">-->
+                <!--                    <property name="fileName"/>-->
+                <!--                    <property name="formattedSize"/>-->
+                <!--                    <property name="title"/>-->
+                <!--                </property>-->
+                <property name="statusString"/>
+                <property name="costOrg" fetchPlan="_base"/>
+                <property name="attachments" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="obligationDl"/>
+            <collection id="invoicesDc" property="invoices"/>
+            <collection id="fundControlNoticesDc" property="fundControlNotices"/>
+            <collection id="attachmentsDc" property="attachments"/>
+        </instance>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+        </collection>
+        <collection id="objectClassesDc" class="gov.fjc.fis.entity.ObjectClass">
+            <loader id="objectClassesDl" readOnly="true"/>
+        </collection>
+        <collection id="activitiesDc" class="gov.fjc.fis.entity.Activity">
+            <loader id="activitiesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+<!--                <dataLoadCoordinator auto="true"/>-->
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+
+    <layout alignItems="STRETCH"
+            padding="false" spacing="false"
+            expand="contentBox">
+        <vbox id="contentBox" classNames="overflow-auto">
+
+            <div classNames="contrast-panel">
+                <vbox>
+                    <details opened="true" summaryText="Obligation" colspan="2" minWidth="100%">
+                        <div classNames="grid-panel">
+                            <formLayout id="obligationForm" dataContainer="obligationDc">
+                                <responsiveSteps>
+                                    <responsiveStep minWidth="0" columns="1"/>
+                                    <responsiveStep minWidth="45em" columns="2"/>
+                                </responsiveSteps>
+                                <textField id="budgetFiscalYearField" width="9em"
+                                           label="Budget Fiscal Year" datatype="string" readOnly="true"/>
+                                <entityComboBox id="divisionField" itemsContainer="divisionsDc"
+                                                metaClass="fis_Division" label="Division"/>
+                                <entityComboBox id="categoryField" itemsContainer="categoriesDc"
+                                                metaClass="fis_ObjectCategory" label="Category (MOC)"/>
+                                <entityComboBox id="budgetObjectClassField" itemsContainer="objectClassesDc"
+                                                property="objectClass" label="Object Class (BOC)"/>
+                                <entityComboBox id="activityField" itemsContainer="activitiesDc"
+                                                property="activity" label="Activity" colspan="2"/>
+                                <textField id="documentNumberField" property="documentNumber"
+                                           dataContainer="obligationDc"/>
+                                <textField id="amountField" property="amount" dataContainer="obligationDc"/>
+                                <textField id="vendorField" property="vendor" colspan="2"/>
+
+
+                            </formLayout>
+                            <formLayout id="obligationForm2" dataContainer="obligationDc">
+                                <responsiveSteps>
+                                    <responsiveStep minWidth="0" columns="1"/>
+                                    <responsiveStep minWidth="45em" columns="2"/>
+                                </responsiveSteps>
+                                <hbox>
+                                    <datePicker id="documentDateField" property="documentDate" label="Document Date"
+                                                 dataContainer="obligationDc" width="45%"/>
+                                    <datePicker id="processDateField" property="processDate" label="Process Date"
+                                                dataContainer="obligationDc" width="45%"/>
+                                </hbox>
+
+                                <select id="docType" property="documentType"/>
+
+                                <hbox>
+                                    <comboBox id="statusField" property="status" datatype="boolean" label="Status"
+                                              dataContainer="obligationDc" width="45%"/>
+                                    <comboBox id="blanketPurchaseOrderField" property="blanketPurchaseOrder"
+                                              label="Blanket Purchase Order" width="45%"
+                                              datatype="boolean" dataContainer="obligationDc"/>
+                                </hbox>
+
+                                <textField id="einField" property="ein"/>
+
+                                <hbox >
+                                        <textField id="vendorCodeField" property="vendorCode"
+                                                   dataContainer="obligationDc" width="45%"
+                                                   label="Vendor Code"/>
+                                        <textField id="addressCodeField" property="addressCode"
+                                                   dataContainer="obligationDc" width="45%"
+                                                   label="Address Code"/>
+                                    </hbox>
+                                    <hbox  >
+                                        <datePicker id="travelStartDateField" property="travelStartDate"
+                                                    dataContainer="obligationDc" width="45%"
+                                                    label="Travel Start Date"/>
+                                        <datePicker id="travelEndDateField" property="travelEndDate"
+                                                    dataContainer="obligationDc" width="45%"
+                                                    label="Travel End Date"/>
+                                    </hbox>
+
+                                <textArea id="memoField" property="memo" colspan="2"/>
+
+                            </formLayout>
+
+
+                        </div>
+                        <!--                        <div classNames="grid-panel">-->
+                        <!--                            <formLayout id="obligationForm3" dataContainer="obligationDc">-->
+
+                        <!--                                <textArea id="memoField" property="memo" colspan="2"/>-->
+                        <!--                            </formLayout>-->
+                        <!--                        </div>-->
+                    </details>
+                </vbox>
+            </div>
+
+
+            <vbox id="tabsheetBox" classNames="contrast-panel">
+                <tabSheet width="100%" minWidth="60em">
+                    <tab id="invoicesTab" label="Invoices &amp; FCNs">
+
+                        <div classNames="grid-panel">
+                            <vbox classNames="contrast-panel">
+                                <!--                    <split>-->
+                                <details opened="true" summaryText="Invoices" minWidth="100%">
+                                    <hbox id="buttonsPanel" classNames="buttons-panel">
+                                        <button action="invoicesDataGrid.createAction"/>
+                                        <button action="invoicesDataGrid.editAction"/>
+                                        <button action="invoicesDataGrid.removeAction"/>
+                                    </hbox>
+                                    <dataGrid id="invoicesDataGrid" dataContainer="invoicesDc"
+                                              emptyStateText="No invoices found" aggregatable="true"
+                                              allRowsVisible="true" minWidth="25rem">
+                                        <actions>
+                                            <action id="createAction" type="list_create">
+                                                <properties>
+                                                    <property name="openMode" value="DIALOG"/>
+                                                    <property name="viewId" value="fis_Invoice_dialog.detail"/>
+                                                </properties>
+                                            </action>
+                                            <action id="editAction" type="list_edit">
+                                                <properties>
+                                                    <property name="openMode" value="DIALOG"/>
+                                                    <property name="viewId" value="fis_Invoice_dialog.detail"/>
+                                                </properties>
+                                            </action>
+                                            <action id="removeAction" type="list_remove"/>
+                                        </actions>
+                                        <columns>
+                                            <column property="invoiceNumber" flexGrow="1"/>
+                                            <column property="invoiceDate" textAlign="END" width="130px" flexGrow="0"/>
+                                            <!--                                <column property="paymentDate" textAlign="END" width="130px" flexGrow="0"-->
+                                            header="Pay Date" key="paydate"/>
+                                            <column property="amount" textAlign="END" width="140px" flexGrow="0">
+                                                <numberRenderer numberFormat="#,##0.00"/>
+                                                <aggregation type="SUM">
+                                                    <formatter>
+                                                        <number format="#,##0.00"/>
+                                                    </formatter>
+                                                </aggregation>
+                                            </column>
+                                        </columns>
+                                    </dataGrid>
+                                </details>
+                            </vbox>
+                            <vbox classNames="contrast-panel">
+
+                                <details opened="true" summaryText="Fund Control Notices" minWidth="100%">
+                                    <hbox id="fjnButtonsPanel" classNames="buttons-panel">
+                                        <button action="fundControlNoticesDataGrid.createAction"/>
+                                        <button action="fundControlNoticesDataGrid.editAction"/>
+                                        <button action="fundControlNoticesDataGrid.removeAction"/>
+                                    </hbox>
+                                    <dataGrid id="fundControlNoticesDataGrid" dataContainer="fundControlNoticesDc"
+                                              width="100%"
+                                              emptyStateText="No FCNs found" aggregatable="true" allRowsVisible="true">
+                                        <actions>
+                                            <action id="createAction" type="list_create">
+                                                <properties>
+                                                    <property name="openMode" value="DIALOG"/>
+                                                    <property name="viewId"
+                                                              value="fis_FundControlNotice_dialog.detail"/>
+                                                </properties>
+                                            </action>
+                                            <action id="editAction" type="list_edit">
+                                                <properties>
+                                                    <property name="openMode" value="DIALOG"/>
+                                                    <property name="viewId"
+                                                              value="fis_FundControlNotice_dialog.detail"/>
+                                                </properties>
+                                            </action>
+                                            <action id="removeAction" type="list_remove"/>
+                                        </actions>
+                                        <columns>
+                                            <column property="fcnDate" textAlign="END"/>
+                                            <column property="amount" textAlign="END">
+                                                <numberRenderer numberFormat="#,##0.00"/>
+                                                <aggregation type="SUM">
+                                                    <formatter>
+                                                        <number format="#,##0.00"/>
+                                                    </formatter>
+                                                </aggregation>
+                                            </column>
+                                        </columns>
+                                    </dataGrid>
+                                </details>
+                                <!--                    </split>-->
+                            </vbox>
+                        </div>
+                    </tab>
+
+                    <tab id="attachmentsTab" label="Attachments">
+                        <fragment id="attachmentFragment"
+                                  class="gov.fjc.fis.view.fileattachmentfragment.FileAttachmentFragment"/>
+                    </tab>
+                </tabSheet>
+            </vbox>
+
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions"
+              classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>
+
+</view>

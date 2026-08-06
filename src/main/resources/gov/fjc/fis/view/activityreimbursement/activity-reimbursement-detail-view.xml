@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://activityReimbursementDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="activityReimbursementDc"
+                  class="gov.fjc.fis.entity.ActivityReimbursement">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_instance_name">
+                    <property name="title"/>
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="objectClass" fetchPlan="_instance_name">
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="activityReimbursementDl"/>
+        </instance>
+
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+        </collection>
+        <collection id="objectClassesDc" class="gov.fjc.fis.entity.ObjectClass">
+            <loader id="objectClassesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout alignItems="STRETCH"
+            padding="false" spacing="false"
+            expand="contentBox">
+        <vbox id="contentBox" classNames="overflow-auto" maxWidth="800px">
+            <div classNames="grid-panel">
+                <vbox classNames="contrast-panel">
+                    <formLayout id="form" dataContainer="activityReimbursementDc" width="45em">
+                        <responsiveSteps>
+                            <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+                        </responsiveSteps>
+                        <!--                    <entityPicker id="activityField" property="activity">-->
+                        <!--                        <actions>-->
+                        <!--                            <action id="entityLookupAction" type="entity_lookup"/>-->
+                        <!--                            <action id="entityClearAction" type="entity_clear"/>-->
+                        <!--                        </actions>-->
+                        <!--                    </entityPicker>-->
+                        <formItem>
+                            <entityComboBox id="categoryField" property="objectClass.objectCategory"
+                                            itemsContainer="categoriesDc" metaClass="fis_ObjectCategory"/>
+                        </formItem>
+                        <formItem>
+                            <entityComboBox id="objectClassField" property="objectClass"
+                                            itemsContainer="objectClassesDc"/>
+                        </formItem>
+                        <formItem>
+                            <textField id="sourceField" property="source"/>
+                        </formItem>
+                        <formItem>
+                            <textField id="amountField" property="amount"/>
+                        </formItem>
+                        <formItem>
+                            <textField id="docidField" property="documentNumber"/>
+                        </formItem>
+                        <formItem>
+                            <textField id="docdateField" property="documentDate"/>
+                        </formItem>
+                        <formItem>
+                            <textArea id="memoField" property="memo"/>
+                        </formItem>
+                    </formLayout>
+                </vbox>
+            </div>
+        </vbox>
+        <vbox>
+            <p id="createdByString"/>
+        </vbox>
+        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

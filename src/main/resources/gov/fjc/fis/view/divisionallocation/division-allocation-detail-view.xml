@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://divisionAllocationDetailView.title"
+      focusComponent="categoryField">
+    <data>
+        <instance id="divisionAllocationDc"
+                  class="gov.fjc.fis.entity.DivisionAllocation">
+            <fetchPlan extends="_base">
+                <property name="totalAmount"/>
+                <property name="createdByString"/>
+            </fetchPlan>
+            <loader id="divisionAllocationDl"/>
+        </instance>
+        <collection id="categoriesDc" class="gov.fjc.fis.entity.ObjectCategory">
+            <loader id="categoriesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="divisionAllocationDc" labelsPosition="ASIDE" width="40em">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+            </responsiveSteps>
+            <formItem>
+                <entityComboBox id="categoryField" property="objectCategory" itemsContainer="categoriesDc" maxWidth="20em"/>
+            </formItem>
+            <formItem>
+                <textField id="oneYearAmountField" property="oneYearAmount" maxWidth="10em" datatype="decimal"/>
+            </formItem>
+            <formItem>
+                <textField id="twoYearAmountField" property="twoYearAmount" maxWidth="10em" datatype="decimal"/>
+            </formItem>
+            <formItem>
+                <textField id="totalAmountField" property="totalAmount"
+                           maxWidth="10em" readOnly="true"/>
+            </formItem>
+        </formLayout>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://fileAttachmentDetailView.title"
+      focusComponent="fcnItem">
+    <data>
+        <instance id="fileAttachmentDc"
+                  class="gov.fjc.fis.entity.FileAttachment">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base"/>
+                <property name="obligation" fetchPlan="_base"/>
+                <property name="invoice" fetchPlan="_base"/>
+                <property name="category" fetchPlan="_base"/>
+                <property name="fundControlNotice" fetchPlan="_base"/>
+                <property name="attachedTo"/>
+                <property name="fileName"/>
+                <property name="formattedSize"/>
+                <property name="title"/>
+            </fetchPlan>
+            <loader id="fileAttachmentDl"/>
+        </instance>
+        <collection id="fileAttachmentCategoriesDc" class="gov.fjc.fis.entity.FileAttachmentCategory">
+            <loader id="fileAttachmentCategoriesDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from fis_FileAttachmentCategory e]]>
+                </query>
+            </loader>
+            <fetchPlan extends="_base"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout width="500px">
+                <formLayout id="form" dataContainer="fileAttachmentDc" labelsPosition="ASIDE">
+                    <responsiveSteps>
+                        <responsiveStep minWidth="0" columns="1"/>
+                    </responsiveSteps>
+                    <formItem>
+                        <textField id="fileNameField" property="fileName"/>
+                    </formItem>
+                    <formItem>
+                        <textField id="contentLengthField" property="contentLength" readOnly="true"/>
+                    </formItem>
+                    <formItem>
+                        <entityPicker id="activityField" property="activity" readOnly="true"/>
+                    </formItem>
+                    <formItem id="obligationItem" visible="false">
+                        <entityPicker id="obligationField" property="obligation" readOnly="true"/>
+                    </formItem>
+                    <formItem id="invoiceItem" visible="false">
+                        <entityPicker id="invoiceField" property="invoice" readOnly="true"/>
+                    </formItem>
+                    <formItem id="fcnItem" visible="false">
+                        <entityPicker id="fcnField" property="fundControlNotice" readOnly="true"/>
+                    </formItem>
+                    <formItem>
+                        <entityComboBox id="categoryField" property="category"
+                                        itemsContainer="fileAttachmentCategoriesDc"/>
+                    </formItem>
+                </formLayout>
+
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

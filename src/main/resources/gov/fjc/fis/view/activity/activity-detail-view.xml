@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://activityDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="activityDc"
+                  class="gov.fjc.fis.entity.Activity">
+            <fetchPlan extends="_base">
+                <property name="fund" fetchPlan="_base"/>
+                <property name="branch" fetchPlan="_base"/>
+                <property name="group" fetchPlan="_base"/>
+                <property name="projections" fetchPlan="_base"/>
+                <property name="auditProjections" fetchPlan="_base">
+                    <property name="createdDateString"/>
+                    <property name="changeAmount"/>
+                </property>
+                <property name="reimbursements" fetchPlan="_base"/>
+                <property name="obligations" fetchPlan="_base"/>
+                <property name="createdByString"/>
+                <property name="attachments" fetchPlan="_base"/>
+                <property name="costOrg" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="activityDl"/>
+            <collection id="projectionsDc" property="projections"/>
+            <collection id="auditProjectionsDc" property="auditProjections"/>
+            <collection id="reimbursementsDc" property="reimbursements"/>
+            <collection id="obligationsDc" property="obligations"/>
+            <collection id="attachmentsDc" property="attachments"/>
+        </instance>
+        <collection id="fundsDc" class="gov.fjc.fis.entity.Fund">
+            <loader id="fundsDl" readOnly="true"/>
+        </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
+        <collection id="costOrgsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="costOrgsDl" readOnly="true"/>
+        </collection>
+        <collection id="groupsDc" class="gov.fjc.fis.entity.Group">
+            <loader id="groupsDl" readOnly="true"/>
+        </collection>
+        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
+            <loader id="branchesDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel ">
+                <formLayout id="form" dataContainer="activityDc">
+                    <!--                <responsiveSteps>-->
+                    <!--                    <responsiveStep minWidth="0" columns="1"/>-->
+                    <!--                    <responsiveStep minWidth="40em" columns="2"/>-->
+                    <!--                </responsiveSteps>-->
+                    <hbox colspan="2">
+                        <textField id="budgetFiscalYearField" width="9em"
+                                   label="Budget Fiscal Year" datatype="string" readOnly="true"/>
+                        <entityComboBox id="divisionField" itemsContainer="divisionsDc"
+                                        property="division" label="Division" width="25em"/>
+                        <entityComboBox id="fundField" itemsContainer="fundsDc" property="fund"
+                                        label="Fund" width="13em"/>
+                        <!--                    <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"/>-->
+                    </hbox>
+                    <hbox id="costOrgBox" colspan="2" visible="false">
+                        <entityComboBox id="costOrgField" itemsContainer="costOrgsDc" property="costOrg" label="Cost Org" width="30em"
+                                        requiredMessage="The division receiving the benefit is required when using the mandatory fund"/>
+                    </hbox>
+                    <hbox colspan="2">
+                        <textField id="activityNumberField" property="activityNumber" width="9em"
+                                   label="Activity Number"
+                                   datatype="string"/>
+                        <textField id="titleField" property="title" width="42em" label="Title"/>
+                        <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"/>
+                    </hbox>
+                    <!--                <textField id="budgetFiscalYearField" enabled="false" datatype="string" label="Budget Fiscal Year"-->
+                    <!--                           width="150px"/>-->
+                    <!--                <entityComboBox id="divisionField" property="division" itemsContainer="divisionsDc"/>-->
+                    <!--                <entityComboBox id="fundField" property="fund" itemsContainer="fundsDc"/>-->
+                    <!--                    <hbox colspan="2">-->
+                    <!--                        <entityComboBox id="groupField" property="group" itemsContainer="groupsDc" width="40em"-->
+                    <!--                                        label="Group"/>-->
+                    <!--                    </hbox>-->
+                    <!--                    <hbox colspan="2">-->
+
+                    <!--                        <entityComboBox id="branchField" property="branch" itemsContainer="branchesDc" width="40em"-->
+                    <!--                                        label="Branch"/>-->
+                    <!--                    </hbox>-->
+                    <entityComboBox id="groupField" property="group" itemsContainer="groupsDc" label="Group"
+                                    visible="false">
+                        <actions>
+                            <action id="clearGroup" type="entity_clear" icon="vaadin:close-small"/>
+                        </actions>
+                    </entityComboBox>
+                    <entityComboBox id="branchField" property="branch" itemsContainer="branchesDc" label="Branch"
+                                    visible="false">
+                        <actions>
+                            <action id="clearBranch" type="entity_clear" icon="vaadin:close-small"/>
+                        </actions>
+                    </entityComboBox>
+                    <textArea id="memoField" property="memo" colspan="2" label="Memo"/>
+
+                    <!--                <textField id="activityNumberField" property="activityNumber"/>-->
+                    <!--                <textField id="titleField" property="title"/>-->
+                    <!--                <textField id="sortCodeField" property="sortCode"/>-->
+                    <!--                    <hbox colspan="2">-->
+                    <!--                        <textArea id="memoField" property="memo" width="40em" label="Memo"/>-->
+                    <!--                    </hbox>-->
+
+
+                    <hbox>
+                        <checkbox id="trainingProjectField" property="trainingProject" label="Training Project"/>
+                        <checkbox id="canceledField" property="canceled" label="Canceled" visible="false"/>
+                    </hbox>
+
+                    <checkbox id="genericProjectionField" property="genericProjection"/>
+                    <!--                <textField id="projectedAmountField" property="projectedAmount"/>-->
+                    <!--                <textField id="reimbursedAmountField" property="reimbursedAmount"/>-->
+                    <details id="trainingDetails" summaryText="Training Program" colspan="2" themeNames="filled"
+                             visible="false">
+                        <vbox spacing="false">
+                            <hbox>
+                                <textField id="cityField" property="city" label="City" width="12em"/>
+                                <textField id="stateField" property="state" label="State" width="5em"/>
+                                <datePicker id="startDateField" property="startDate" label="Start Date" width="8em"/>
+                                <datePicker id="endDateField" property="endDate" label="End Date" width="8em"/>
+                            </hbox>
+                            <hbox>
+                                <textField id="programDirectorField" property="programDirector" label="Program Director"
+                                           width="25em"/>
+                                <textField id="shortTitleField" property="shortTitle" label="Short Title (optional override)" width="30em"/>
+                            </hbox>
+                            <hbox>
+                                <textField id="initialProjectionField" property="initialProjection"
+                                           label="Initial Projection"
+                                           width="10em"/>
+                                <checkbox id="addedToPlanField" property="addedToPlan" label="Added to Spending Plan"
+                                          alignSelf="END"/>
+                                <textField id="numberParticipantsField" property="numberParticipants"
+                                           label="# Participants"
+                                           width="8em"/>
+                                <textField id="numberProgramsField" property="numberPrograms" label="# Programs"
+                                           width="8em"/>
+                                <textField id="numberFacultyField" property="numberFaculty" label="# Faculty"
+                                           width="8em"/>
+                                <checkbox id="participantCountFinalField" property="participantCountFinal"
+                                          label="Participant Count Final"
+                                          alignSelf="END"/>
+                            </hbox>
+                            <hbox>
+                                <textField id="noteField" property="note" label="Note" width="30em"/>
+                                <textField id="reportNoteField" property="reportNote" label="Report note" width="30em"/>
+                            </hbox>
+                        </vbox>
+                    </details>
+                </formLayout>
+            </vbox>
+            <vbox id="tabsheetBox" classNames="contrast-panel">
+                <tabSheet width="100%" minWidth="60em">
+                    <tab id="projectionsTab" label="Projections">
+                        <vbox>
+                            <!--                            <details id="projections" opened="true" summaryText="Projections" themeNames="filled">-->
+                            <hbox id="projbuttonsPanel" classNames="buttons-panel">
+                                <button action="projectionsDataGrid.create"/>
+                                <button action="projectionsDataGrid.edit"/>
+                                <button action="projectionsDataGrid.remove"/>
+                            </hbox>
+                            <dataGrid id="projectionsDataGrid" dataContainer="projectionsDc" width="700px"
+                                      minHeight="10em">
+                                <actions>
+                                    <action id="create" type="list_create">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                            <property name="viewId" value="fis_ActivityProjection_dialog.detail"/>
+                                        </properties>
+                                    </action>
+                                    <action id="edit" type="list_edit">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                            <property name="viewId" value="fis_ActivityProjection_dialog.detail"/>
+                                        </properties>
+                                    </action>
+                                    <action id="remove" type="list_remove"/>
+                                </actions>
+                                <columns>
+                                    <!--                                        <column property="activity"/>-->
+                                    <column property="objectClass.budgetObjectClass" header="BOC" width="100px"/>
+                                    <column property="objectClass.title" header="Object Class title" width="470px"/>
+                                    <column property="amount" header="Projection" textAlign="END" width="125px">
+                                        <numberRenderer numberFormat="#,##0.00"/>
+                                        <aggregation type="SUM">
+                                            <formatter>
+                                                <number format="#,##0.00"/>
+                                            </formatter>
+                                        </aggregation>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+                            <!--                            </details>-->
+                        </vbox>
+                    </tab>
+                    <tab id="projectionsAuditTab" label="Projections History">
+                        <vbox>
+                            <!--                            <details id="audit" opened="false" summaryText="Projections History" themeNames="filled">-->
+                            <hbox id="auditButtonsPanel" classNames="buttons-panel">
+                                <button id="excelExportBtn" action="auditProjectionsDataGrid.excelExport"
+                                        text="Export projection audit"/>
+                            </hbox>
+                            <hbox>
+                                <dataGrid id="auditProjectionsDataGrid" dataContainer="auditProjectionsDc"
+                                          width="795px"
+                                          minHeight="20em">
+                                    <actions>
+                                        <action id="viewAuditAction" type="list_read">
+                                            <properties>
+                                                <property name="openMode" value="DIALOG"/>
+                                            </properties>
+                                        </action>
+                                        <action id="excelExport" type="grdexp_excelExport"/>
+                                    </actions>
+                                    <columns>
+                                        <column property="auditDate" header="Date" width="160px">
+                                            <localDateTimeRenderer format="MM/dd/yyyy HH:mm"/>
+                                        </column>
+                                        <column property="changeType" header="Type" width="100px"/>
+                                        <column property="objectClass.budgetObjectClass" header="BOC" width="80px"/>
+                                        <column property="oldAmount" textAlign="END" width="150px"/>
+                                        <column property="newAmount" textAlign="END" width="150px"/>
+                                        <column property="changeAmount" textAlign="END" width="150px"
+                                                header="Change"/>
+                                    </columns>
+                                </dataGrid>
+                            </hbox>
+                            <!--                            </details>-->
+                        </vbox>
+                    </tab>
+                    <tab id="reimbursementsTab" label="Reimbursements">
+                        <vbox>
+                            <!--                            <details id="reimbursements" opened="false" summaryText="Reimbursements"-->
+                            themeNames="filled">
+                            <hbox id="reimbuttonsPanel" classNames="buttons-panel">
+                                <button action="reimbursementsDataGrid.createReim"/>
+                                <button action="reimbursementsDataGrid.editReim"/>
+                                <button action="reimbursementsDataGrid.removeReim"/>
+                            </hbox>
+                            <dataGrid id="reimbursementsDataGrid" dataContainer="reimbursementsDc" width="880px"
+                                      minHeight="10em">
+                                <actions>
+                                    <action id="createReim" type="list_create">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                            <property name="viewId" value="fis_ActivityReimbursement_dialog.detail"/>
+                                        </properties>
+                                    </action>
+                                    <action id="editReim" type="list_edit">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                            <property name="viewId" value="fis_ActivityReimbursement_dialog.detail"/>
+                                        </properties>
+                                    </action>
+                                    <action id="removeReim" type="list_remove"/>
+                                </actions>
+                                <columns>
+                                    <column property="objectClass.budgetObjectClass" header="BOC" width="100px"/>
+                                    <column property="objectClass.title" header="Object Class title" width="400px"/>
+                                    <column property="source" width="250px"/>
+                                    <column property="amount" textAlign="END" width="125px">
+                                        <numberRenderer numberFormat="#,##0.00"/>
+                                        <aggregation type="SUM">
+                                            <formatter>
+                                                <number format="#,##0.00"/>
+                                            </formatter>
+                                        </aggregation>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+                            <!--                            </details>-->
+                        </vbox>
+                    </tab>
+                    <tab id="obligationsTab" label="Obligations">
+                        <vbox>
+                            <dataGrid id="obligationsDataGrid" dataContainer="obligationsDc" width="1100px"
+                                      minHeight="20em">
+                                <columns resizable="true">
+                                    <column property="documentTypeId" header="Type" width="100px" flexGrow="0"/>
+                                    <column property="documentNumber" width="160px" header="Doc ID" flexGrow="0"/>
+                                    <column property="objectClass.budgetObjectClass" width="90px" header="BOC"
+                                            flexGrow="0"/>
+                                    <column property="objectClass.titleAndCode" visible="false" flexGrow="0"/>
+                                    <column property="vendor" flexGrow="1"/>
+                                    <column property="documentDate" width="120px" header="Date" textAlign="END"
+                                            flexGrow="0"/>
+                                    <column property="statusString" width="110px" header="Status" flexGrow="0"/>
+                                    <column property="amount" textAlign="END" width="140px" flexGrow="0">
+                                        <numberRenderer numberFormat="#,##0.00"/>
+                                        <aggregation type="SUM">
+                                            <formatter>
+                                                <number format="#,##0.00"/>
+                                            </formatter>
+                                        </aggregation>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+                        </vbox>
+                    </tab>
+                    <tab id="attachmentsTab" label="Attachments">
+                        <fragment id="attachmentFragment"
+                                  class="gov.fjc.fis.view.fileattachmentfragment.FileAttachmentFragment"/>
+                    </tab>
+                </tabSheet>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

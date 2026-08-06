@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://appropriationDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="appropriationDc"
+                  class="gov.fjc.fis.entity.Appropriation">
+            <fetchPlan extends="_base">
+                <property name="adjustments" fetchPlan="_base"/>
+                <property name="createdByString"/>
+                <property name="totalAmount"/>
+                <property name="authority"/>
+                <property name="totalAdjustment"/>
+            </fetchPlan>
+            <loader id="appropriationDl"/>
+            <collection id="adjustmentsDc" property="adjustments"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="appropriationDc" colspan="3">
+                    <!--                    <responsiveSteps>-->
+                    <!--                        <responsiveStep minWidth="0" columns="3"/>-->
+                    <!--                    </responsiveSteps>-->
+                    <vbox>
+                        <hbox colspan="3">
+                            <textField id="budgetFiscalYearField" property="budgetFiscalYear"
+                                       maxWidth="9em" label="Budget Fiscal Year" datatype="string"/>
+                            <comboBox id="statusBox" property="status" datatype="boolean"
+                                      label="Appropriation Status"/>
+                        </hbox>
+                        <hbox colspan="3">
+                            <textField id="oneYearAmountField" property="oneYearAmount" label="One year"/>
+                            <textField id="twoYearAmountField" property="twoYearAmount" label="Two year"/>
+                            <textField id="totalAmountField" property="totalAmount" label="Total appropriation"/>
+                            <textField id="adjustmentField" property="totalAdjustment" label="Adjustments"/>
+                            <textField id="reimbursedField" property="reimbursedAmount" label="Reimbursements"
+                                       readOnly="true"/>
+                            <textField id="authorityField" property="authority" label="Authority"/>
+                        </hbox>
+<!--                        <hbox id="adjustmentsBox">-->
+<!--                            <textField id="oneYearAdjustmentField" label="One Year Adjustments"-->
+<!--                                       datatype="decimal" readOnly="true" property="oneYearAdjustment"/>-->
+<!--                            <textField id="twoYearAdjustmentField" label="Two Year Adjustments"-->
+<!--                                       datatype="decimal" readOnly="true" property="twoYearAdjustment"/>-->
+<!--                            <textField id="totalAdjustmentField" label="Total Adjustments"-->
+<!--                                       datatype="decimal" readOnly="true" property="totalAdjustment"/>-->
+<!--                        </hbox>-->
+                    </vbox>
+                </formLayout>
+            </vbox>
+
+            <vbox id="tabsheetWrapper" classNames="contrast-panel">
+                <tabSheet width="100%" minWidth="60em">
+                    <tab id="divisionBalances" label="Division Balances">
+                        <fragment id="balanceFragment"
+                                  class="gov.fjc.fis.view.report.divisionbalancefragment.DivisionBalanceFragment"/>
+                    </tab>
+                    <tab id="statusOfFundsTab" label="Object Class Balances">
+                        <fragment id="sofFragment"
+                                  class="gov.fjc.fis.view.report.statusoffundsfragment.StatusOfFundsFragment"/>
+                    </tab>
+<!--                    <tab id="mocChart" label="Obligations by Category">-->
+<!--                        <fragment id="spendFragment"-->
+<!--                                  class="gov.fjc.fis.view.report.spendingchartfragment.SpendingChartFragment"/>-->
+<!--                    </tab>-->
+                    <tab id="adjustmentsTab" label="Appropriation Adjustments">
+                        <vbox>
+                            <h5 text="Adjustments to the appropriation (e.g., rescission, sequestration, reimbursement)"/>
+                            <hbox id="buttonsPanel" classNames="buttons-panel">
+                                <button action="adjustmentsDataGrid.create"/>
+                                <button action="adjustmentsDataGrid.edit"/>
+                                <button action="adjustmentsDataGrid.remove"/>
+                            </hbox>
+
+                            <dataGrid id="adjustmentsDataGrid" dataContainer="adjustmentsDc" width="700px"
+                                      minHeight="10em" themeNames="compact" height="12em">
+                                <actions>
+                                    <action id="create" type="list_create">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="edit" type="list_edit">
+                                        <properties>
+                                            <property name="openMode" value="DIALOG"/>
+                                        </properties>
+                                    </action>
+                                    <action id="remove" type="list_remove"/>
+                                </actions>
+                                <columns>
+                                    <column property="adjustmentDate" header="Date" width="120px" flexGrow="0"/>
+                                    <column property="title"/>
+                                    <column property="oneYearAmount" header="One Year" textAlign="END" width="130px"
+                                            flexGrow="0">
+                                        <numberRenderer numberFormat="#,##0"/>
+                                        <aggregation type="SUM">
+                                            <formatter>
+                                                <number format="#,##0"/>
+                                            </formatter>
+                                        </aggregation>
+                                    </column>
+                                    <column property="twoYearAmount" header="Two Year" textAlign="END" width="130px"
+                                            flexGrow="0">
+                                        <numberRenderer numberFormat="#,##0"/>
+                                        <aggregation type="SUM">
+                                            <formatter>
+                                                <number format="#,##0"/>
+                                            </formatter>
+                                        </aggregation>
+                                    </column>
+                                </columns>
+                            </dataGrid>
+                        </vbox>
+                    </tab>
+                </tabSheet>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions" width="100%" padding="true">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

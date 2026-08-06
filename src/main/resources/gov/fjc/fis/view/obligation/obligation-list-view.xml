@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://obligationListView.title"
+      focusComponent="obligationsDataGrid">
+    <data>
+        <collection id="obligationsDc"
+                    class="gov.fjc.fis.entity.Obligation">
+            <fetchPlan extends="_base">
+                <property fetchPlan="_base" name="activity">
+                    <property name="fund" fetchPlan="_base"/>
+                    <property name="branch" fetchPlan="_base">
+                        <property name="title"/>
+                    </property>
+                    <property name="group" fetchPlan="_base">
+                        <property name="title"/>
+                    </property>
+                </property>
+                <property fetchPlan="_base" name="objectClass">
+                    <property fetchPlan="_base" name="objectCategory"/>
+                </property>
+                <property name="costOrg" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="obligationsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <settings auto="true"/>
+        <dataLoadCoordinator auto="false"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+        <action id="showDivisionAction"/>
+    </actions>
+    <layout>
+        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">
+            <properties>
+                <property name="hostDataContainer" value="obligationsDc" type="CONTAINER_REF"/>
+            </properties>
+        </fragment>
+        <hbox id="buttonsPanel" classNames="buttons-panel" width="100%">
+            <button id="createBtn" action="obligationsDataGrid.create"/>
+            <button id="editBtn" action="obligationsDataGrid.edit"/>
+            <button id="excelExportBtn" action="obligationsDataGrid.excelExport"/>
+            <button id="removeBtn" action="obligationsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="obligationsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="obligationsDl" autoLoad="true" itemsPerPageDefaultValue="250"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="obligationsDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="obligationsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="activity.fund.fundCode" header="Fund" visible="false"/>
+                <column property="documentType" header="Doc Type" visible="false"/>
+                <column property="aoSyncDate" header="Sync Date" visible="false"/>
+                <column property="activity.division.appropriation.budgetFiscalYear" header="BFY" width="70px"/>
+                <column property="activity.division.divisionCode" header="Division" width="90px" textAlign="CENTER"/>
+                <column property="objectClass.budgetObjectClass" header="BOC"/>
+                <column property="documentNumber" header="Document ID" width="130px"/>
+                <column property="activity.activityNumber" header="Activity"/>
+                <column property="activity.title" visible="false" width="350px" header="Activity Title"/>
+                <column property="activity.branch.branchCode" visible="false" header="Branch"/>
+                <column property="activity.branch.title" visible="false" width="350px" header="Branch Title"/>
+                <column property="activity.group.groupCode" visible="false" header="Group"/>
+                <column property="activity.group.title" visible="false" width="350px" header="Group Title"/>
+                <column property="vendor" width="350px"/>
+                <column property="statusString" header="Status"/>
+                <column property="amount" textAlign="END" width="130px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                </column>
+                <column property="documentDate" width="140px" textAlign="END"/>
+                <column property="processDate" width="140px" textAlign="END"/>
+                <column property="travelStartDate" width="140px" textAlign="END" header="Travel Start"/>
+                <column property="travelEndDate" width="140px" textAlign="END" header="Travel End"/>
+                <column property="vendorCode" width="140px" header="Vendor Code"/>
+                <column property="addressCode" width="140px" header="Address Code" visible="false"/>
+                <column property="ein" width="140px" header="EIN" visible="false"/>
+                <column property="activity.startDate" width="140px" textAlign="END" header="Program Start"
+                        visible="false"/>
+                <column property="activity.endDate" width="140px" textAlign="END" header="Program End"
+                        visible="false"/>
+                <column property="bpoString" header="BPO"/>
+                <column property="budgetOrg"/>
+                <column property="costOrg"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

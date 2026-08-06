@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://activityProjectionUpdateView.title"
+      focusComponent="newProjectionField">
+    <data>
+        <instance id="activityProjectionDc"
+                  class="gov.fjc.fis.entity.ActivityProjection">
+            <loader id="activityProjectionDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveCloseAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="activityProjectionDc" width="50em">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
+            </responsiveSteps>
+            <formItem label="Activity">
+                <textField id="activityField" property="activity.titleAndCode" readOnly="true"/>
+            </formItem>
+            <formItem label="Object Class">
+                <textField id="objectClassField" property="objectClass.titleAndCode" readOnly="true"/>
+            </formItem>
+            <formItem label="Prior Projection">
+                <textField id="priorProjectionField" datatype="decimal" readOnly="true"/>
+            </formItem>
+            <formItem label="Adjustment">
+                <textField id="adjustmentField" datatype="decimal" readOnly="true"/>
+            </formItem>
+            <formItem label="New Projection">
+                <textField id="newProjectionField" datatype="decimal" property="amount" required="true" width="20em"/>
+            </formItem>
+        </formLayout>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveCloseAction" text="Modify Projection"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>

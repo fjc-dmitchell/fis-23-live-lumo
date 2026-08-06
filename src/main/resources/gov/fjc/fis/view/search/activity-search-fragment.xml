@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="activitiesDc" class="gov.fjc.fis.entity.Activity" provided="true">
+            <loader id="activitiesDl" readOnly="true" provided="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" padding="false" spacing="false">
+            <hbox alignItems="CENTER">
+                <propertyFilter id="actnumSearch" property="activityNumber" operation="STARTS_WITH"
+                                dataLoader="activitiesDl" label="Activity Number" width="13em" parameterName="act"
+                                autoApply="false"/>
+                <propertyFilter id="titleSearch" property="title" operation="CONTAINS" dataLoader="activitiesDl"
+                                label="Title" width="25em" parameterName="title" autoApply="false"/>
+                <propertyFilter id="trainingSearch" property="trainingProject" operation="EQUAL"
+                                dataLoader="activitiesDl" label="Training Project" width="15em"
+                                parameterName="training" autoApply="false"/>
+                <propertyFilter id="canceledProgramSearch" property="canceled" operation="EQUAL"
+                                dataLoader="activitiesDl" label="Canceled Program" width="15em"
+                                parameterName="canceled" autoApply="false"/>
+            </hbox>
+            <hbox alignItems="CENTER">
+                <span text="Branch"/>
+                <hbox id="branchBox" spacing="false"/>
+                <span text="Group"/>
+                <hbox id="groupBox" spacing="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="projectionsSearch" property="projectedAmount" operation="GREATER_OR_EQUAL"
+                                operationEditable="true" dataLoader="activitiesDl" label="Projections"
+                                autoApply="false"/>
+                <propertyFilter id="reimbursementsSearch" property="reimbursedAmount" operation="GREATER_OR_EQUAL"
+                                operationEditable="true" dataLoader="activitiesDl" label="Reimbursements"
+                                autoApply="false"/>
+                <propertyFilter id="obligationsSearch" property="obligatedAmount" operation="GREATER_OR_EQUAL"
+                                operationEditable="true" dataLoader="activitiesDl" label="Obligations"
+                                autoApply="false"/>
+            </hbox>
+            <hbox id="objectClassBox" alignItems="CENTER">
+                <span text="Projection Category"/>
+                <hbox id="mocBox" spacing="false"/>
+                <span text="Projection BOC"/>
+                <hbox id="bocBox" spacing="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="citySearch" property="city" operation="CONTAINS" dataLoader="activitiesDl"
+                                operationTextVisible="false" autoApply="false"/>
+                <propertyFilter id="stateSearch" property="state" operation="CONTAINS" dataLoader="activitiesDl"
+                                width="100px" operationTextVisible="false" autoApply="false"/>
+                <propertyFilter id="planSearch" property="addedToPlan" operation="EQUAL" dataLoader="activitiesDl"
+                                operationTextVisible="false" width="15em" autoApply="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="programStartSearch" property="startDate" operation="GREATER_OR_EQUAL"
+                                dataLoader="activitiesDl" label="Program Start Date" operationEditable="true"
+                                autoApply="false"/>
+                <propertyFilter id="programEndSearch" property="endDate" operation="LESS_OR_EQUAL"
+                                dataLoader="activitiesDl" label="Program End Date" operationEditable="true"
+                                autoApply="false"/>
+                <propertyFilter id="initProjSearch" property="initialProjection" operation="GREATER_OR_EQUAL"
+                                dataLoader="activitiesDl"
+                                label="Initial Projection" operationEditable="true" width="300" autoApply="false"/>
+            </hbox>
+        </vbox>
+    </content>
+</fragment>

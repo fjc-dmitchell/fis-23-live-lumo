@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://payPeriodListView.title"
+      focusComponent="payPeriodsDataGrid">
+    <data>
+        <collection id="payPeriodsDc"
+                    class="gov.fjc.fis.entity.personnel.PayPeriod">
+            <loader id="payPeriodsDl" readOnly="true"/>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+<!--        <fragment id="searchFragment" class="gov.fjc.fis.view.search.CustomSearchFragment">-->
+<!--            <properties>-->
+<!--                <property name="hostDataContainer" value="payPeriodsDc" type="CONTAINER_REF"/>-->
+<!--            </properties>-->
+<!--        </fragment>-->
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="createBtn" action="payPeriodsDataGrid.create"/>
+            <button id="editBtn" action="payPeriodsDataGrid.edit"/>
+            <button id="excelExportBtn" action="payPeriodsDataGrid.excelExport"/>
+            <button id="removeBtn" action="payPeriodsDataGrid.remove"/>
+            <gridColumnVisibility dataGrid="payPeriodsDataGrid" icon="COG"/>
+            <simplePagination id="pagination" dataLoader="payPeriodsDl" autoLoad="true" itemsPerPageDefaultValue="27"
+                              itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
+        </hbox>
+        <dataGrid id="payPeriodsDataGrid"
+                  width="550px"
+                  minHeight="20em"
+                  dataContainer="payPeriodsDc"
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" selectionMode="NONE">
+            <actions>
+                <action id="create" type="list_create"/>
+                <action id="edit" type="list_edit"/>
+                <action id="excelExport" type="grdexp_excelExport"/>
+                <action id="remove" type="list_remove"/>
+            </actions>
+            <columns resizable="true">
+                <column property="payYear" width="80px" textAlign="CENTER" header="Pay Year">
+                    <numberRenderer numberFormat="###0"/>
+                </column>
+                <column property="payPeriod" width="80px" textAlign="END" header="PP"/>
+                <column property="startDate" width="120px" textAlign="END"/>
+                <column property="endDate" width="120px" textAlign="END"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectBtn" action="selectAction"/>
+            <button id="discardBtn" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

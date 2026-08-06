@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://activityProjectionAuditDetailView.title"
+      focusComponent="closeButton">
+    <data>
+        <instance id="activityProjectionAuditDc"
+                  class="gov.fjc.fis.entity.ActivityProjectionAudit">
+            <fetchPlan extends="_base">
+                <property name="activity" fetchPlan="_base"/>
+                <property name="objectClass" fetchPlan="_base">
+                    <property name="titleAndCode"/>
+                </property>
+                <property name="createdByString"/>
+                <property name="changeAmount"/>
+            </fetchPlan>
+            <loader id="activityProjectionAuditDl"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <vbox padding="false" spacing="false">
+            <hbox>
+                <nativeLabel text="Audit Type" alignSelf="CENTER" width="6em"/>
+                <textField id="changeTypeField" property="changeType" dataContainer="activityProjectionAuditDc"
+                           width="6em"/>
+            </hbox>
+            <hbox>
+                <nativeLabel text="Activity" alignSelf="CENTER" width="6em"/>
+                <textField id="activityField" property="activity.titleAndCode"
+                           dataContainer="activityProjectionAuditDc" width="40em"/>
+            </hbox>
+            <hbox>
+                <nativeLabel text="Object Class" alignSelf="CENTER" width="6em"/>
+                <textField id="categoryField" property="objectClass.titleAndCode"
+                           dataContainer="activityProjectionAuditDc" width="25em"/>
+            </hbox>
+            <hbox>
+                <textField id="oldAmountField" property="oldAmount"
+                           dataContainer="activityProjectionAuditDc" label="Old Amount" width="10em"/>
+                <textField id="newAmountField" property="newAmount"
+                           dataContainer="activityProjectionAuditDc" label="New Amount" width="10em"/>
+                <textField id="changeAmountField" property="changeAmount"
+                           dataContainer="activityProjectionAuditDc" label="Change" width="10em"/>
+            </hbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
