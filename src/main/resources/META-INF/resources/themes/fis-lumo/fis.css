@@ -1,1 +1,168 @@
 /* Define your styles here */
+
+.bfy-selector-box {
+    /*background-color: rgb(112, 130, 154);*/
+    /*background-color:#859FC9;*/
+    background-color: #4E6D9F;
+    width: 85% !important;
+    margin: auto;
+}
+
+.fjc-view-title {
+    font-size: large;
+    font-weight: bold;
+    align-self: center;
+}
+
+.fjc-warning {
+    color: red;
+    /*font-weight: bold;*/
+}
+
+.fis-login {
+    background-image: url("./fis-icon.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    /*background-size: auto;*/
+    /*display: flex;*/
+    /*height: 5em;*/
+    width: 200px;
+    height: 200px;
+    /*object-fit: scale-down;*/
+}
+
+.jmix-main-view-title-holder {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: var(--lumo-space-s);
+    margin: calc(var(--lumo-space-m) * 14 / 16) 0;
+    margin-inline-start: var(--lumo-space-m);
+}
+
+.jmix-main-view-header-link {
+    display: flex;
+    align-items: center;
+    gap: var(--lumo-space-s);
+}
+
+/*.jmix-main-view-header-link:hover {*/
+/*    text-decoration: none;*/
+/*    cursor: pointer;*/
+/*}*/
+
+html {
+    --lumo-font-family: "Open Sans", sans-serif;
+    --turquoise: #4ccfe1;
+    --turquoise-dark: #248491;
+    --turquoise-light: #6aecff;
+    --turquoise-light-2: #baf7ff;
+    --dark-purple: #0A2044;
+    --app-layout-drawer-background-color: var(--dark-purple);
+
+    --button-counter-size: 1.25rem;
+
+    --lumo-base-color: #F1F3F9;
+    --secondary-base-color: #FFF;
+
+    --lumo-primary-color: rgb(76, 207, 225);
+    --lumo-primary-color-50pct: rgba(76, 207, 225, 0.5);
+    --lumo-primary-color-10pct: rgba(76, 207, 225, 0.1);
+    --lumo-primary-text-color: rgb(76, 207, 225);
+
+    --lumo-body-text-color: #4F5C78;
+    --lumo-disabled-text-color: #A0AAC0;
+
+    /* Button */
+
+    --vaadin-button-background: var(--secondary-base-color);
+    --vaadin-button-text-color: var(--lumo-body-text-color);
+
+    /* Grid */
+
+    --vaadin-grid-cell-background: var(--secondary-base-color);
+}
+
+.contrast-panel {
+    background-color: white;
+    border-radius: var(--lumo-border-radius-m);
+}
+
+/* Button */
+
+.jmix-logout-button {
+    --vaadin-button-tertiary-text-color: var(--vaadin-button-text-color);
+}
+
+/* ValuePicker Button */
+
+jmix-value-picker-button {
+    --_lumo-button-color: var(--vaadin-button-text-color);
+}
+
+/* Grid */
+
+vaadin-grid {
+    --_focus-ring-color: var(--turquoise-dark);
+    /*--_lumo-grid-selected-row-color: var(--lumo-primary-color);*/
+    --_lumo-grid-selected-row-color: var(--lumo-primary-color-50pct);
+
+    background-color: var(--secondary-base-color);
+}
+
+/* App Layout */
+
+vaadin-app-layout[primary-section="drawer"]::part(drawer) {
+    background: var(--app-layout-drawer-background-color);
+}
+
+.jmix-main-view-section {
+    --drawer-text-color: var(--lumo-primary-contrast-color);
+
+    --lumo-header-text-color: var(--drawer-text-color);
+    --lumo-body-text-color: var(--drawer-text-color);
+    --lumo-secondary-text-color: var(--drawer-text-color);
+    color: var(--drawer-text-color);
+
+    vaadin-details-summary::part(toggle) {
+        color: var(--drawer-text-color);
+    }
+
+    .jmix-menu-item-link:hover,
+    vaadin-details-summary:hover,
+    vaadin-details-summary:hover::part(toggle){
+        color: var(--lumo-primary-color);
+    }
+}
+
+.jmix-main-view-application-title-base-link {
+    padding: var(--lumo-space-s);
+}
+
+vaadin-grid::part(audit) {
+    background-color: var(--lumo-primary-color-10pct);
+}
+
+vaadin-grid::part(audit-header) {
+    background-color: var(--lumo-primary-color);
+}
+
+vaadin-grid::part(font-weight-bold) {
+    font-weight: bold;
+}
+
+vaadin-grid::part(border-right) {
+    border-right: var(--_lumo-grid-border-width) solid var(--_lumo-grid-border-color);
+}
+vaadin-grid::part(border-left) {
+    border-left: solid slategrey;
+}
+
+/* added 6/26/25 from bookstore sample for invoice layout */
+/* Creates a 2 column grid that is converted into 1 column if width is less then 25rem */
+.grid-panel {
+    display: grid;
+    width: 100%;
+    grid-gap: var(--lumo-space-m);
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+}
