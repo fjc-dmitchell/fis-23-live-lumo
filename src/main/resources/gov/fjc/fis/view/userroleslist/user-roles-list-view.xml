@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://userRolesListView.title">
-<data>
-    <collection id="usersDc"
-                class="gov.fjc.fis.entity.User">
-        <fetchPlan extends="_base"/>
-        <loader id="usersDl">
-            <query>
-                <![CDATA[
+    <data>
+        <collection id="usersDc"
+                    class="gov.fjc.fis.entity.User">
+            <fetchPlan extends="_base"/>
+            <loader id="usersDl">
+                <query>
+                    <![CDATA[
                         select e from fis_User e
                         where (:resourceRoleCode is null
                                or e.username in (
@@ -21,41 +21,46 @@
                                      and ra.roleType = 'row_level'))
                         order by e.username
                     ]]>
-            </query>
-        </loader>
-    </collection>
-</data>
+                </query>
+            </loader>
+        </collection>
+    </data>
     <layout>
-    <hbox id="filtersPanel" classNames="filters-panel" alignItems="END">
-        <comboBox id="resourceRoleFilter"
-                  label="msg://userRolesListView.resourceRoleFilter"
-                  width="16em"
-                  clearButtonVisible="true"/>
-        <comboBox id="rowLevelRoleFilter"
-                  label="msg://userRolesListView.rowLevelRoleFilter"
-                  width="16em"
-                  clearButtonVisible="true"/>
-        <button id="clearFiltersButton"
-                text="msg://actions.Clear"
-                icon="CLOSE"/>
-    </hbox>
-    <hbox id="buttonsPanel" classNames="buttons-panel">
-        <button id="refreshButton"
-                text="msg://actions.Refresh"
-                icon="REFRESH"/>
-    </hbox>
-    <dataGrid id="usersDataGrid"
-              width="100%" height="100%"
-              dataContainer="usersDc"
-              columnReorderingAllowed="true">
-        <columns>
-            <column property="username"/>
-            <column property="firstName"/>
-            <column property="lastName"/>
-            <column property="active"/>
-            <column key="resourceRoles" header="msg://userRolesListView.resourceRoles"/>
-            <column key="rowLevelRoles" header="msg://userRolesListView.rowLevelRoles"/>
-        </columns>
-    </dataGrid>
-</layout>
+        <hbox id="filtersPanel" classNames="filters-panel" alignItems="END">
+            <comboBox id="resourceRoleFilter"
+                      label="msg://userRolesListView.resourceRoleFilter"
+                      width="16em"
+                      clearButtonVisible="true"/>
+            <comboBox id="rowLevelRoleFilter"
+                      label="msg://userRolesListView.rowLevelRoleFilter"
+                      width="16em"
+                      clearButtonVisible="true"/>
+            <button id="clearFiltersButton"
+                    text="Clear"
+                    icon="CLOSE"/>
+        </hbox>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="refreshButton"
+                    text="Refresh"
+                    icon="REFRESH"/>
+            <button id="excelExportBtn" action="usersDataGrid.excelExportAction"/>
+            <gridColumnVisibility dataGrid="usersDataGrid" icon="COG"/>
+        </hbox>
+        <dataGrid id="usersDataGrid"
+                  width="100%" height="100%"
+                  dataContainer="usersDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="excelExportAction" type="grdexp_excelExport"/>
+            </actions>
+            <columns resizable="true">
+                <column property="username" width="10em" flexGrow="0"/>
+                <column property="firstName" width="10em" flexGrow="0"/>
+                <column property="lastName" width="10em" flexGrow="0"/>
+                <column property="active" width="7em" flexGrow="0"/>
+                <column key="resourceRoles" header="msg://userRolesListView.resourceRoles"/>
+                <column key="rowLevelRoles" header="msg://userRolesListView.rowLevelRoles"/>
+            </columns>
+        </dataGrid>
+    </layout>
 </view>

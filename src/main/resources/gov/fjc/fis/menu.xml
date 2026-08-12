@@ -93,6 +93,7 @@
     <menu id="application" title="msg://gov.fjc.fis/menu.application.title" opened="true">
         <item view="fis_User.list" title="msg://gov.fjc.fis.view.user/UserListView.title"/>
         <item view="fis_UserMessage.list" title="msg://gov.fjc.fis.view.usermessage/userMessageListView.title"/>
+        <item view="fis_UserRolesListView" title="msg://gov.fjc.fis.view.userroleslist/userRolesListView.title"/>
     </menu>
     <item view="flowui_UserSettingsItem.list"
           title="msg://gov.fjc.fis.view.usersettingsitem/userSettingsItemListView.title"/>
