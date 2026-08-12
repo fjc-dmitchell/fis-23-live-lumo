@@ -104,9 +104,10 @@ public class SalaryProjectionsReportData {
     }
 
     public String getFileName() {
-        return "Salary Projections for "
-                .concat(divisionTitle)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "Salary Projections for %s as of %s",
+                divisionTitle,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

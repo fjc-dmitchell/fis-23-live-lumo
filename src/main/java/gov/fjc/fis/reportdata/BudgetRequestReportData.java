@@ -164,9 +164,10 @@ public class BudgetRequestReportData {
     }
 
     public String getFileName() {
-        return "Budget Request FY"
-                .concat(budgetFiscalYear)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "Budget Request FY%s as of %s",
+                budgetFiscalYear,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

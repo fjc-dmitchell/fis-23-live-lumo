@@ -58,10 +58,11 @@ public class DivisionObligationReportData {
     }
 
     public String getFileName() {
-        return divisionAndBranch
-                .concat(" obligations for FY ")
-                .concat(budgetFiscalYear)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "%s obligations for FY %s as of %s",
+                divisionAndBranch,
+                budgetFiscalYear,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

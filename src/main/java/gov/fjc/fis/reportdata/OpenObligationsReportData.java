@@ -90,10 +90,11 @@ public class OpenObligationsReportData {
     }
 
     public String getFileName() {
-        return divisionAndBranch
-                .concat(" open obligations for FY ")
-                .concat(budgetFiscalYear)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "%s open obligations for FY %s as of %s",
+                divisionAndBranch,
+                budgetFiscalYear,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

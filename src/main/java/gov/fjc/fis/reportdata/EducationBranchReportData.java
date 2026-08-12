@@ -64,10 +64,11 @@ public class EducationBranchReportData {
     }
 
     public String getFileName() {
-        return branchTitle
-                .concat(" programs for FY ")
-                .concat(budgetFiscalYear)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "%s programs for FY %s as of %s",
+                branchTitle,
+                budgetFiscalYear,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

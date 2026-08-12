@@ -96,10 +96,11 @@ public class OpenTravelObligationsReportData {
     }
 
     public String getFileName() {
-        return divisionTitles
-                .concat(" open travel authorizations ")
-                .concat(getDateString())
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "%s open travel authorizations %s as of %s",
+                divisionTitles,
+                getDateString(),
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 }

@@ -56,10 +56,11 @@ public class StatusOfFundsReportData {
     }
 
     public String getFileName() {
-        return "Status of Funds FY"
-                .concat(budgetFiscalYear)
-                .concat(" as of ")
-                .concat(getDateTimeFilenameString(reportDateTime));
+        return String.format(
+                "Status of Funds FY%s as of %s",
+                budgetFiscalYear,
+                getDateTimeFilenameString(reportDateTime)
+        );
     }
 
     private BigDecimal sumFromCategories(Function<ObjectCategoryDto, BigDecimal> extractor) {
