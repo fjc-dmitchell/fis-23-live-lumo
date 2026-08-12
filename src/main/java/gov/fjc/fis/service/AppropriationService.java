@@ -23,6 +23,18 @@ public class AppropriationService {
         this.dataManager = dataManager;
     }
 
+    // refactor to reconciliation service, use unconstrained datamanager(?)
+    public List<Appropriation> getReconciliationAppropriations(int numberOfYears) {
+        String currentBfy = getCurrentBfy();
+        return dataManager.load(Appropriation.class)
+                .query("SELECT a FROM fis_Appropriation a"
+                        + " WHERE a.budgetFiscalYear <= :currentBfy"
+                        + " ORDER BY a.budgetFiscalYear DESC")
+                .parameter("currentBfy", currentBfy)
+                .maxResults(numberOfYears)
+                .list();
+    }
+
     public List<Appropriation> getAppropriations() {
         return dataManager.load(Appropriation.class)
                 .query("SELECT a FROM fis_Appropriation a ORDER BY a.budgetFiscalYear DESC")
