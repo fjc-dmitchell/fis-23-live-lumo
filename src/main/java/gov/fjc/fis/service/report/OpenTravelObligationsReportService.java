@@ -42,14 +42,6 @@ public class OpenTravelObligationsReportService {
             obbba = false;
         }
 
-//        Date beginDate = new Date(), endDate = new Date();
-//        if (bDate != null) {
-//            beginDate = Date.from(bDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//        }
-//        if (eDate != null) {
-//            endDate = Date.from(eDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//        }
-
         var travelAuthorizationId = DocumentType.TRAVEL_AUTHORIZATION.getId();
         var obligations = dataManager.loadValues(
                         "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, a.activityNumber,"
@@ -71,8 +63,6 @@ public class OpenTravelObligationsReportService {
                 .parameter("divisionCodes", divisionCodes)
                 .parameter("anyBeginDate", bDate == null)
                 .parameter("anyEndDate", eDate == null)
-//                .parameter("beginDate", beginDate, TemporalType.DATE)
-//                .parameter("endDate", endDate, TemporalType.DATE)
                 .parameter("beginDate", bDate)
                 .parameter("endDate", eDate)
                 .properties("fundCode", "budgetFiscalYear", "divisionCode", "activityNumber", "title",
@@ -105,8 +95,6 @@ public class OpenTravelObligationsReportService {
                     .parameter("divisionCodes", divisionCodes)
                     .parameter("anyBeginDate", bDate == null)
                     .parameter("anyEndDate", eDate == null)
-//                    .parameter("beginDate", beginDate, TemporalType.DATE)
-//                    .parameter("endDate", endDate, TemporalType.DATE)
                     .parameter("beginDate", bDate)
                     .parameter("endDate", eDate)
                     .properties("fundCode", "budgetFiscalYear", "divisionCode", "activityNumber", "title",
