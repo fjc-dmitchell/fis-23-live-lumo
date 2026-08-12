@@ -9,10 +9,7 @@
     <layout>
         <entityComboBox id="appropriationsComboBox" itemsContainer="appropriationsDc"
                         metaClass="fis_Appropriation" label="Appropriation" width="8em"/>
-<!--        <tabSheet id="dashboardTabSheet" width="100%" minHeight="50em">-->
-<!--            <tab id="reconciliation" label="Reconciliation">-->
-                <fragment id="reconFragment" class="gov.fjc.fis.view.reconciliationfragment.ReconciliationFragment"/>
-<!--            </tab>-->
-<!--        </tabSheet>-->
+        <button id="downloadButton" text="Download Reconciliation"/>
+        <fragment id="reconFragment" class="gov.fjc.fis.view.reconciliationfragment.ReconciliationFragment"/>
     </layout>
 </view>
