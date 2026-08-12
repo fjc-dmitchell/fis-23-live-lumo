@@ -6,6 +6,7 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import gov.fjc.fis.entity.dto.EmployeeDto;
 import gov.fjc.fis.entity.personnel.Employee;
 import gov.fjc.fis.service.AdministrationService;
+import io.jmix.core.SaveContext;
 import io.jmix.core.UnconstrainedDataManager;
 import io.jmix.email.*;
 import org.quartz.*;
@@ -35,24 +36,20 @@ public class LoadEmployeesJob implements Job {
 
     @Value("${hrmis.feed.directory}")
     private String feedDirectory;
-
     @Value("${hrmis.archive.directory}")
     private String archiveDirectory;
-
     @Value("${hrmis.file}")
     private String employeeFile;
-
     @Value("${hrmis.email.job-status.addresses}")
     private String jobStatusEmailAddresses;
 
-    private static final Logger log = LoggerFactory.getLogger(LoadEmployeesJob.class);
-
     private static final JobKey SYNC_EMPLOYEES_JOB_KEY = new JobKey("syncEmployeeToPosition", "HRMIS");
     private static final String ABEND_SUBJECT = "HRMIS feed processing ABENDED";
+    private static final Logger log = LoggerFactory.getLogger(LoadEmployeesJob.class);
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        log.info("LoadEmployees starting");
+        log.info("LoadEmployeesJob has been executed.");
         var employeeFilePath = Path.of(feedDirectory, employeeFile);
 
         if (!Files.exists(employeeFilePath)) {
@@ -62,7 +59,7 @@ public class LoadEmployeesJob implements Job {
 
         try {
             jdbcTemplate.execute("TRUNCATE TABLE FIS_EMPLOYEE");
-            loadEmployees(employeeFilePath.toString());
+            loadEmployees(employeeFilePath);
             administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT,
                     feedDirectory, archiveDirectory, employeeFile);
             scheduler.triggerJob(SYNC_EMPLOYEES_JOB_KEY);
@@ -91,8 +88,8 @@ public class LoadEmployeesJob implements Job {
         administrationService.sendEmail(jobStatusEmailAddresses, ABEND_SUBJECT, message);
     }
 
-    private void loadEmployees(String employeeFilePath) {
-        try (Reader reader = new FileReader(employeeFilePath)) {
+    private void loadEmployees(Path employeeFilePath) {
+        try (Reader reader = Files.newBufferedReader(employeeFilePath)) {
             CsvToBean<EmployeeDto> csvToBean = new CsvToBeanBuilder<EmployeeDto>(reader)
                     .withType(EmployeeDto.class)
                     .withSeparator('\t')
@@ -102,19 +99,22 @@ public class LoadEmployeesJob implements Job {
 
             List<EmployeeDto> employees = csvToBean.parse();
 
-            // this should perform batch save... send List<EmployeeDto>
+            SaveContext saveContext = new SaveContext();
+
             for (var employeeDto : employees) {
-                createEmployee(employeeDto);
+                Employee employee = createEmployee(employeeDto);
+                saveContext.saving(employee);
             }
+
+            unconstrainedDataManager.save(saveContext);
             log.info("Imported employees: {}", employees.size());
 
         } catch (IOException e) {
-            // log error. This job should re-throw an exception
             throw new RuntimeException(e);
         }
     }
 
-    void createEmployee(EmployeeDto employeeDto) {
+    Employee createEmployee(EmployeeDto employeeDto) {
         Employee employee = unconstrainedDataManager.create(Employee.class);
         employee.setPositionNbr(employeeDto.getPositionNbr());
         employee.setEmplid(employeeDto.getEmplid());
@@ -138,6 +138,6 @@ public class LoadEmployeesJob implements Job {
         employee.setGvtComprate(employeeDto.getGvtComprate());
         employee.setGvtLocalityAdj(employeeDto.getGvtLocalityAdj());
         employee.setGvtWorkSched(employeeDto.getGvtWorkSched());
-        unconstrainedDataManager.saveWithoutReload(employee);
+        return employee;
     }
 }
