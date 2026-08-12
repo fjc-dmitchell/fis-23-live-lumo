@@ -232,12 +232,14 @@ public class SalaryProjectionsReportView extends StandardView {
         var reportData = salaryProjectionsReportService.generateReportData(
                 division, startingPayPeriod, benefitsRatePct, ficaRatePct, bonusProjection, scale);
 
-//        var reportCode = reportOutputType.equals(ReportOutputType.PDF) ? "status-of-funds-pdf" : "status-of-funds-excel";
         var reportCode = "salary-projections";
+        // added for Jmix 3.0 since .withOutputType no longer overrides uploaded template
+        var templateCode = reportOutputType.equals(ReportOutputType.PDF) ? "salary-projections-pdf" : "salary-projections-excel";
         var fluentUiReportRunner = uiReportRunner.byReportCode(reportCode);
 
         fluentUiReportRunner.addParam("reportData", reportData)
-                .withOutputType(reportOutputType)
+                .withTemplateCode(templateCode)
+//                .withOutputType(reportOutputType)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
                 .runAndShow();
