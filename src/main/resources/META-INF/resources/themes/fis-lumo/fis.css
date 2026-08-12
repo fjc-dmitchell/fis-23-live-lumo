@@ -1,5 +1,39 @@
 /* Define your styles here */
 
+/* new for 3.0 */
+
+/* Make dropdown items black */
+
+
+#bfyEntry vaadin-combo-box-item {
+    color: #4F5C78;
+}
+
+/*!* Make the selected value inside the input field black *!*/
+/*#bfyEntry .vaadin-input {*/
+/*    color: black;*/
+/*}*/
+
+/* Vaadin color variables (helpful if the above selectors change in future Vaadin builds) */
+/*#bfyEntry {*/
+/*    --vaadin-combo-box-item-text-color: black;*/
+/*    --vaadin-input-field-value-color: black;*/
+/*}*/
+
+#bfySearch vaadin-multi-select-combo-box-item {
+    color: #4F5C78;
+}
+
+#bfySearch .vaadin-input {
+    color: #4F5C78;
+}
+
+/*#bfySearch {*/
+/*    --vaadin-combo-box-item-text-color: black;*/
+/*    --vaadin-input-field-value-color: black;*/
+/*}*/
+
+/* resume old*/
 .bfy-selector-box {
     /*background-color: rgb(112, 130, 154);*/
     /*background-color:#859FC9;*/
