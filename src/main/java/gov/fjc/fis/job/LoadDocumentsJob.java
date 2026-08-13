@@ -2,6 +2,7 @@ package gov.fjc.fis.job;
 
 import gov.fjc.fis.entity.Document;
 import gov.fjc.fis.service.AdministrationService;
+import io.jmix.core.SaveContext;
 import io.jmix.core.UnconstrainedDataManager;
 import io.jmix.core.security.Authenticated;
 import org.quartz.*;
@@ -22,7 +23,7 @@ import java.nio.file.Path;
 import static gov.fjc.fis.FisUtilities.cleanText;
 
 /**
- * Job to load Document files (purchase and travel) into FIS 2.1 and trigger processing job.
+ * Job to load Document files (purchase and travel) into FIS and trigger processing job.
  * Both the file directory and archive directory must exist with proper permissions and
  * have property keys defined. If email addresses properties are not configured,
  * job will attempt to send email to all administrators.
@@ -54,6 +55,7 @@ public class LoadDocumentsJob implements Job {
     @Value("${jifms.email.job-status.addresses}")
     private String jobStatusEmailAddresses;
 
+    private static final int BATCH_SIZE = 500;
     private static final JobKey PROCESS_DOCUMENTS_JOB_KEY = new JobKey("processDocuments", "JIFMS");
     private static final String ABEND_SUBJECT = "JIFMS feed processing ABENDED";
     private static final Logger log = LoggerFactory.getLogger(LoadDocumentsJob.class);
@@ -77,7 +79,7 @@ public class LoadDocumentsJob implements Job {
 
         try {
             processDocuments(purchasePath, travelPath);
-            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
+//            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
         } catch (Exception ex) {
             handleProcessingFailure(ex);
             throw new JobExecutionException("LoadDocuments failed", ex);
@@ -99,6 +101,7 @@ public class LoadDocumentsJob implements Job {
     }
 
     private void loadPurchaseOrders(Path purchaseFilePath) {
+        log.info("LoadDocuments: processing Purchase Orders");
         try (Reader reader = Files.newBufferedReader(purchaseFilePath)) {
 
             CsvToBean<PurchaseOrderDto> csvToBean = new CsvToBeanBuilder<PurchaseOrderDto>(reader)
@@ -107,13 +110,32 @@ public class LoadDocumentsJob implements Job {
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
+            SaveContext saveContext = new SaveContext();
+            int batchCount = 0;
+
             for (PurchaseOrderDto dto : csvToBean) {
+
+                // business rules
                 if (dto.getFundCode().equals("51140X") && !dto.getBudgetOrg().equals("JXXXXXF")) {
                     continue;
                 }
                 if (dto.getBbfy().compareTo(startingYear) >= 0) {
-                    createPurchaseDocument(dto);
+                    Document doc = createPurchaseDocument(dto);
+                    saveContext.saving(doc);
+                    batchCount++;
                 }
+
+                // flush batched records
+                if (batchCount == BATCH_SIZE) {
+                    unconstrainedDataManager.save(saveContext);
+                    saveContext = new SaveContext(); // reset for next batch
+                    batchCount = 0;
+                }
+            }
+
+            // flush any remaining records
+            if (batchCount > 0) {
+                unconstrainedDataManager.save(saveContext);
             }
 
         } catch (IOException e) {
@@ -122,6 +144,7 @@ public class LoadDocumentsJob implements Job {
     }
 
     private void loadTravelAuthorizations(Path travelFilePath) {
+        log.info("LoadDocuments: processing Travel Authorizations");
         try (Reader reader = Files.newBufferedReader(travelFilePath)) {
 
             CsvToBean<TravelAuthorizationDto> csvToBean =
@@ -131,13 +154,32 @@ public class LoadDocumentsJob implements Job {
                             .withIgnoreLeadingWhiteSpace(true)
                             .build();
 
+            SaveContext saveContext = new SaveContext();
+            int batchCount = 0;
+
             for (TravelAuthorizationDto dto : csvToBean) {
+
+                // business rules
                 if (dto.getFundCode().equals("51140X") && !dto.getBudgetOrg().equals("JXXXXXF")) {
                     continue;
                 }
                 if (dto.getBbfy().compareTo(startingYear) >= 0) {
-                    createTravelDocument(dto);
+                    Document doc = createTravelDocument(dto);
+                    saveContext.saving(doc);
+                    batchCount++;
                 }
+
+                // flush batched records
+                if (batchCount == BATCH_SIZE) {
+                    unconstrainedDataManager.save(saveContext);
+                    saveContext = new SaveContext();   // reset for next batch
+                    batchCount = 0;
+                }
+            }
+
+            // flush remaining items
+            if (batchCount > 0) {
+                unconstrainedDataManager.save(saveContext);
             }
 
         } catch (IOException e) {
@@ -193,8 +235,9 @@ public class LoadDocumentsJob implements Job {
      *
      * @param dto Purchase Order
      */
-    void createPurchaseDocument(PurchaseOrderDto dto) {
+    Document createPurchaseDocument(PurchaseOrderDto dto) {
         Document purchaseDocument = unconstrainedDataManager.create(Document.class);
+
         purchaseDocument.setFundCode(dto.getFundCode());
         purchaseDocument.setBbfy(dto.getBbfy());
         purchaseDocument.setEbfy(dto.getEbfy());
@@ -224,7 +267,8 @@ public class LoadDocumentsJob implements Job {
         purchaseDocument.setOutstandingAmount(dto.getOutstandingAmount());
         purchaseDocument.setPrepaidAmount(dto.getPrepaidAmount());
         purchaseDocument.setRefundedAmount(dto.getRefundedAmount());
-        unconstrainedDataManager.saveWithoutReload(purchaseDocument);
+
+        return purchaseDocument;
     }
 
     /**
@@ -234,8 +278,9 @@ public class LoadDocumentsJob implements Job {
      *
      * @param dto Travel Authorization
      */
-    void createTravelDocument(TravelAuthorizationDto dto) {
+    Document createTravelDocument(TravelAuthorizationDto dto) {
         Document travelDocument = unconstrainedDataManager.create(Document.class);
+
         travelDocument.setFundCode(dto.getFundCode());
         travelDocument.setBbfy(dto.getBbfy());
         travelDocument.setEbfy(dto.getEbfy());
@@ -264,6 +309,7 @@ public class LoadDocumentsJob implements Job {
         travelDocument.setOutstandingAmount(dto.getOutstandingAmount());
         travelDocument.setPrepaidAmount(dto.getPrepaidAmount());
         travelDocument.setRefundedAmount(dto.getRefundedAmount());
-        unconstrainedDataManager.saveWithoutReload(travelDocument);
+
+        return travelDocument;
     }
 }
