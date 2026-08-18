@@ -1,4 +1,4 @@
-package gov.fjc.fis.job;
+package gov.fjc.fis.job.hrmis;
 
 import gov.fjc.fis.entity.personnel.Employee;
 import gov.fjc.fis.entity.personnel.Position;

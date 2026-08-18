@@ -1,4 +1,4 @@
-package gov.fjc.fis.job;
+package gov.fjc.fis.job.hrmis;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;

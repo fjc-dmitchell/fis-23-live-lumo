@@ -1,7 +1,6 @@
 package gov.fjc.fis.service.report;
 
 import gov.fjc.fis.entity.Appropriation;
-import gov.fjc.fis.job.LoadEmployeesJob;
 import gov.fjc.fis.service.AppropriationService;
 import gov.fjc.fis.service.ObligationService;
 import io.jmix.email.EmailAttachment;
@@ -38,7 +37,7 @@ public class ReconciliationReportService {
     private final ObligationService obligationService;
     private final ReportRunner reportRunner;
 
-    private static final Logger log = LoggerFactory.getLogger(LoadEmployeesJob.class);
+    private static final Logger log = LoggerFactory.getLogger(ReconciliationReportService.class);
 
     public ReconciliationReportService(AppropriationService appropriationService,
                                        ObligationService obligationService,
