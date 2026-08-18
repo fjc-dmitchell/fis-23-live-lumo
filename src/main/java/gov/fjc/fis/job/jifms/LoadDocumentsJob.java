@@ -1,4 +1,4 @@
-package gov.fjc.fis.job;
+package gov.fjc.fis.job.jifms;
 
 import gov.fjc.fis.entity.Document;
 import gov.fjc.fis.service.AdministrationService;
@@ -79,7 +79,7 @@ public class LoadDocumentsJob implements Job {
 
         try {
             processDocuments(purchasePath, travelPath);
-//            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
+            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
         } catch (Exception ex) {
             handleProcessingFailure(ex);
             throw new JobExecutionException("LoadDocuments failed", ex);
@@ -96,8 +96,10 @@ public class LoadDocumentsJob implements Job {
         log.info("Load Documents executed with purchasePath={} travelPath={}",
                 purchasePath, travelPath);
 
-        administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT, feedDirectory, archiveDirectory, purchaseFile);
-        administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT, feedDirectory, archiveDirectory, travelFile);
+        administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT,
+                feedDirectory, archiveDirectory, purchaseFile);
+        administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT,
+                feedDirectory, archiveDirectory, travelFile);
     }
 
     private void loadPurchaseOrders(Path purchaseFilePath) {
