@@ -1,4 +1,4 @@
-package gov.fjc.fis.job;
+package gov.fjc.fis.job.jifms;
 
 import gov.fjc.fis.service.AdministrationService;
 import gov.fjc.fis.service.report.ReconciliationReportService;
