@@ -25,7 +25,7 @@ public class StatusOfFundsReportData {
         this.budgetFiscalYear = appropriation.getBudgetFiscalYear();
         this.oneYearAppropriation = appropriation.getOneYearAmount();
         this.twoYearAppropriation = appropriation.getTwoYearAmount();
-        reportDateTime = getDateTime();
+        this.reportDateTime = getDateTime();
         this.obbbaDivisionCode = (obbbaDivision != null)
                 ? obbbaDivision.getDivisionCode()
                 : null;

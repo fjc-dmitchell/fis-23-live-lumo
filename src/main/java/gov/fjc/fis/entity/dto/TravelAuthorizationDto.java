@@ -36,11 +36,11 @@ public class TravelAuthorizationDto {
     private String vendorName;
 
     @CsvBindByPosition(position = 17)
-    @CsvDate(value = "yyyy/MM/dd")
+    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate travelStartDate;
 
     @CsvBindByPosition(position = 18)
-    @CsvDate(value = "yyyy/MM/dd")
+    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate travelEndDate;
 
     @CsvBindByPosition(position = 21)
@@ -50,7 +50,7 @@ public class TravelAuthorizationDto {
     private BigDecimal closedAmount;
 
     @CsvBindByPosition(position = 22)
-    @CsvDate(value = "yyyy/MM/dd")
+    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate closedDate;
 
     @CsvBindByPosition(position = 11)
@@ -82,7 +82,7 @@ public class TravelAuthorizationDto {
     private LocalDateTime documentCreationDate;
 
     @CsvBindByPosition(position = 7)
-    @CsvDate(value = "yyyy/MM/dd")
+    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate documentDate;
 
     @CsvBindByPosition(position = 6)

@@ -101,7 +101,7 @@ public class LoadDocumentsJob implements Job {
     }
 
     private void loadPurchaseOrders(Path purchaseFilePath) {
-        log.info("LoadDocuments: processing Purchase Orders");
+        log.info("LoadDocuments: loading Purchase Orders");
         try (Reader reader = Files.newBufferedReader(purchaseFilePath)) {
 
             CsvToBean<PurchaseOrderDto> csvToBean = new CsvToBeanBuilder<PurchaseOrderDto>(reader)
@@ -144,7 +144,7 @@ public class LoadDocumentsJob implements Job {
     }
 
     private void loadTravelAuthorizations(Path travelFilePath) {
-        log.info("LoadDocuments: processing Travel Authorizations");
+        log.info("LoadDocuments: loading Travel Authorizations");
         try (Reader reader = Files.newBufferedReader(travelFilePath)) {
 
             CsvToBean<TravelAuthorizationDto> csvToBean =

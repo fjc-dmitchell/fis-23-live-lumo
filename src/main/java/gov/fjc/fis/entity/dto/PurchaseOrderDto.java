@@ -77,7 +77,7 @@ public class PurchaseOrderDto {
     private LocalDateTime documentCreationDate;
 
     @CsvBindByPosition(position = 7)
-    @CsvDate(value = "yyyy/MM/dd")
+    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate documentDate;
 
     @CsvBindByPosition(position = 6)
