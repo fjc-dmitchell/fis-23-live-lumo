@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static gov.fjc.fis.FisUtilities.nonZero;
 import static java.util.Objects.requireNonNullElse;
@@ -16,7 +17,8 @@ import static java.util.Objects.requireNonNullElse;
 @JmixEntity
 @Table(name = "FIS_DOCUMENT_AUDIT", indexes = {
         @Index(name = "IDX_FIS_DOCUMENT_AUDIT", columnList = "DOCUMENT_BBFY"),
-        @Index(name = "IDX_FIS_DOCUMENT_AUDIT_REJECT_IDX", columnList = "PROCESS_STATUS, DOCUMENT_FUND_CODE, DOCUMENT_BBFY, DOCUMENT_BUDGET_ORG, DOCUMENT_DOCUMENT_TYPE, DOCUMENT_DOCUMENT_NUMBER, DOCUMENT_LINE_NUMBER, DOCUMENT_BOC, DOCUMENT_AMOUNT")
+        @Index(name = "IDX_FIS_DOCUMENT_AUDIT_REJECT_IDX", columnList = "PROCESS_STATUS, DOCUMENT_FUND_CODE, DOCUMENT_BBFY, DOCUMENT_BUDGET_ORG, DOCUMENT_DOCUMENT_TYPE, DOCUMENT_DOCUMENT_NUMBER, DOCUMENT_LINE_NUMBER, DOCUMENT_BOC, DOCUMENT_AMOUNT"),
+        @Index(name = "IDX_FIS_DOCUMENT_AUDIT_PROCESS_IDX", columnList = "DOCUMENT_BBFY, DOCUMENT_FUND_CODE, DOCUMENT_BUDGET_ORG, DOCUMENT_BOC, DOCUMENT_DOCUMENT_NUMBER")
 })
 @Entity(name = "fis_DocumentAudit")
 public class DocumentAudit {
@@ -517,7 +519,10 @@ public class DocumentAudit {
     @DependsOnProperties({"documentAmount", "obligationAmount"})
     @JmixProperty
     public BigDecimal getFcnAmount() {
-        var value = documentAmount.subtract(requireNonNullElse(obligationAmount, BigDecimal.ZERO));
+        BigDecimal value = BigDecimal.ZERO;
+        if(Objects.equals(processStatus, "U")) {
+            value = documentAmount.subtract(requireNonNullElse(obligationAmount, BigDecimal.ZERO));
+        }
         return nonZero(value) ? value : null;
     }
 

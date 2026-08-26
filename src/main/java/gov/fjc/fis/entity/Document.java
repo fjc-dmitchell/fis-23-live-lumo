@@ -20,7 +20,7 @@ import static gov.fjc.fis.FisUtilities.getLoadedByString;
 @JmixEntity
 @Table(name = "FIS_DOCUMENT", indexes = {
         @Index(name = "IDX_FIS_DOCUMENT", columnList = "BBFY"),
-        @Index(name = "IDX_FIS_PROCESS_IDX", columnList = "BBFY, FUND_CODE, BUDGET_ORG, BOC, DOCUMENT_NUMBER")
+        @Index(name = "IDX_FIS_PROCESS_IDX", columnList = "BBFY, BUDGET_ORG, DOCUMENT_NUMBER, BOC")
 })
 @Entity(name = "fis_Document")
 public class Document {

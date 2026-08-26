@@ -64,7 +64,9 @@ public class DocumentAuditDetailView extends StandardDetailView<DocumentAudit> {
             toggleExceptionButtons(!documentExceptionService.exceptionExists(audit));
         }
 
-        obligationStatusString.setValue(audit.getObligationStatus() ? "Closed" : "Open");
+        if (audit.getObligationStatus() != null) {
+            obligationStatusString.setValue(audit.getObligationStatus() ? "Closed" : "Open");
+        }
 
         var bbfy = audit.getDocumentBbfy();
         var ebfy = audit.getDocumentEbfy();
