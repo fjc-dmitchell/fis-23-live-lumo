@@ -2,6 +2,8 @@ package gov.fjc.fis.entity.dto;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.processor.ConvertEmptyOrBlankStringsToNull;
+import com.opencsv.bean.processor.PreAssignmentProcessor;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 
 import java.math.BigDecimal;
@@ -54,6 +56,7 @@ public class TravelAuthorizationDto {
     private LocalDate closedDate;
 
     @CsvBindByPosition(position = 11)
+    @PreAssignmentProcessor(processor = ConvertEmptyOrBlankStringsToNull.class)
     private String fjc;
 
     @CsvBindByPosition(position = 23)
