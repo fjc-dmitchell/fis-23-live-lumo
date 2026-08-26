@@ -17,9 +17,9 @@
             <loader id="objectClassesDl" readOnly="true"/>
         </collection>
     </data>
-        <facets>
-            <dataLoadCoordinator auto="true"/>
-        </facets>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
@@ -63,10 +63,10 @@
         </vbox>
         <vbox>
             <p id="createdByString"/>
+            <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+                <button id="saveAndCloseButton" action="saveAction"/>
+                <button id="closeButton" action="closeAction"/>
+            </hbox>
         </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
-            <button id="saveAndCloseButton" action="saveAction"/>
-            <button id="closeButton" action="closeAction"/>
-        </hbox>
     </layout>
 </view>

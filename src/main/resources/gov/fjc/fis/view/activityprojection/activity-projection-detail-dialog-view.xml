@@ -24,8 +24,8 @@
         <action id="closeAction" type="detail_close"/>
     </actions>
     <layout alignItems="STRETCH"
-            padding="false" spacing="false"
-            expand="contentBox" width="750px">
+            padding="false"
+            expand="contentBox" width="750px" spacing="false">
         <vbox id="contentBox" css="overflow: auto" padding="false">
             <vbox id="formWrapper" classNames="contrast-panel">
                 <formLayout id="form" dataContainer="activityProjectionDc" classNames="contrast-panel">
@@ -33,7 +33,8 @@
                         <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
                     </responsiveSteps>
                     <formItem id="categoryFormItem" label="Category">
-                        <entityComboBox id="categoryField" itemsContainer="categoriesDc" metaClass="fis_ObjectCategory"/>
+                        <entityComboBox id="categoryField" itemsContainer="categoriesDc"
+                                        metaClass="fis_ObjectCategory"/>
                     </formItem>
                     <formItem>
                         <entityComboBox id="objectClassField" property="objectClass" itemsContainer="objectClassesDc"/>
@@ -46,10 +47,10 @@
         </vbox>
         <vbox>
             <p id="createdByString"/>
+            <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+                <button id="saveAndCloseButton" action="saveAction"/>
+                <button id="closeButton" action="closeAction"/>
+            </hbox>
         </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
-            <button id="saveAndCloseButton" action="saveAction"/>
-            <button id="closeButton" action="closeAction"/>
-        </hbox>
     </layout>
 </view>

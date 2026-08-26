@@ -45,11 +45,11 @@
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
-
-    <layout alignItems="STRETCH"
-            padding="false" spacing="false"
-            expand="contentBox">
-        <vbox id="contentBox" classNames="overflow-auto">
+    <layout expand="contentBox">
+<!--    <layout alignItems="STRETCH"-->
+<!--            padding="false" spacing="false"-->
+<!--            expand="contentBox">-->
+        <vbox id="contentBox" classNames="overflow-auto" padding="false">
 
             <div classNames="contrast-panel">
                 <vbox>
@@ -237,9 +237,7 @@
             </vbox>
 
         </vbox>
-        <vbox>
             <p id="createdByString"/>
-        </vbox>
         <hbox id="detailActions"
               classNames="px-m py-s bg-contrast-5">
             <button id="saveAndCloseBtn" action="saveAction"/>

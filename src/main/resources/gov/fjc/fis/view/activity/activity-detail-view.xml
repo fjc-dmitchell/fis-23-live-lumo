@@ -62,21 +62,24 @@
                         <textField id="budgetFiscalYearField" width="9em"
                                    label="Budget Fiscal Year" datatype="string" readOnly="true"/>
                         <entityComboBox id="divisionField" itemsContainer="divisionsDc"
-                                        property="division" label="Division" width="25em"/>
+                                        property="division" label="Division" width="25em" dataContainer="activityDc"/>
                         <entityComboBox id="fundField" itemsContainer="fundsDc" property="fund"
-                                        label="Fund" width="13em"/>
+                                        label="Fund" width="13em" dataContainer="activityDc"/>
                         <!--                    <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"/>-->
                     </hbox>
                     <hbox id="costOrgBox" colspan="2" visible="false">
                         <entityComboBox id="costOrgField" itemsContainer="costOrgsDc" property="costOrg" label="Cost Org" width="30em"
-                                        requiredMessage="The division receiving the benefit is required when using the mandatory fund"/>
+                                        requiredMessage="The division receiving the benefit is required when using the mandatory fund"
+                                        dataContainer="activityDc"/>
                     </hbox>
                     <hbox colspan="2">
                         <textField id="activityNumberField" property="activityNumber" width="9em"
                                    label="Activity Number"
-                                   datatype="string"/>
-                        <textField id="titleField" property="title" width="42em" label="Title"/>
-                        <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"/>
+                                   datatype="string" dataContainer="activityDc"/>
+                        <textField id="titleField" property="title" width="42em" label="Title"
+                                   dataContainer="activityDc"/>
+                        <textField id="sortCodeField" property="sortCode" width="6em" label="Sort Code"
+                                   dataContainer="activityDc"/>
                     </hbox>
                     <!--                <textField id="budgetFiscalYearField" enabled="false" datatype="string" label="Budget Fiscal Year"-->
                     <!--                           width="150px"/>-->
@@ -114,8 +117,10 @@
 
 
                     <hbox>
-                        <checkbox id="trainingProjectField" property="trainingProject" label="Training Project"/>
-                        <checkbox id="canceledField" property="canceled" label="Canceled" visible="false"/>
+                        <checkbox id="trainingProjectField" property="trainingProject" label="Training Project"
+                                  dataContainer="activityDc"/>
+                        <checkbox id="canceledField" property="canceled" label="Canceled" visible="false"
+                                  dataContainer="activityDc"/>
                     </hbox>
 
                     <checkbox id="genericProjectionField" property="genericProjection"/>
@@ -125,36 +130,43 @@
                              visible="false">
                         <vbox spacing="false">
                             <hbox>
-                                <textField id="cityField" property="city" label="City" width="12em"/>
-                                <textField id="stateField" property="state" label="State" width="5em"/>
-                                <datePicker id="startDateField" property="startDate" label="Start Date" width="8em"/>
-                                <datePicker id="endDateField" property="endDate" label="End Date" width="8em"/>
+                                <textField id="cityField" property="city" label="City" width="12em"
+                                           dataContainer="activityDc"/>
+                                <textField id="stateField" property="state" label="State" width="5em"
+                                           dataContainer="activityDc"/>
+                                <datePicker id="startDateField" property="startDate" label="Start Date" width="8em"
+                                            dataContainer="activityDc"/>
+                                <datePicker id="endDateField" property="endDate" label="End Date" width="8em"
+                                            dataContainer="activityDc"/>
                             </hbox>
                             <hbox>
                                 <textField id="programDirectorField" property="programDirector" label="Program Director"
-                                           width="25em"/>
-                                <textField id="shortTitleField" property="shortTitle" label="Short Title (optional override)" width="30em"/>
+                                           width="25em" dataContainer="activityDc"/>
+                                <textField id="shortTitleField" property="shortTitle" label="Short Title (optional override)" width="30em"
+                                           dataContainer="activityDc"/>
                             </hbox>
                             <hbox>
                                 <textField id="initialProjectionField" property="initialProjection"
                                            label="Initial Projection"
-                                           width="10em"/>
+                                           width="10em" dataContainer="activityDc"/>
                                 <checkbox id="addedToPlanField" property="addedToPlan" label="Added to Spending Plan"
-                                          alignSelf="END"/>
+                                          alignSelf="END" dataContainer="activityDc"/>
                                 <textField id="numberParticipantsField" property="numberParticipants"
                                            label="# Participants"
-                                           width="8em"/>
+                                           width="8em" dataContainer="activityDc"/>
                                 <textField id="numberProgramsField" property="numberPrograms" label="# Programs"
-                                           width="8em"/>
+                                           width="8em" dataContainer="activityDc"/>
                                 <textField id="numberFacultyField" property="numberFaculty" label="# Faculty"
-                                           width="8em"/>
+                                           width="8em" dataContainer="activityDc"/>
                                 <checkbox id="participantCountFinalField" property="participantCountFinal"
                                           label="Participant Count Final"
-                                          alignSelf="END"/>
+                                          alignSelf="END" dataContainer="activityDc"/>
                             </hbox>
                             <hbox>
-                                <textField id="noteField" property="note" label="Note" width="30em"/>
-                                <textField id="reportNoteField" property="reportNote" label="Report note" width="30em"/>
+                                <textField id="noteField" property="note" label="Note" width="30em"
+                                           dataContainer="activityDc"/>
+                                <textField id="reportNoteField" property="reportNote" label="Report note" width="30em"
+                                           dataContainer="activityDc"/>
                             </hbox>
                         </vbox>
                     </details>
