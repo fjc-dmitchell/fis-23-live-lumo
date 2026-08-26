@@ -19,8 +19,8 @@
                                 label="Document ID" width="18em" autoApply="false"/>
                 <propertyFilter id="vendorSearch" property="vendor" operation="CONTAINS" dataLoader="obligationsDl"
                                 label="Vendor" width="25em" autoApply="false"/>
-                <propertyFilter id="actnumSearch" property="activity.activityNumber" operation="CONTAINS"
-                                dataLoader="obligationsDl" label="Activity Number" width="13em" autoApply="false"/>
+                <propertyFilter id="actnumSearch" property="activity.activityNumber" operation="STARTS_WITH"
+                                dataLoader="obligationsDl" label="Activity Number" width="17em" autoApply="false"/>
             </hbox>
             <hbox>
                 <propertyFilter id="amountSearch" property="amount" operation="EQUAL" dataLoader="obligationsDl"

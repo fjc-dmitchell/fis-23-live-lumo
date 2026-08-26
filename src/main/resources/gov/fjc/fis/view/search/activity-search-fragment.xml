@@ -9,7 +9,7 @@
         <vbox id="root" padding="false" spacing="false">
             <hbox alignItems="CENTER">
                 <propertyFilter id="actnumSearch" property="activityNumber" operation="STARTS_WITH"
-                                dataLoader="activitiesDl" label="Activity Number" width="13em" parameterName="act"
+                                dataLoader="activitiesDl" label="Activity Number" width="17em" parameterName="act"
                                 autoApply="false"/>
                 <propertyFilter id="titleSearch" property="title" operation="CONTAINS" dataLoader="activitiesDl"
                                 label="Title" width="25em" parameterName="title" autoApply="false"/>

@@ -28,6 +28,8 @@ public class FcnSearchFragment extends EntitySearchFragment {
     private PropertyFilter<Object> obligationVendorSearch;
     @ViewComponent
     private PropertyFilter<Boolean> obligationStatusSearch;
+    @ViewComponent
+    private PropertyFilter<Object> actnumSearch;
 
     @Override
     protected void additionalFragmentActions() {
@@ -62,6 +64,8 @@ public class FcnSearchFragment extends EntitySearchFragment {
                 case "obligation.status":
                     obligationStatusSearch.setValue((Boolean) value);
                     break;
+                case "obligation.activity.activityNumber":
+                    actnumSearch.setValue(value);
             }
         }
     }

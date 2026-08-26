@@ -31,6 +31,8 @@ public class InvoiceSearchFragment extends EntitySearchFragment {
     private PropertyFilter<Boolean> obligationStatusSearch;
     @ViewComponent
     private PropertyFilter<Object> obligationDocnumSearch;
+    @ViewComponent
+    private PropertyFilter<Object> actnumSearch;
 
     @Override
     protected void additionalFragmentActions() {
@@ -74,6 +76,8 @@ public class InvoiceSearchFragment extends EntitySearchFragment {
                 case "obligation.status":
                     obligationStatusSearch.setValue((Boolean) value);
                     break;
+                case "obligation.activity.activityNumber":
+                    actnumSearch.setValue(value);
             }
         }
     }

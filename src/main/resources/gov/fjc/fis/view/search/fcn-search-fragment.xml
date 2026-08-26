@@ -14,6 +14,8 @@
                 <propertyFilter id="fcnDateSearch" property="fcnDate" operation="EQUAL"
                                 dataLoader="fundControlNoticesDl" operationEditable="true" label="FCN Date"
                                 autoApply="false"/>
+                <propertyFilter id="actnumSearch" property="obligation.activity.activityNumber" operation="EQUAL"
+                                dataLoader="fundControlNoticesDl" label="Activity Number" width="13em" autoApply="false"/>
             </hbox>
             <hbox id="objectClassBox" alignItems="CENTER">
                 <span text="Obligation Category"/>

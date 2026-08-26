@@ -19,6 +19,8 @@
                                 dataLoader="invoicesDl" operationEditable="true" label="Invoice Date" autoApply="false"/>
                 <propertyFilter id="invoicePaidDateSearch" property="paymentDate" operation="EQUAL"
                                 dataLoader="invoicesDl" operationEditable="true" label="Paid Date" autoApply="false"/>
+                <propertyFilter id="actnumSearch" property="obligation.activity.activityNumber" operation="EQUAL"
+                                dataLoader="invoicesDl" label="Activity Number" width="13em" autoApply="false"/>
             </hbox>
             <hbox id="objectClassBox" alignItems="CENTER">
                 <span text="Obligation Category"/>
