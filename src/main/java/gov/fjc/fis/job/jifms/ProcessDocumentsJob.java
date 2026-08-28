@@ -86,7 +86,7 @@ public class ProcessDocumentsJob implements Job {
                     AuditRecord audit = new AuditRecord();
                     Processor processingPipeline = Processor.chain(List.of(
                             Processors.processObligation(jifmsQueryService, audit),
-                            Processors.projection(jifmsQueryService, audit),
+                            Processors.projection(jifmsQueryService, objectClassMap, audit),
                             Processors.allocation(jifmsQueryService),
                             Processors.fcn(jifmsQueryService),
                             Processors.vendor(jifmsQueryService)
@@ -96,11 +96,11 @@ public class ProcessDocumentsJob implements Job {
                     if (!(processingResult instanceof ProcessingResult.Ignored)) {
                         if ((processingResult instanceof ProcessingResult.Inserted)) {
                             documentAuditService.recordInsert(resolvedContext, audit);
-                            log.warn("Inserted documents for document " + document.getDocumentNumber());
+                            log.info("Inserted documents for document: {}", document.getDocumentNumber());
                         }
                         if ((processingResult instanceof ProcessingResult.Updated)) {
                             documentAuditService.recordUpdate(resolvedContext, audit);
-                            log.warn("Updated documents for document " + document.getDocumentNumber());
+                            log.info("Updated documents for document: {}", document.getDocumentNumber());
                         }
                     }
                 }

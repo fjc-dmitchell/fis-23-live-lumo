@@ -8,30 +8,11 @@ public interface Processor {
     ProcessingResult apply(ResolvedContext ctx);
 
     /**
-     * Compose two processors sequentially.
-     * Only the first processor (obligation) determines INSERTED vs UPDATED.
-     * Subsequent processors always return UPDATED but must not override INSERTED.
+     * Compose three obligation processor results. IGNORE indicates no changes
+     * so short-circuit and skip remaining steps. INSERTED and UPDATED preserve
+     * the result and continue steps. CONTINUE is a pass-through result
+     * for remaining processors and is not preserved.
      */
-//    default Processor and(Processor next) {
-//        return ctx -> {
-//            ProcessingResult result = this.apply(ctx);
-//
-//            // IGNORE means skip the rest of the chain entirely
-//            if (result instanceof ProcessingResult.Ignored) {
-//                return ProcessingResult.Ignored.INSTANCE;
-//            }
-//
-//            // If the current result is INSERTED, we run next
-//            // but must not overwrite INSERTED
-//            if (result instanceof ProcessingResult.Inserted) {
-//                next.apply(ctx);
-//                return ProcessingResult.Inserted.INSTANCE;
-//            }
-//
-//            // Otherwise Updated → run next, return its result (always Updated)
-//            return next.apply(ctx);
-//        };
-//    }
     default Processor and(Processor next) {
         return ctx -> {
             ProcessingResult result = this.apply(ctx);

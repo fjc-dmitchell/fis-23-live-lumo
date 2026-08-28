@@ -1,6 +1,7 @@
 package gov.fjc.fis.job.jifms;
 
 import gov.fjc.fis.entity.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ final class Validators {
             if (fund == null)
                 return new ValidationResult.Fail("Invalid fund: " + ctx.getDocument().getFundCode());
 
-            ctx.withFund(fund);
+            ctx.setFund(fund);
             return ValidationResult.Ok.INSTANCE;
         };
     }
@@ -36,64 +37,64 @@ final class Validators {
                 return new ValidationResult.Fail(msg);
             }
 
-            ctx.withDivision(matches.getFirst());
+            ctx.setDivision(matches.getFirst());
             return ValidationResult.Ok.INSTANCE;
         };
     }
 
     static Validator activityExists(JifmsQueryService q) {
         return ctx -> {
-            var act = q.fetchActivity(ctx.getDivision(), ctx.getDocument().getProject());
+            var activity = q.fetchActivity(ctx.getDivision(), ctx.getDocument().getProject());
 
-            if (act == null)
+            if (activity == null)
                 return new ValidationResult.Fail("Invalid activity: " + ctx.getDocument().getProject());
 
-            if (!act.getFund().equals(ctx.getFund()))
-                return new ValidationResult.Fail("Invalid activity fund: " + act.getFund().getFundCode());
+            if (!activity.getFund().equals(ctx.getFund()))
+                return new ValidationResult.Fail("Invalid activity fund: " + activity.getFund().getFundCode());
 
-            var genAct = q.fetchGenericActivity(act);
+            var genericActivity = q.fetchGenericActivity(activity);
 
-            ctx.withActivity(act)
-                    .withProjectionActivity(genAct == null ? act : genAct);
+            ctx.setActivity(activity);
+            ctx.setProjectionActivity(genericActivity == null ? activity : genericActivity);
 
             return ValidationResult.Ok.INSTANCE;
         };
     }
 
-    static Validator objectClassKnown(Map<String, ObjectClass> bocMap) {
+    static Validator objectClassKnown(Map<String, ObjectClass> objectClassMap) {
         return ctx -> {
-            var boc = ctx.getDocument().getBudgetObjectClass();
-            var oc = bocMap.get(boc);
+            var documentBoc = ctx.getDocument().getBudgetObjectClass();
+            var fisObjectClass = objectClassMap.get(documentBoc);
 
-            if (oc == null)
-                return new ValidationResult.Fail("Invalid objectClass: " + boc);
+            if (fisObjectClass == null)
+                return new ValidationResult.Fail("Invalid objectClass: " + documentBoc);
 
-            ctx.withObjectClass(oc);
+            ctx.setObjectClass(fisObjectClass);
             return ValidationResult.Ok.INSTANCE;
         };
     }
 
-    static Validator genericObjectClassWhenGeneric(Map<String, ObjectClass> bocMap) {
+    static Validator genericObjectClassWhenGeneric(Map<String, ObjectClass> objectClassMap) {
         return ctx -> {
             var activity = ctx.getProjectionActivity();
 
             if (activity != null && activity.getGenericProjection()) {
-                var boc = ctx.getDocument().getBudgetObjectClass();
+                var documentBoc = ctx.getDocument().getBudgetObjectClass();
 
-                if (boc == null || boc.length() < 2)
-                    return new ValidationResult.Fail("Generic BOC derivation failed: invalid BOC: " + boc);
+                if (documentBoc == null || documentBoc.length() < 2)
+                    return new ValidationResult.Fail("Generic BOC derivation failed: invalid BOC: " + documentBoc);
 
-                var genericBoc = boc.substring(0, 2) + "00";
-                var genOc = bocMap.get(genericBoc);
+                var genericBoc = documentBoc.substring(0, 2) + "00";
+                var fisObjectClass = objectClassMap.get(genericBoc);
 
-                if (genOc == null)
+                if (fisObjectClass == null)
                     return new ValidationResult.Fail("Generic BOC required but not found: " + genericBoc);
 
-                ctx.withProjectionObjectClass(genOc);
+                ctx.setProjectionObjectClass(fisObjectClass);
                 return ValidationResult.Ok.INSTANCE;
             }
 
-            ctx.withProjectionObjectClass(ctx.getObjectClass());
+            ctx.setProjectionObjectClass(ctx.getObjectClass());
             return ValidationResult.Ok.INSTANCE;
         };
     }

@@ -4,6 +4,7 @@ import gov.fjc.fis.entity.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -18,28 +19,33 @@ public final class Processors {
             var doc = ctx.getDocument();
             var obligation = q.fetchObligation(ctx.getDivision(), doc.getDocumentNumber(), doc.getLineNumber());
             if (obligation == null) {
-                // calculate delta
                 obligation = q.createObligationFrom(ctx);
-                ctx.withObligation(obligation);
-                ctx.setObligationAmountDifference(BigDecimal.ZERO);
-                audit.setLoggedChanges(String.format("NEW Obligation: %s", doc.getDocumentNumber()));
+                ctx.setObligation(obligation);
+                ctx.setObligationAmountDifference(ctx.getDocument().getAmount());
+                audit.setLoggedChanges(String.format("NEW Obligation created: %s", doc.getDocumentNumber()));
                 q.saveObligation(obligation);
                 return ProcessingResult.Inserted.INSTANCE;
             } else {
                 // on update, save original obligation fields
                 audit.setObligationAuditFields(ObligationAuditFields.from(obligation));
 
-//                ctx.setObligationAmountDifference(
-//                        Objects.requireNonNullElse(obligation.getAmount(), BigDecimal.ZERO)
-//                                .subtract(Objects.requireNonNullElse(ctx.getDocument().getAmount(), BigDecimal.ZERO)));
-                ctx.setObligationAmountDifference(
-                        Objects.requireNonNullElse(ctx.getDocument().getAmount(), BigDecimal.ZERO)
-                                .subtract(Objects.requireNonNullElse(obligation.getAmount(), BigDecimal.ZERO))
-                );
-                ctx.withObligation(obligation);
+                var obligationAmountDifference = Objects.requireNonNullElse(ctx.getDocument().getAmount(), BigDecimal.ZERO)
+                        .subtract(Objects.requireNonNullElse(obligation.getAmount(), BigDecimal.ZERO));
+
+                ctx.setObligationAmountDifference(obligationAmountDifference);
+
+                ctx.setFcnRequired(BigDecimal.ZERO.compareTo(obligationAmountDifference) != 0);
+
+                if (!Objects.equals(obligation.getActivity().getId(), ctx.getActivity().getId())) {
+                    ctx.setPreviousActivity(obligation.getActivity());
+                }
+                if (!Objects.equals(obligation.getObjectClass().getId(), ctx.getObjectClass().getId())) {
+                    ctx.setPreviousObjectClass(obligation.getObjectClass());
+                }
+
+                ctx.setObligation(obligation);
                 var updated = updateObligation(ctx, audit);
                 if (updated) {
-                    ctx.withObligation(obligation);
                     q.saveObligation(obligation);
                     return ProcessingResult.Updated.INSTANCE;
                 }
@@ -48,21 +54,81 @@ public final class Processors {
         };
     }
 
-    public static Processor projection(JifmsQueryService q, AuditRecord audit) {
+    public static Processor projection(JifmsQueryService q, Map<String, ObjectClass> objectClassMap, AuditRecord audit) {
         return ctx -> {
-//            var objectClass = ctx.getPreviousObjectClass();
-//            var objectClass = ctx.getObjectClass();
+            var projectionAudit = new ProjectionAuditFields();
+
+            projectionAudit.setCurrentActivityNumber(ctx.getProjectionActivity().getActivityNumber());
+            projectionAudit.setCurrentProjectionBoc(ctx.getProjectionObjectClass().getBudgetObjectClass());
+
+            var previousActivity = ctx.getPreviousActivity();
+            var previousObjectClass = ctx.getPreviousObjectClass();
+
+
+            BigDecimal restoreAmount = BigDecimal.ZERO;
+
+            // on activity or BOC change, restore the previous projection only if record exists
+            if (previousActivity != null || previousObjectClass != null) {
+                projectionAudit.setPreviousActivityNumber(previousActivity == null ? null : previousActivity.getActivityNumber());
+                projectionAudit.setPreviousProjectionBoc(previousObjectClass == null ? null : previousObjectClass.getBudgetObjectClass());
+
+                Activity restoreActivity =
+                        previousActivity != null ? previousActivity : ctx.getActivity();
+
+                ObjectClass restoreObjectClass =
+                        previousObjectClass != null ? previousObjectClass : ctx.getObjectClass();
+
+                if (restoreActivity.getGenericProjection()) {
+                    String ocPrefix = restoreObjectClass.getBudgetObjectClass().substring(0, 2);
+                    restoreObjectClass = objectClassMap.get(ocPrefix + "00");
+                }
+
+                var restoreProjection = q.fetchActivityProjection(restoreActivity, restoreObjectClass);
+
+                if (restoreProjection != null) {
+                    projectionAudit.setPreviousProjectionAmountBefore(restoreProjection.getAmount());
+
+                    restoreAmount = ctx.getObligation().getAmount().subtract(ctx.getObligationAmountDifference());
+
+                    restoreProjection.setAmount(
+                            calculateNewProjection(
+                                    ctx.getDocument().getBbfy(),
+                                    restoreProjection.getAmount(),
+                                    restoreAmount.negate(),
+                                    restoreActivity.getTrainingProject()
+                            )
+                    );
+                    projectionAudit.setPreviousProjectionAmountAfter(restoreProjection.getAmount());
+
+                    q.saveActivityProjection(restoreProjection);
+                }
+            }
+
+
             var activity = ctx.getProjectionActivity();
             var objectClass = ctx.getProjectionObjectClass();
-            Optional<ActivityProjection> projection = q.fetchActivityProjection(activity, objectClass);
-            if (projection.isPresent()) {
-                var activityProjection = projection.get();
-                activityProjection.setAmount(activityProjection.getAmount().subtract(calculateProjectionChangeAmount(ctx)));
-//                projection.get().setAmount(calculateProjectionChangeAmount(ctx));
-                q.saveActivityProjection(projection.get());
+            ActivityProjection activityProjection = q.fetchActivityProjection(activity, objectClass);
+            BigDecimal currentProjectionAmountBefore;
+            BigDecimal currentProjectionAmountAfter;
+            if (activityProjection != null) {
+                currentProjectionAmountBefore = activityProjection.getAmount();
+                currentProjectionAmountAfter = calculateNewProjection(ctx.getDocument().getBbfy(),
+                        currentProjectionAmountBefore, ctx.getObligationAmountDifference().add(restoreAmount), ctx.getActivity().getTrainingProject());
+
+                activityProjection.setAmount(currentProjectionAmountAfter);
+                q.saveActivityProjection(activityProjection);
             } else {
-                q.createActivityProjection(activity, objectClass, BigDecimal.ZERO);
+
+                currentProjectionAmountBefore = BigDecimal.ZERO;
+                currentProjectionAmountAfter = calculateNewProjection(ctx.getDocument().getBbfy(),
+                        currentProjectionAmountBefore, ctx.getObligationAmountDifference(), ctx.getActivity().getTrainingProject());
+                q.createActivityProjection(activity, objectClass, currentProjectionAmountAfter);
             }
+
+            projectionAudit.setCurrentProjectionAmountBefore(currentProjectionAmountBefore);
+            projectionAudit.setCurrentProjectionAmountAfter(currentProjectionAmountAfter);
+
+            audit.setProjectionAuditFields(projectionAudit);
             return ProcessingResult.Continue.INSTANCE;       // never overrides INSERTED
         };
     }
@@ -84,10 +150,7 @@ public final class Processors {
 
     public static Processor fcn(JifmsQueryService q) {
         return ctx -> {
-//            if (ctx.getObligationAmountDifference().compareTo(BigDecimal.ZERO) != 0) {
-//                q.createFcnFrom(ctx);
-//            }
-            if (ctx.createFcn()) {
+            if (ctx.isFcnRequired()) {
                 q.createFcnFrom(ctx);
             }
             return ProcessingResult.Continue.INSTANCE;
@@ -114,15 +177,16 @@ public final class Processors {
         syncStatus(document, obligation, changes);
         syncBlanketPurchaseOrder(document, obligation, changes);
 
-        syncTracked("amount", document.getAmount(), obligation.getAmount(), obligation::setAmount, context::setPreviousObligationAmount, changes);
-        syncTracked("activity", context.getActivity(), obligation.getActivity(), obligation::setActivity, context::setPreviousActivity, changes);
-        syncTracked("objectClass", context.getObjectClass(), obligation.getObjectClass(), obligation::setObjectClass, context::setPreviousObjectClass, changes);
+        syncTracked("Amount", document.getAmount(), obligation.getAmount(), obligation::setAmount, context::setPreviousObligationAmount, changes);
+        syncTracked("Activity", context.getActivity(), obligation.getActivity(), obligation::setActivity, context::setPreviousActivity, changes);
+        syncTracked("BOC", context.getObjectClass(), obligation.getObjectClass(), obligation::setObjectClass, context::setPreviousObjectClass, changes);
 
-        sync("vendor", document.getTitle(), obligation.getVendor(), obligation::setVendor, changes);
-        sync("travelStartDate", document.getTravelStartDate(), obligation.getTravelStartDate(), obligation::setTravelStartDate, changes);
-        sync("travelEndDate", document.getTravelEndDate(), obligation.getTravelEndDate(), obligation::setTravelEndDate, changes);
-        sync("vendorCode", document.getVendorCode(), obligation.getVendorCode(), obligation::setVendorCode, changes);
-        sync("taxId", document.getTaxId(), obligation.getEin(), obligation::setEin, changes);
+        sync("Vendor", document.getTitle(), obligation.getVendor(), obligation::setVendor, changes);
+        sync("Travel Start Date", document.getTravelStartDate(), obligation.getTravelStartDate(), obligation::setTravelStartDate, changes);
+        sync("Travel End Date", document.getTravelEndDate(), obligation.getTravelEndDate(), obligation::setTravelEndDate, changes);
+        sync("Addr. Code", document.getAddressCode(), obligation.getAddressCode(), obligation::setAddressCode, changes);
+        sync("Vendor Code", document.getVendorCode(), obligation.getVendorCode(), obligation::setVendorCode, changes);
+        sync("TaxId", document.getTaxId(), obligation.getEin(), obligation::setEin, changes);
 
         boolean changed = !changes.isEmpty();
         if (changed) {
@@ -183,13 +247,13 @@ public final class Processors {
         if (document.getFjc() == null) {
             if (obligation.getBlanketPurchaseOrder()
                     && document.getBbfy().compareTo(BPO_SYNC_START_BBFY) >= 0) {
-                System.out.println("document bpo: " + document.getFjc() + " obligation bpo: " + obligation.getBpoString());
+//                System.out.println("document bpo: " + document.getFjc() + " obligation bpo: " + obligation.getBpoString());
                 obligation.setBlanketPurchaseOrder(false); // silent sync, no audit entry
             }
         } else {
             boolean fjcIsBpo = "bpo".equalsIgnoreCase(document.getFjc());
             if (obligation.getBlanketPurchaseOrder() != fjcIsBpo) {
-                System.out.println("---------------- BFY: " + document.getBbfy() + " Document bpo: " + document.getFjc() + " obligation bpo: " + obligation.getBpoString());
+//                System.out.println("---------------- BFY: " + document.getBbfy() + " Document bpo: " + document.getFjc() + " obligation bpo: " + obligation.getBpoString());
                 obligation.setBlanketPurchaseOrder(fjcIsBpo);
                 changes.append(" -BPO");
             }
@@ -201,27 +265,27 @@ public final class Processors {
      * to make rule based on training. Nanticha rule: do not increase projections for training de-obs.
      * Mary rule: do not increase projections after fiscal yearend. Otherwise, adjust the projection.
      *
-     * @param context The DocumentAuditContext containing state variables
-     * @return the amount the projection should be adjusted by based on business rules
+     * @param bbfy
+     * @param originalProjection
+     * @param obligationChange
+     * @param trainingProject
+     * @return new projection
      */
-    static BigDecimal calculateProjectionChangeAmount(ResolvedContext context) {
-        var trainingProject = context.getActivity().getTrainingProject();
-        var obligationChange = context.getObligationAmountDifference();
-        var bbfy = context.getDocument().getBbfy();
+    static BigDecimal calculateNewProjection(String bbfy, BigDecimal originalProjection, BigDecimal obligationChange, boolean trainingProject) {
 
-        // obligation increased, the projection will be decreased
-        if (obligationChange.compareTo(BigDecimal.ZERO) >= 0) {
-            return obligationChange;
+        // obligation increased, decrease projection
+        if (obligationChange.compareTo(BigDecimal.ZERO) > 0) {
+            return originalProjection.subtract(obligationChange).max(BigDecimal.ZERO);
         }
 
-        // obligation decreased, projection will not be increased if
+        // obligation decreased, don't increase projection if
         // training project OR today is on or after 10/1/bbfy
         if (trainingProject || isOnOrAfterOctoberFirst(bbfy)) {
-            return BigDecimal.ZERO;
+            return originalProjection;
         }
 
         // obligation decreased, the projection will be increased
-        return obligationChange;
+        return originalProjection.subtract(obligationChange);
     }
 
     static boolean isOnOrAfterOctoberFirst(String yearString) {

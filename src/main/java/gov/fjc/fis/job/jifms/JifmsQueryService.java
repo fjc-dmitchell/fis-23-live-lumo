@@ -40,7 +40,7 @@ public class JifmsQueryService {
         return unconstrainedDataManager.load(Appropriation.class)
                 .query("SELECT a FROM fis_Appropriation a"
                         + " WHERE a.status = TRUE"
-                        + " ORDER BY a.budgetFiscalYear DESC")
+                        + " ORDER BY a.budgetFiscalYear ASC")
                 .list();
     }
 
@@ -212,13 +212,13 @@ public class JifmsQueryService {
         newObligation.setVendorCode(document.getVendorCode());
         newObligation.setAddressCode(document.getAddressCode());
 
-        // what about budget org and cost org fields? Should cost org warn about activity?
+        newObligation.setBudgetOrg(document.getBudgetOrg());
+        newObligation.setCostOrg(ctx.getProjectionActivity().getCostOrg());
 
         newObligation.setAoSend(false);
         newObligation.setAoSyncDate(LocalDate.now());
         newObligation.setStatus(document.getClosedDate() == null);
 
-//        return unconstrainedDataManager.save(newObligation);
         return newObligation;
     }
 
@@ -243,13 +243,13 @@ public class JifmsQueryService {
         unconstrainedDataManager.saveWithoutReload(newFcn);
     }
 
-    Optional<ActivityProjection> fetchActivityProjection(Activity activity, ObjectClass objectClass) {
+    ActivityProjection fetchActivityProjection(Activity activity, ObjectClass objectClass) {
         return unconstrainedDataManager.load(ActivityProjection.class)
                 .query("SELECT p FROM fis_ActivityProjection p"
                         + " WHERE p.activity = :activity and p.objectClass = :objectClass")
                 .parameter("activity", activity)
                 .parameter("objectClass", objectClass)
-                .optional();
+                .optional().orElse(null);
     }
 
     void saveActivityProjection(ActivityProjection projection) {

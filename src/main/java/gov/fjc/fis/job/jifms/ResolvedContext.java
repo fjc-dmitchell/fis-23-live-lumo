@@ -23,102 +23,92 @@ public class ResolvedContext {
     private Activity previousActivity;
     private ObjectClass previousObjectClass;
 
+    private boolean fcnRequired;
+
     public ResolvedContext(Document document, Fund twoYearFund, Division educationDivision) {
         this.document = document;
         this.twoYearFund = twoYearFund;
         this.educationDivision = educationDivision;
     }
 
-    // Getter/setter + builder-like fluent update methods
-
     public Document getDocument() {
         return document;
     }
 
-    public ResolvedContext withDocument(Document document) {
+    public void setDocument(Document document) {
         this.document = document;
-        return this;
     }
 
     public Fund getTwoYearFund() {
         return twoYearFund;
     }
 
-    public ResolvedContext withTwoYearFund(Fund twoYearFund) {
+    public void setTwoYearFund(Fund twoYearFund) {
         this.twoYearFund = twoYearFund;
-        return this;
     }
 
     public Division getEducationDivision() {
         return educationDivision;
     }
 
-    public ResolvedContext withEducationDivision(Division educationDivision) {
+    public void setEducationDivision(Division educationDivision) {
         this.educationDivision = educationDivision;
-        return this;
     }
 
     public Fund getFund() {
         return fund;
     }
 
-    public ResolvedContext withFund(Fund fund) {
+    public void setFund(Fund fund) {
         this.fund = fund;
-        return this;
     }
 
     public Division getDivision() {
         return division;
     }
 
-    public ResolvedContext withDivision(Division division) {
+    public void setDivision(Division division) {
         this.division = division;
-        return this;
     }
 
     public Activity getActivity() {
         return activity;
     }
 
-    public ResolvedContext withActivity(Activity activity) {
+    public void setActivity(Activity activity) {
         this.activity = activity;
-        return this;
     }
 
     public Activity getProjectionActivity() {
         return projectionActivity;
     }
 
-    public ResolvedContext withProjectionActivity(Activity projectionActivity) {
+    public void setProjectionActivity(Activity projectionActivity) {
         this.projectionActivity = projectionActivity;
-        return this;
     }
 
     public ObjectClass getObjectClass() {
         return objectClass;
     }
 
-    public ResolvedContext withObjectClass(ObjectClass objectClass) {
+    public void setObjectClass(ObjectClass objectClass) {
         this.objectClass = objectClass;
-        return this;
     }
 
     public ObjectClass getProjectionObjectClass() {
         return projectionObjectClass;
     }
 
-    public ResolvedContext withProjectionObjectClass(ObjectClass projectionObjectClass) {
+    public void setProjectionObjectClass(ObjectClass projectionObjectClass) {
         this.projectionObjectClass = projectionObjectClass;
-        return this;
     }
 
     public Obligation getObligation() {
         return obligation;
     }
 
-    public ResolvedContext withObligation(Obligation obligation) {
+    public void setObligation(Obligation obligation) {
         this.obligation = obligation;
-        return this;
     }
 
     public BigDecimal getPreviousObligationAmount() {
@@ -127,6 +117,14 @@ public class ResolvedContext {
 
     public void setPreviousObligationAmount(BigDecimal previousObligationAmount) {
         this.previousObligationAmount = previousObligationAmount;
+    }
+
+    public BigDecimal getObligationAmountDifference() {
+        return obligationAmountDifference;
+    }
+
+    public void setObligationAmountDifference(BigDecimal obligationAmountDifference) {
+        this.obligationAmountDifference = obligationAmountDifference;
     }
 
     public Activity getPreviousActivity() {
@@ -145,15 +143,11 @@ public class ResolvedContext {
         this.previousObjectClass = previousObjectClass;
     }
 
-    public BigDecimal getObligationAmountDifference() {
-        return obligationAmountDifference;
+    public boolean isFcnRequired() {
+        return fcnRequired;
     }
 
-    public void setObligationAmountDifference(BigDecimal obligationAmountDifference) {
-        this.obligationAmountDifference = obligationAmountDifference;
-    }
-
-    public boolean createFcn() {
-        return BigDecimal.ZERO.compareTo(obligationAmountDifference) != 0;
+    public void setFcnRequired(boolean fcnRequired) {
+        this.fcnRequired = fcnRequired;
     }
 }

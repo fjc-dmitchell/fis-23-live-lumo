@@ -90,7 +90,7 @@
         <item bean="fis_EducationProgramsAnalysis" beanMethod="generateCalendarYearReportData"
               title="Program Analysis for Mike"/>
     </menu>
-    <menu id="application" title="msg://gov.fjc.fis/menu.application.title" opened="true">
+    <menu id="application" title="msg://gov.fjc.fis/menu.application.title">
         <item view="fis_User.list" title="msg://gov.fjc.fis.view.user/UserListView.title"/>
         <item view="fis_UserMessage.list" title="msg://gov.fjc.fis.view.usermessage/userMessageListView.title"/>
         <item view="fis_UserRolesListView" title="msg://gov.fjc.fis.view.userroleslist/userRolesListView.title"/>
