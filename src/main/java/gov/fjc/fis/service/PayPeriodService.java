@@ -79,69 +79,6 @@ public class PayPeriodService {
                 .list();
     }
 
-//    public List<PayPeriod> getPayPeriods(Appropriation appropriation, PayPeriod payPeriod, int nothing) {
-//        if (appropriation == null) {
-//            throw new IllegalArgumentException("Appropriation cannot be null");
-//        }
-//        if (payPeriod == null) {
-//            throw new IllegalArgumentException("Pay Period cannot be null");
-//        }
-//        var year = Integer.parseInt(appropriation.getBudgetFiscalYear());
-//
-//        if (payPeriod.getAppropriation().equals(appropriation)) {
-//            var priorPayPeriodStart = payPeriod.getStartDate().minusWeeks(2);
-//
-//            return dataManager.load(PayPeriod.class)
-//                    .query("SELECT p FROM fis_PayPeriod p"
-//                            + " WHERE p.appropriation = :appropriation AND p.startDate >= :startDate"
-//                            + " ORDER BY p.startDate DESC")
-//                    .parameter("appropriation", appropriation)
-//                    .parameter("startDate", priorPayPeriodStart)
-//                    .list();
-//        } else {
-//            return dataManager.load(PayPeriod.class)
-//                    .query("SELECT p FROM fis_PayPeriod p"
-//                            + " WHERE p.payYear = :priorYear AND EXTRACT(MONTH FROM p.startDate) IN (10, 11, 12)"
-//                            + " OR p.payYear = :year AND EXTRACT(MONTH FROM p.startDate) < 10"
-//                            + " ORDER BY p.startDate DESC")
-//                    .parameter("year", year)
-//                    .parameter("priorYear", year - 1)
-//                    .list();
-//        }
-//    }
-
-//    public List<PayPeriod> getPayPeriods(Appropriation appropriation) {
-//        if (appropriation == null) {
-//            throw new IllegalArgumentException("Appropriation cannot be null");
-//        }
-//        var year = Integer.parseInt(appropriation.getBudgetFiscalYear());
-//
-//        return dataManager.load(PayPeriod.class)
-//                .query("SELECT p FROM fis_PayPeriod p"
-//                        + " WHERE p.payYear = :priorYear AND EXTRACT(MONTH FROM p.startDate) IN (10, 11, 12)"
-//                        + " OR p.payYear = :year AND EXTRACT(MONTH FROM p.startDate) < 10"
-//                        + " ORDER BY p.startDate ASC")
-//                .parameter("year", year)
-//                .parameter("priorYear", year - 1)
-//                .list();
-//    }
-
-//    public List<PayPeriod> getPayPeriods(PayPeriod payPeriod) {
-//        if (payPeriod == null) {
-//            throw new IllegalArgumentException("Pay Period cannot be null");
-//        }
-//        var priorPayPeriodStart = payPeriod.getStartDate().minusDays(14);
-//        var appropriation = payPeriod.getAppropriation();
-//
-//        return dataManager.load(PayPeriod.class)
-//                .query("SELECT p FROM fis_PayPeriod p"
-//                        + " WHERE p.appropriation = :appropriation AND p.startDate >= :startDate"
-//                        + " ORDER BY p.startDate DESC")
-//                .parameter("appropriation", appropriation)
-//                .parameter("startDate", priorPayPeriodStart)
-//                .list();
-//    }
-
     public List<Appropriation> getAppropriations(Appropriation appropriation) {
 
         var year = Integer.parseInt(appropriation.getBudgetFiscalYear());
@@ -158,14 +95,6 @@ public class PayPeriodService {
                 .parameter("lastDayOfFiscalYear", lastDayOfFiscalYear)
                 .list();
     }
-
-//    public List<Appropriation> getAppropriations(Appropriation appropriation) {
-//        var year = Integer.parseInt(appropriation.getBudgetFiscalYear());
-//        return dataManager.load(Appropriation.class)
-//                .query("SELECT a FROM fis_Appropriation a"
-//                        +" WHERE a.budgetFiscalYear >= :appropriationYear"
-//                +" AND EXISTS (SELECT p FROM fis_PayPeriod p WHERE p.payYear )")
-//    }
 
     public PayPeriod fetchCurrentPayPeriod() {
         var today = LocalDate.now();
@@ -199,59 +128,6 @@ public class PayPeriodService {
                 .orElse(null);
     }
 
-    public int countFullPayPeriods(PayPeriod startingPayPeriod, PayPeriod finalPayPeriod) {
-        var firstPeriodStartDate = startingPayPeriod.getStartDate();
-        var finalPeriodStartDate = finalPayPeriod.getStartDate();
-        return dataManager.loadValue(
-                        "SELECT COUNT(p) FROM fis_PayPeriod p"
-                                + " WHERE p.startDate >= :firstPeriodStartDate"
-                                + " AND p.startDate < :finalPeriodStartDate", Integer.class)
-                .parameter("firstPeriodStartDate", firstPeriodStartDate)
-                .parameter("finalPeriodStartDate", finalPeriodStartDate)
-                .optional().orElse(0);
-    }
-
-    public DayOfWeek getDayOfWeek(LocalDate date) {
-        return date.getDayOfWeek();
-    }
-
-    public long daysBetween(LocalDate start, LocalDate end) {
-        return ChronoUnit.DAYS.between(start, end);
-    }
-
-    /**
-     * Returns the number of business days in the given pay period that fall
-     * before October 1 (i.e., within the current federal fiscal year).
-     * <p>
-     * Days 6, 7, 13, and 14 of the pay period are Saturday/Sunday and are
-     * excluded. All remaining days are weekdays (Mon–Fri).
-     *
-     * @param payPeriod the last pay period of the fiscal year (may straddle Sep 30)
-     * @return count of business days occurring before October 1
-     */
-//    public int businessDaysInPayPeriod(PayPeriod payPeriod) {
-//        LocalDate start = payPeriod.getStartDate();
-//        LocalDate fiscalYearEnd = LocalDate.of(start.getYear(), 9, 30);
-//
-//        // If FY end is in the next calendar year relative to start, adjust.
-//        // (Unlikely for a FY-straddling pay period, but defensive.)
-//        if (fiscalYearEnd.isBefore(start)) {
-//            fiscalYearEnd = fiscalYearEnd.plusYears(1);
-//        }
-//
-//        int count = 0;
-//        for (int day = 1; day <= 14; day++) {
-//            boolean isWeekend = (day == 6 || day == 7 || day == 13 || day == 14);
-//            if (isWeekend) continue;
-//
-//            LocalDate date = start.plusDays(day - 1);
-//            if (!date.isAfter(fiscalYearEnd)) {
-//                count++;
-//            }
-//        }
-//        return count;
-//    }
-
     public LocalDate getLastDayOfFiscalYear(PayPeriod payPeriod) {
         LocalDate start = payPeriod.getStartDate();
         LocalDate fiscalYearEnd = LocalDate.of(start.getYear(), 9, 30);
@@ -262,25 +138,6 @@ public class PayPeriodService {
         return fiscalYearEnd;
     }
 
-    public int businessDaysBetweenOld(LocalDate start, LocalDate end) {
-        if (end.isBefore(start)) {
-            return 0;
-        }
-
-        int businessDays = 0;
-        LocalDate date = start;
-
-        while (!date.isAfter(end)) {
-            DayOfWeek dow = date.getDayOfWeek();
-            if (dow != DayOfWeek.SATURDAY && dow != DayOfWeek.SUNDAY) {
-                businessDays++;
-            }
-            date = date.plusDays(1);
-        }
-
-        return businessDays;
-    }
-
     public int businessDaysBetween(LocalDate startDate, LocalDate endDate) {
         return (int) startDate.datesUntil(endDate.plusDays(1))
                 .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY
@@ -288,17 +145,6 @@ public class PayPeriodService {
                 .count();
     }
 
-    //    public PositionAction getRecentPositionAction(PayPeriod payPeriod) {
-//        LocalDate startDate = payPeriod.getStartDate();
-//        return dataManager.load(PositionAction.class)
-//                .query("SELECT a FROM fis_PositionAction a"
-//                        +" WHERE a.payPeriod.startDate <= :startDate"
-//                        +" ORDER BY a.payPeriod.startDate DESC")
-//                .parameter("startDate", startDate)
-//                .maxResults(1)
-//                .optional()
-//                .orElse(null);
-//    }
     public List<Position> fetchPositions(Division division) {
         Objects.requireNonNull(division, "division must not be null");
         String jlCostOrgCd = division.getBudgetOrg();
@@ -320,31 +166,6 @@ public class PayPeriodService {
                                         .add("startDate"))))
                 .list();
     }
-
-//    public int getNumberPaidDays(PayPeriod startingPayPeriod) {
-//        int calendarYear;
-//        if (startingPayPeriod.getStartDate().getMonthValue() >= 10) {
-//            calendarYear = startingPayPeriod.getPayYear() + 1;
-//        } else {
-//            calendarYear = startingPayPeriod.getPayYear();
-//        }
-//
-//
-//        var finalPayPeriod = fetchLastPayPeriodOfFiscalYear(calendarYear);
-//        var numberPayPeriods = countFullPayPeriods(startingPayPeriod, finalPayPeriod);
-//
-//        var numberDays = businessDaysInPayPeriod(finalPayPeriod);
-//        return numberPayPeriods * 10 + numberDays;
-//    }
-
-//    public List<Position> getPositions(Division division) {
-//        return dataManager.load(Position.class)
-//                .query("SELECT p from fis_Position p"
-//                        + " WHERE p.jlCostOrgCd= :jlCostOrgCd"
-//                        + " ORDER BY p.name")
-//                .parameter("jlCostOrgCd", division.getBudgetOrg())
-//                .list();
-//    }
 
     public Double getBonusProjections(Division division) {
         return dataManager.loadValue(
