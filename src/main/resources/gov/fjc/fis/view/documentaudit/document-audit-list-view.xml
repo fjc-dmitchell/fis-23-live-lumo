@@ -83,7 +83,7 @@
                 <column property="documentEbfy" visible="false" header="EBFY" textAlign="CENTER" width="110px"/>
                 <column property="documentFundCode" header="Fund" textAlign="CENTER" width="110px"/>
                 <column property="documentBudgetOrg" header="BudgetOrg" width="110px"/>
-                <column property="documentDocumentNumber" header="Doc. Number" width="100px"/>
+                <column property="documentDocumentNumber" header="Doc. Number" width="120px"/>
                 <column property="documentBudgetObjectClass" header="BOC" textAlign="CENTER" width="105px"/>
                 <column property="documentDocumentCreationDate" header="Created" textAlign="END" width="120px"/>
                 <column property="documentTitle" header="Title" width="495px"/>
@@ -116,7 +116,7 @@
                 <!--                <column property="documentMoc"/>-->
                 <!--                <column property="documentFjc"/>-->
 
-                <column property="obligationDocumentNumber" header="Doc ID" width="110px"/>
+                <column property="obligationDocumentNumber" header="Doc ID" width="120px"/>
                 <!--                <column property="obligationDocumentType"/>-->
                 <column property="obligationActivityNumber" header="Activity" textAlign="CENTER" width="105px"/>
                 <column property="obligationBudgetObjectClass" header="BOC" textAlign="CENTER" width="105px"/>
