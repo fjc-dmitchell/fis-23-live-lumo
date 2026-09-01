@@ -58,7 +58,7 @@
                         <responsiveStep minWidth="40em" columns="2"/>
                     </responsiveSteps>
                     <p id="allocationWarning" text="Warning: division allocations do not equal category allocations"
-                       classNames="text-error"/>
+                       classNames="fjc-warning"/>
                 </formLayout>
             </vbox>
             <vbox classNames="contrast-panel">

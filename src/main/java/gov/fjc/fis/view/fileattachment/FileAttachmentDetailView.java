@@ -3,7 +3,6 @@ package gov.fjc.fis.view.fileattachment;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.router.Route;
 import gov.fjc.fis.entity.FileAttachment;
-import gov.fjc.fis.entity.FileAttachmentCategory;
 import gov.fjc.fis.view.main.MainView;
 import io.jmix.flowui.view.*;
 
@@ -26,8 +25,4 @@ public class FileAttachmentDetailView extends StandardDetailView<FileAttachment>
         invoiceItem.setVisible(attachment.getInvoice() != null);
         fcnItem.setVisible(attachment.getFundControlNotice() != null);
     }
-
-
-
-
 }
