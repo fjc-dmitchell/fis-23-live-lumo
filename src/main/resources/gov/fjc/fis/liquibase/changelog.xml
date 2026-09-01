@@ -10,6 +10,10 @@
     <include file="/io/jmix/data/liquibase/changelog.xml"/>
     <include file="/io/jmix/flowuidata/liquibase/changelog.xml"/>
     <include file="/io/jmix/securitydata/liquibase/changelog.xml"/>
+    <include file="/io/jmix/reports/liquibase/changelog.xml"/>
+    <include file="/io/jmix/quartz/liquibase/changelog.xml"/>
+    <include file="/io/jmix/email/liquibase/changelog.xml"/>
+    <include file="/io/jmix/audit/liquibase/changelog.xml"/>
 
     <includeAll path="/gov/fjc/fis/liquibase/changelog"/>
 

@@ -13,7 +13,7 @@ jmix {
 }
 
 group = 'gov.fjc'
-version = '2.3.2-PRELIVE'
+version = '2.3.2-LIVE'
 
 repositories {
     mavenCentral()
