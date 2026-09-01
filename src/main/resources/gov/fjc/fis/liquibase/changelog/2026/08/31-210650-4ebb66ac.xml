@@ -1,0 +1,1839 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS"
+        logicalFilePath="gov/fjc/fis/liquibase/changelog/2026/08/31-210650-4ebb66ac.xml">
+    <changeSet id="1" author="fis">
+        <createTable tableName="FIS_ACTION_CODE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_ACTION_CODE"/>
+            </column>
+            <column name="NOA_CODE" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="fis">
+        <createTable tableName="FIS_ACTIVITY">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_ACTIVITY"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FUND_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_ID" type="INT"/>
+            <column name="GROUP_ID" type="INT"/>
+            <column name="COST_ORG_ID" type="INT"/>
+            <column name="ACTIVITY_NUMBER" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GENERIC_PROJECTION" type="BOOLEAN"/>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SHORT_TITLE" type="VARCHAR(255)"/>
+            <column name="CITY" type="VARCHAR(255)"/>
+            <column name="STATE" type="VARCHAR(2)"/>
+            <column name="START_DATE" type="DATE"/>
+            <column name="END_DATE" type="DATE"/>
+            <column name="PROGRAM_DIRECTOR" type="VARCHAR(255)"/>
+            <column name="NUMBER_PARTICIPANTS" type="INT"/>
+            <column name="NUMBER_PROGRAMS" type="INT"/>
+            <column name="NUMBER_FACULTY" type="INT"/>
+            <column name="SORT_CODE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="NOTE" type="VARCHAR(255)"/>
+            <column name="TRAINING_PROJECT" type="BOOLEAN"/>
+            <column name="CANCELED" type="BOOLEAN"/>
+            <column name="PROJECTED_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REIMBURSED_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBLIGATED_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REPORT_NOTE" type="VARCHAR(255)"/>
+            <column name="PARTICIPANT_COUNT_FINAL" type="BOOLEAN"/>
+            <column name="ADDED_TO_PLAN" type="BOOLEAN"/>
+            <column name="INITIAL_PROJECTION" type="DECIMAL"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="fis">
+        <createTable tableName="FIS_ACTIVITY_PROJECTION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_ACTIVITY_PROJECTION"/>
+            </column>
+            <column name="ACTIVITY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CLASS_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="4" author="fis">
+        <createTable tableName="FIS_ACTIVITY_PROJECTION_AUDIT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_ACTIVITY_PROJECTION_AUDIT"/>
+            </column>
+            <column name="ACTIVITY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CLASS_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OLD_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="NEW_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CHANGE_TYPE" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="fis">
+        <createTable tableName="FIS_ACTIVITY_REIMBURSEMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_ACTIVITY_REIMBURSEMENT"/>
+            </column>
+            <column name="ACTIVITY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CLASS_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SOURCE" type="VARCHAR(255)"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_NUMBER" type="VARCHAR(255)"/>
+            <column name="DOCUMENT_DATE" type="DATE"/>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="6" author="fis">
+        <createTable tableName="FIS_APPROPRIATION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_APPROPRIATION"/>
+            </column>
+            <column name="BUDGET_FISCAL_YEAR" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ONE_YEAR_ADJUSTMENT" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TWO_YEAR_ADJUSTMENT" type="DECIMAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REIMBURSED_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="BOOLEAN"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="7" author="fis">
+        <createTable tableName="FIS_APPROPRIATION_ADJUSTMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_APPROPRIATION_ADJUSTMENT"/>
+            </column>
+            <column name="APPROPRIATION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADJUSTMENT_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="8" author="fis">
+        <createTable tableName="FIS_BONUS_PROJECTION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_BONUS_PROJECTION"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROJECTION" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AWARDED" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="STATUS" type="BOOLEAN"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="9" author="fis">
+        <createTable tableName="FIS_BRANCH">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_BRANCH"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BRANCH_CODE" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SORT_CODE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="10" author="fis">
+        <createTable tableName="FIS_DEPARTMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DEPARTMENT"/>
+            </column>
+            <column name="DEPTID" remarks="Department" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EFFDT" remarks="Effective Date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EFF_STATUS" remarks="Status" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCR" remarks="Description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRSHORT" remarks="Short Description" type="VARCHAR(10)"/>
+            <column name="JL_COST_ORG_CD" remarks="Cost Organization" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JL_BUD_CATG_CD" remarks="Budget Category Code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="11" author="fis">
+        <createTable tableName="FIS_DIVISION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DIVISION"/>
+            </column>
+            <column name="APPROPRIATION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FUND_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DIVISION_CODE" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BUDGET_ORG" type="VARCHAR(7)"/>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SHORT_TITLE" remarks="abbreviated division title" type="VARCHAR(255)"/>
+            <column name="ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SORT_CODE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="12" author="fis">
+        <createTable tableName="FIS_DIVISION_ALLOCATION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DIVISION_ALLOCATION"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CATEGORY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="13" author="fis">
+        <createTable tableName="FIS_DIVISION_ALLOCATION_AUDIT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DIVISION_ALLOCATION_AUDIT"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CATEGORY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OLD_ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="NEW_ONE_YEAR_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="OLD_TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="NEW_TWO_YEAR_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CHANGE_TYPE" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="UPDATED_ATTRIBUTES" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="14" author="fis">
+        <createTable tableName="FIS_DOCUMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DOCUMENT"/>
+            </column>
+            <column name="FUND_CODE" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BBFY" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EBFY" type="VARCHAR(4)"/>
+            <column name="BUDGET_ORG" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COST_ORG" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_TYPE" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_NUMBER" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_CREATION_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(70)"/>
+            <column name="MOC" type="VARCHAR(2)"/>
+            <column name="BOC" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROJECT" type="VARCHAR(4)"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LINE_NUMBER" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TAX_ID" type="VARCHAR(9)"/>
+            <column name="TAX_ID_TYPE" type="VARCHAR(1)"/>
+            <column name="ADDRESS_CODE" type="VARCHAR(15)"/>
+            <column name="VENDOR_CODE" type="VARCHAR(10)"/>
+            <column name="VENDOR_NAME" type="VARCHAR(70)"/>
+            <column name="TRAVEL_START_DATE" type="DATE"/>
+            <column name="TRAVEL_END_DATE" type="DATE"/>
+            <column name="EXPENDED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CLOSED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CLOSED_DATE" type="DATE"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FJC" type="VARCHAR(20)"/>
+            <column name="ORDERED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="OUTSTANDING_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="PREPAID_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="REFUNDED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="15" author="fis">
+        <createTable tableName="FIS_DOCUMENT_AUDIT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DOCUMENT_AUDIT"/>
+            </column>
+            <column name="PROCESS_STATUS" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROCESS_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_FUND_CODE" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_BBFY" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_EBFY" type="VARCHAR(4)"/>
+            <column name="DOCUMENT_BUDGET_ORG" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_COST_ORG" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DOCUMENT_TYPE" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DOCUMENT_NUMBER" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DOCUMENT_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DOCUMENT_CREATION_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_TITLE" type="VARCHAR(70)"/>
+            <column name="DOCUMENT_BOC" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_PROJECT" type="VARCHAR(4)"/>
+            <column name="DOCUMENT_AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_LINE_NUMBER" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_TAX_ID" type="VARCHAR(9)"/>
+            <column name="DOCUMENT_TAX_ID_TYPE" type="VARCHAR(1)"/>
+            <column name="DOCUMENT_ADDRESS_CODE" type="VARCHAR(15)"/>
+            <column name="DOCUMENT_VENDOR_CODE" type="VARCHAR(10)"/>
+            <column name="DOCUMENT_VENDOR_NAME" type="VARCHAR(70)"/>
+            <column name="DOCUMENT_TRAVEL_START_DATE" type="DATE"/>
+            <column name="DOCUMENT_TRAVEL_END_DATE" type="DATE"/>
+            <column name="DOCUMENT_EXPENDED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="DOCUMENT_CLOSED_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="DOCUMENT_CLOSED_DATE" type="DATE"/>
+            <column name="DOCUMENT_LAST_MODIFIED_BY" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_MOC" type="VARCHAR(2)"/>
+            <column name="DOCUMENT_FJC" type="VARCHAR(20)"/>
+            <column name="OBLIGATION_DOCID" type="VARCHAR(20)"/>
+            <column name="OBLIGATION_DOCUMENT_TYPE" type="VARCHAR(5)"/>
+            <column name="OBLIGATION_AMOUNT" type="DECIMAL(19, 2)"/>
+            <column name="OBLIGATION_DOCUMENT_DATE" type="DATE"/>
+            <column name="OBLIGATION_PROCESS_DATE" type="DATE"/>
+            <column name="OBLIGATION_VENDOR" type="VARCHAR(255)"/>
+            <column name="OBLIGATION_STATUS" type="BOOLEAN"/>
+            <column name="OBLIGATION_EIN" type="VARCHAR(10)"/>
+            <column name="OBLIGATION_TRAVEL_START_DATE" type="DATE"/>
+            <column name="OBLIGATION_TRAVEL_END_DATE" type="DATE"/>
+            <column name="OBLIGATION_MODIFIED_DATE" type="DATETIME"/>
+            <column name="OBLIGATION_ACTIVITY_NUMBER" type="VARCHAR(4)"/>
+            <column name="OBLIGATION_BOC" type="VARCHAR(4)"/>
+            <column name="OBLIGATION_DIVISION_CODE" type="VARCHAR(2)"/>
+            <column name="OBLIGATION_MOC" type="VARCHAR(2)"/>
+            <column name="OBLIGATION_ADDRESS_CODE" type="VARCHAR(15)"/>
+            <column name="OBLIGATION_VENDOR_CODE" type="VARCHAR(10)"/>
+            <column name="CURRENT_ACTIVITY_NUMBER" type="VARCHAR(4)"/>
+            <column name="CURRENT_PROJECTION_BOC" type="VARCHAR(4)"/>
+            <column name="CURRENT_PROJECTION_AMOUNT_BEFORE" type="DECIMAL(19, 2)"/>
+            <column name="CURRENT_PROJECTION_AMOUNT_AFTER" type="DECIMAL(19, 2)"/>
+            <column name="PREVIOUS_ACTIVITY_NUMBER" type="VARCHAR(4)"/>
+            <column name="PREVIOUS_PROJECTION_BOC" type="VARCHAR(4)"/>
+            <column name="PREVIOUS_PROJECTION_AMOUNT_BEFORE" type="DECIMAL(19, 2)"/>
+            <column name="PREVIOUS_PROJECTION_AMOUNT_AFTER" type="DECIMAL(19, 2)"/>
+            <column name="LOGGED_CHANGES" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="16" author="fis">
+        <createTable tableName="FIS_DOCUMENT_EXCEPTION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DOCUMENT_EXCEPTION"/>
+            </column>
+            <column name="FUND_CODE" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BBFY" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BUDGET_ORG" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOC" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_TYPE" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_NUMBER" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="17" author="fis">
+        <createTable tableName="FIS_DONOR">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_DONOR"/>
+            </column>
+            <column name="ORGANIZATION" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDRESS1" type="VARCHAR(255)"/>
+            <column name="ADDRESS2" type="VARCHAR(255)"/>
+            <column name="CITY" type="VARCHAR(255)"/>
+            <column name="STATE" type="VARCHAR(2)"/>
+            <column name="ZIPCODE" type="VARCHAR(10)"/>
+            <column name="CONTACT" type="VARCHAR(255)"/>
+            <column name="PHONE" type="VARCHAR(255)"/>
+            <column name="FAX" type="VARCHAR(255)"/>
+            <column name="EMAIL" type="VARCHAR(255)"/>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="18" author="fis">
+        <createTable tableName="FIS_EMPLOYEE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_EMPLOYEE"/>
+            </column>
+            <column name="EMPLID" type="VARCHAR(11)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOBCODE" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="POSITION_NBR" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOBTITLE" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EMPL_TYPE" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REG_TEMP" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FULL_PART_TIME" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STD_HOURS" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_APPT_EXPIR_DT" type="DATE"/>
+            <column name="JL_BUD_CATG_CD" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JL_COST_ORG_CD" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEPT_ID" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYGROUP" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_PAY_PLAN" type="VARCHAR(2)"/>
+            <column name="SAL_ADMIN_PLAN" type="VARCHAR(4)"/>
+            <column name="GRADE" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STEP" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HOURLY_RT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_BIWEEKLY_RT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ANNUAL_RT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_COMPRATE" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_LOCALITY_ADJ" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_WORK_SCHED" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="19" author="fis">
+        <createTable tableName="FIS_FCN">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_FCN"/>
+            </column>
+            <column name="OBLIGATION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FCN_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRAVEL_START_DATE" type="DATE"/>
+            <column name="TRAVEL_END_DATE" type="DATE"/>
+            <column name="BUDGET_ORG" type="VARCHAR(7)"/>
+            <column name="EIN" type="VARCHAR(10)"/>
+            <column name="MEMO" type="CLOB"/>
+            <column name="AO_SEND" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AO_SYNC_DATE" type="DATE"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="20" author="fis">
+        <createTable tableName="FIS_FILE_ATTACHMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_FILE_ATTACHMENT"/>
+            </column>
+            <column name="FILE_REFERENCE" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT_LENGTH" type="BIGINT"/>
+            <column name="ACTIVITY_ID" type="INT"/>
+            <column name="OBLIGATION_ID" type="INT"/>
+            <column name="INVOICE_ID" type="INT"/>
+            <column name="CATEGORY_ID" type="INT"/>
+            <column name="FUND_CONTROL_NOTICE_ID" type="INT"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="21" author="fis">
+        <createTable tableName="FIS_FILE_ATTACHMENT_CATEGORY">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_FILE_ATTACHMENT_CATEGORY"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACTIVE" type="BOOLEAN"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="22" author="fis">
+        <createTable tableName="FIS_FUND">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_FUND"/>
+            </column>
+            <column name="FUND_CODE" type="VARCHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="23" author="fis">
+        <createTable tableName="FIS_GROUP">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_GROUP"/>
+            </column>
+            <column name="DIVISION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_CODE" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SORT_CODE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="24" author="fis">
+        <createTable tableName="FIS_INVOICE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_INVOICE"/>
+            </column>
+            <column name="OBLIGATION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="INVOICE_NUMBER" type="VARCHAR(255)"/>
+            <column name="INVOICE_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYMENT_DATE" type="DATE"/>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="25" author="fis">
+        <createTable tableName="FIS_JITF_TRANSFER">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_JITF_TRANSFER"/>
+            </column>
+            <column name="OBJECT_CLASS_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TRANSFER_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="26" author="fis">
+        <createTable tableName="FIS_LOCALITY_AREA">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_LOCALITY_AREA"/>
+            </column>
+            <column name="GVT_LOCALITY_AREA" remarks="locality area code" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EFFDT" remarks="Effective Date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCR" remarks="locality description" type="VARCHAR(255)"/>
+            <column name="GVT_LOCALITY_PCT" remarks="locality rate" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="27" author="fis">
+        <createTable tableName="FIS_OBJECT_CATEGORY">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_OBJECT_CATEGORY"/>
+            </column>
+            <column name="APPROPRIATION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MOC" type="VARCHAR(2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="28" author="fis">
+        <createTable tableName="FIS_OBJECT_CLASS">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_OBJECT_CLASS"/>
+            </column>
+            <column name="OBJECT_CATEGORY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BOC" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="29" author="fis">
+        <createTable tableName="FIS_OBLIGATION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_OBLIGATION"/>
+            </column>
+            <column name="ACTIVITY_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJECT_CLASS_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCID" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_TYPE" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LINE_NUMBER" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AMOUNT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DOCUMENT_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROCESS_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AO_SEND" type="BOOLEAN"/>
+            <column name="AO_SYNC_DATE" type="DATE"/>
+            <column name="VENDOR" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VENDOR_CODE" type="VARCHAR(10)"/>
+            <column name="STATUS" type="BOOLEAN"/>
+            <column name="EIN" type="VARCHAR(10)"/>
+            <column name="ADDRESS_CODE" type="VARCHAR(15)"/>
+            <column name="TRAVEL_START_DATE" type="DATE"/>
+            <column name="TRAVEL_END_DATE" type="DATE"/>
+            <column name="RECONCILED" type="BOOLEAN"/>
+            <column name="BPO" type="BOOLEAN"/>
+            <column name="UPDATED" type="BOOLEAN"/>
+            <column name="BUDGET_ORG" remarks="legacy field for certain Foundation obligations from the 1990s"
+                    type="VARCHAR(7)"/>
+            <column name="COST_ORG_ID" remarks="formerly responsible division" type="INT"/>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="30" author="fis">
+        <createTable tableName="FIS_PAY_ADJUSTMENT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_PAY_ADJUSTMENT"/>
+            </column>
+            <column name="PAY_PERIOD_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADJUSTMENT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LOCALITY_RATE" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OLD_LOCALITY_RATE" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SALARY_CAP" type="DECIMAL(19, 2)"/>
+            <column name="RATES_FINAL" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="31" author="fis">
+        <createTable tableName="FIS_PAY_GRADE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_PAY_GRADE"/>
+            </column>
+            <column name="SETID" remarks="Set ID" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SAL_ADMIN_PLAN" remarks="Salary Administration Plan" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GRADE" remarks="Salary Grade" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GRADE_TITLE_JPN" remarks="Grade Name" type="VARCHAR(255)"/>
+            <column name="LOCALITY_ENTITLED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LOCALITY_FORFEITURE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCR" remarks="Description" type="VARCHAR(255)"/>
+            <column name="DESCRSHORT" remarks="Short Description" type="VARCHAR(255)"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="32" author="fis">
+        <createTable tableName="FIS_PAY_GRADE_RATE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_PAY_GRADE_RATE"/>
+            </column>
+            <column name="PAY_GRADE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EFFDATE" remarks="Effective Date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PERIOD_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MIN_RT_ANNUAL" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MAX_RT_ANNUAL" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="33" author="fis">
+        <createTable tableName="FIS_PAY_PERIOD">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_PAY_PERIOD"/>
+            </column>
+            <column name="PAY_YEAR" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PERIOD" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="START_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="END_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="34" author="fis">
+        <createTable tableName="FIS_POSITION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_POSITION"/>
+            </column>
+            <column name="EMPLID" remarks="Empl ID" type="VARCHAR(11)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="POSITION_NBR" remarks="Position Number" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="JOBTITLE" remarks="Job Title" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REG_TEMP" remarks="Regular/Temporary" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STD_HOURS" remarks="Standard Hours" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_APPT_EXPIR_DT" remarks="Appointment Expiration Date" type="DATE"/>
+            <column name="GVT_PAR_NTE_DATE" remarks="Not-to-Exceed Date" type="DATE"/>
+            <column name="JL_COST_ORG_CD" remarks="Cost Organization" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAYGROUP" remarks="Pay Group" type="VARCHAR(3)"/>
+            <column name="GRADE" remarks="Salary Grade" type="VARCHAR(3)"/>
+            <column name="HOURLY_RT" remarks="Hourly Rate" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ANNUAL_RT" remarks="Annual Rate" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOTAL_PAY" type="DECIMAL(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GVT_WORK_SCHED" remarks="Work Schedule" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="35" author="fis">
+        <createTable tableName="FIS_POSITION_ACTION">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_POSITION_ACTION"/>
+            </column>
+            <column name="POSITION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PAY_PERIOD_ID" type="INT"/>
+            <column name="EFFECTIVE_DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STD_HOURS" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOTAL_PAY" remarks="sf50 total pay" type="DECIMAL(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HOURLY_RT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LUMP_SUM_PAYMENT" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACTION_CODE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="36" author="fis">
+        <createTable tableName="FIS_POSITION_AUDIT">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_POSITION_AUDIT"/>
+            </column>
+            <column name="POSITION_NBR" type="VARCHAR(8)"/>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FIELD_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OLD_VALUE" type="VARCHAR(255)"/>
+            <column name="NEW_VALUE" type="VARCHAR(255)"/>
+            <column name="CHANGED_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="37" author="fis">
+        <createTable tableName="FIS_USER_MESSAGE">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_USER_MESSAGE"/>
+            </column>
+            <column name="TITLE" type="VARCHAR(255)"/>
+            <column name="MESSAGE" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="POST_DATE" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PUBLISHED" type="BOOLEAN"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="38" author="fis">
+        <createTable tableName="FIS_VENDOR">
+            <column autoIncrement="true" name="ID" startWith="1" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_FIS_VENDOR"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EIN" type="VARCHAR(10)"/>
+            <column name="VENDOR_CODE" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDRESS_CODE" type="VARCHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDRESS1" type="VARCHAR(255)"/>
+            <column name="ADDRESS2" type="VARCHAR(255)"/>
+            <column name="CITY" type="VARCHAR(255)"/>
+            <column name="STATE" type="VARCHAR(2)"/>
+            <column name="ZIP_CODE" type="VARCHAR(10)"/>
+            <column name="DUNS" type="VARCHAR(9)"/>
+            <column name="CAGE" type="VARCHAR(5)"/>
+            <column name="ACTIVE" type="BOOLEAN"/>
+            <column name="MEMO" type="CLOB"/>
+            <column name="VERSION" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_BY" type="VARCHAR(255)"/>
+            <column name="CREATED_DATE" type="DATETIME"/>
+            <column name="LAST_MODIFIED_BY" type="VARCHAR(255)"/>
+            <column name="LAST_MODIFIED_DATE" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="39" author="fis">
+        <addUniqueConstraint columnNames="NOA_CODE" constraintName="IDX_FIS_ACTION_CODE_UNQ"
+                             tableName="FIS_ACTION_CODE"/>
+    </changeSet>
+    <changeSet id="40" author="fis">
+        <addUniqueConstraint columnNames="ACTIVITY_ID, OBJECT_CLASS_ID" constraintName="IDX_FIS_ACTIVITY_PROJECTION_UNQ"
+                             tableName="FIS_ACTIVITY_PROJECTION"/>
+    </changeSet>
+    <changeSet id="41" author="fis">
+        <addUniqueConstraint columnNames="DIVISION_ID, ACTIVITY_NUMBER" constraintName="IDX_FIS_ACTIVITY_UNQ"
+                             tableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="42" author="fis">
+        <addUniqueConstraint columnNames="BUDGET_FISCAL_YEAR" constraintName="IDX_FIS_APPROPRIATION_UNQ"
+                             tableName="FIS_APPROPRIATION"/>
+    </changeSet>
+    <changeSet id="43" author="fis">
+        <addUniqueConstraint columnNames="DIVISION_ID" constraintName="IDX_FIS_BONUS_PROJECTION_UNQ"
+                             tableName="FIS_BONUS_PROJECTION"/>
+    </changeSet>
+    <changeSet id="44" author="fis">
+        <addUniqueConstraint columnNames="DIVISION_ID, BRANCH_CODE" constraintName="IDX_FIS_BRANCH_UNQ"
+                             tableName="FIS_BRANCH"/>
+    </changeSet>
+    <changeSet id="45" author="fis">
+        <addUniqueConstraint columnNames="DIVISION_ID, OBJECT_CATEGORY_ID"
+                             constraintName="IDX_FIS_DIVISION_ALLOCATION_UNQ" tableName="FIS_DIVISION_ALLOCATION"/>
+    </changeSet>
+    <changeSet id="46" author="fis">
+        <addUniqueConstraint columnNames="APPROPRIATION_ID, DIVISION_CODE"
+                             constraintName="IDX_FIS_DIVISION_UNQ_APPROPRIATION_DIVCODE" tableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="47" author="fis">
+        <addUniqueConstraint columnNames="APPROPRIATION_ID, TITLE"
+                             constraintName="IDX_FIS_DIVISION_UNQ_APPROPRIATION_TITLE" tableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="48" author="fis">
+        <addUniqueConstraint columnNames="EMPLID" constraintName="IDX_FIS_EMPLOYEE_UNQ" tableName="FIS_EMPLOYEE"/>
+    </changeSet>
+    <changeSet id="49" author="fis">
+        <addUniqueConstraint columnNames="FUND_CODE" constraintName="IDX_FIS_FUND_UNQ_CODE" tableName="FIS_FUND"/>
+    </changeSet>
+    <changeSet id="50" author="fis">
+        <addUniqueConstraint columnNames="TITLE" constraintName="IDX_FIS_FUND_UNQ_TITLE" tableName="FIS_FUND"/>
+    </changeSet>
+    <changeSet id="51" author="fis">
+        <addUniqueConstraint columnNames="DIVISION_ID, GROUP_CODE" constraintName="IDX_FIS_GROUP_UNQ"
+                             tableName="FIS_GROUP"/>
+    </changeSet>
+    <changeSet id="52" author="fis">
+        <addUniqueConstraint columnNames="OBJECT_CLASS_ID" constraintName="IDX_FIS_JITF_TRANSFER_UNQ"
+                             tableName="FIS_JITF_TRANSFER"/>
+    </changeSet>
+    <changeSet id="53" author="fis">
+        <addUniqueConstraint columnNames="APPROPRIATION_ID, MOC" constraintName="IDX_FIS_OBJECT_CATEGORY_UNQ"
+                             tableName="FIS_OBJECT_CATEGORY"/>
+    </changeSet>
+    <changeSet id="54" author="fis">
+        <addUniqueConstraint columnNames="OBJECT_CATEGORY_ID, BOC" constraintName="IDX_FIS_OBJECT_CLASS_UNQ"
+                             tableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="55" author="fis">
+        <addUniqueConstraint columnNames="DOCID, OBJECT_CLASS_ID" constraintName="IDX_FIS_OBLIGATION_UNQ"
+                             tableName="FIS_OBLIGATION"/>
+    </changeSet>
+    <changeSet id="56" author="fis">
+        <addUniqueConstraint columnNames="DOCID, LINE_NUMBER" constraintName="IDX_FIS_OBLIGATION_UNQ_2"
+                             tableName="FIS_OBLIGATION"/>
+    </changeSet>
+    <changeSet id="57" author="fis">
+        <addUniqueConstraint columnNames="PAY_PERIOD_ID" constraintName="IDX_FIS_PAY_ADJUSTMENT_UNQ"
+                             tableName="FIS_PAY_ADJUSTMENT"/>
+    </changeSet>
+    <changeSet id="58" author="fis">
+        <addUniqueConstraint columnNames="START_DATE" constraintName="IDX_FIS_PAY_PERIOD_UNQ"
+                             tableName="FIS_PAY_PERIOD"/>
+    </changeSet>
+    <changeSet id="59" author="fis">
+        <addUniqueConstraint columnNames="PAY_YEAR, PAY_PERIOD" constraintName="IDX_FIS_PAY_PERIOD_UNQ_1"
+                             tableName="FIS_PAY_PERIOD"/>
+    </changeSet>
+    <changeSet id="60" author="fis">
+        <addUniqueConstraint columnNames="POSITION_ID, PAY_PERIOD_ID, ACTION_CODE_ID"
+                             constraintName="IDX_FIS_POSITION_ACTION_UNQ" tableName="FIS_POSITION_ACTION"/>
+    </changeSet>
+    <changeSet id="61" author="fis">
+        <addUniqueConstraint columnNames="POSITION_NBR" constraintName="IDX_FIS_POSITION_UNQ" tableName="FIS_POSITION"/>
+    </changeSet>
+    <changeSet id="62" author="fis">
+        <addUniqueConstraint columnNames="VENDOR_CODE, ADDRESS_CODE" constraintName="IDX_FIS_VENDOR_UNQ"
+                             tableName="FIS_VENDOR"/>
+    </changeSet>
+    <changeSet id="63" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_BRANCH" tableName="FIS_ACTIVITY">
+            <column name="BRANCH_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="BRANCH_ID" baseTableName="FIS_ACTIVITY"
+                                 constraintName="FK_FIS_ACTIVITY_ON_BRANCH" referencedColumnNames="ID"
+                                 referencedTableName="FIS_BRANCH"/>
+    </changeSet>
+    <changeSet id="64" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_COST_ORG" tableName="FIS_ACTIVITY">
+            <column name="COST_ORG_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COST_ORG_ID" baseTableName="FIS_ACTIVITY"
+                                 constraintName="FK_FIS_ACTIVITY_ON_COST_ORG" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="65" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_ACTIVITY"
+                                 constraintName="FK_FIS_ACTIVITY_ON_DIVISION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="66" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION_ACTNUM" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+            <column name="ACTIVITY_NUMBER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="67" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION_BRANCH" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+            <column name="BRANCH_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="68" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION_FUND" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+            <column name="FUND_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="FUND_ID" baseTableName="FIS_ACTIVITY"
+                                 constraintName="FK_FIS_ACTIVITY_ON_FUND" referencedColumnNames="ID"
+                                 referencedTableName="FIS_FUND"/>
+    </changeSet>
+    <changeSet id="69" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION_FUND_ENDDATE" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+            <column name="FUND_ID"/>
+            <column name="END_DATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="70" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_DIVISION_GROUP" tableName="FIS_ACTIVITY">
+            <column name="DIVISION_ID"/>
+            <column name="GROUP_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="FIS_ACTIVITY"
+                                 constraintName="FK_FIS_ACTIVITY_ON_GROUP" referencedColumnNames="ID"
+                                 referencedTableName="FIS_GROUP"/>
+    </changeSet>
+    <changeSet id="71" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_FUND" tableName="FIS_ACTIVITY">
+            <column name="FUND_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="72" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_GROUP" tableName="FIS_ACTIVITY">
+            <column name="GROUP_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="73" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_PROJECTION_ACTIVITY" tableName="FIS_ACTIVITY_PROJECTION">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="FIS_ACTIVITY_PROJECTION"
+                                 constraintName="FK_FIS_ACTIVITY_PROJECTION_ON_ACTIVITY" onDelete="CASCADE"
+                                 referencedColumnNames="ID" referencedTableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="74" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_PROJECTION_AUDIT_ACTIVITY" tableName="FIS_ACTIVITY_PROJECTION_AUDIT">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="FIS_ACTIVITY_PROJECTION_AUDIT"
+                                 constraintName="FK_FIS_ACTIVITY_PROJECTION_AUDIT_ON_ACTIVITY" onDelete="CASCADE"
+                                 referencedColumnNames="ID" referencedTableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="75" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_PROJECTION_AUDIT_OBJECT_CLASS"
+                     tableName="FIS_ACTIVITY_PROJECTION_AUDIT">
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CLASS_ID" baseTableName="FIS_ACTIVITY_PROJECTION_AUDIT"
+                                 constraintName="FK_FIS_ACTIVITY_PROJECTION_AUDIT_ON_OBJECT_CLASS"
+                                 referencedColumnNames="ID" referencedTableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="76" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_PROJECTION_OBJECT_CLASS" tableName="FIS_ACTIVITY_PROJECTION">
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CLASS_ID" baseTableName="FIS_ACTIVITY_PROJECTION"
+                                 constraintName="FK_FIS_ACTIVITY_PROJECTION_ON_OBJECT_CLASS" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="77" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_REIMBURSEMENT_ACTIVITY" tableName="FIS_ACTIVITY_REIMBURSEMENT">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="FIS_ACTIVITY_REIMBURSEMENT"
+                                 constraintName="FK_FIS_ACTIVITY_REIMBURSEMENT_ON_ACTIVITY" referencedColumnNames="ID"
+                                 referencedTableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="78" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_REIMBURSEMENT_ACTIVITY_OBJECTCLASS"
+                     tableName="FIS_ACTIVITY_REIMBURSEMENT">
+            <column name="ACTIVITY_ID"/>
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CLASS_ID" baseTableName="FIS_ACTIVITY_REIMBURSEMENT"
+                                 constraintName="FK_FIS_ACTIVITY_REIMBURSEMENT_ON_OBJECT_CLASS"
+                                 referencedColumnNames="ID" referencedTableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="79" author="fis">
+        <createIndex indexName="IDX_FIS_ACTIVITY_REIMBURSEMENT_OBJECT_CLASS" tableName="FIS_ACTIVITY_REIMBURSEMENT">
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="80" author="fis">
+        <createIndex indexName="IDX_FIS_APPROPRIATION_ADJUSTMENT_APPROPRIATION"
+                     tableName="FIS_APPROPRIATION_ADJUSTMENT">
+            <column name="APPROPRIATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="APPROPRIATION_ID" baseTableName="FIS_APPROPRIATION_ADJUSTMENT"
+                                 constraintName="FK_FIS_APPROPRIATION_ADJUSTMENT_ON_APPROPRIATION"
+                                 referencedColumnNames="ID" referencedTableName="FIS_APPROPRIATION"/>
+    </changeSet>
+    <changeSet id="81" author="fis">
+        <createIndex indexName="IDX_FIS_BRANCH_DIVISION" tableName="FIS_BRANCH">
+            <column name="DIVISION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_BRANCH"
+                                 constraintName="FK_FIS_BRANCH_ON_DIVISION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="82" author="fis">
+        <createIndex indexName="IDX_FIS_DEPARTMENT_UNQ" tableName="FIS_DEPARTMENT" unique="true">
+            <column name="DEPTID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="83" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_ALLOCATION_AUDIT_DIVISION" tableName="FIS_DIVISION_ALLOCATION_AUDIT">
+            <column name="DIVISION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_DIVISION_ALLOCATION_AUDIT"
+                                 constraintName="FK_FIS_DIVISION_ALLOCATION_AUDIT_ON_DIVISION" onDelete="CASCADE"
+                                 referencedColumnNames="ID" referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="84" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_ALLOCATION_AUDIT_OBJECT_CATEGORY"
+                     tableName="FIS_DIVISION_ALLOCATION_AUDIT">
+            <column name="OBJECT_CATEGORY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CATEGORY_ID" baseTableName="FIS_DIVISION_ALLOCATION_AUDIT"
+                                 constraintName="FK_FIS_DIVISION_ALLOCATION_AUDIT_ON_OBJECT_CATEGORY"
+                                 referencedColumnNames="ID" referencedTableName="FIS_OBJECT_CATEGORY"/>
+    </changeSet>
+    <changeSet id="85" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_ALLOCATION_DIVISION" tableName="FIS_DIVISION_ALLOCATION">
+            <column name="DIVISION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_DIVISION_ALLOCATION"
+                                 constraintName="FK_FIS_DIVISION_ALLOCATION_ON_DIVISION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="86" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_ALLOCATION_OBJECT_CATEGORY" tableName="FIS_DIVISION_ALLOCATION">
+            <column name="OBJECT_CATEGORY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CATEGORY_ID" baseTableName="FIS_DIVISION_ALLOCATION"
+                                 constraintName="FK_FIS_DIVISION_ALLOCATION_ON_OBJECT_CATEGORY"
+                                 referencedColumnNames="ID" referencedTableName="FIS_OBJECT_CATEGORY"/>
+    </changeSet>
+    <changeSet id="87" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_APPROPRIATION" tableName="FIS_DIVISION">
+            <column name="APPROPRIATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="APPROPRIATION_ID" baseTableName="FIS_DIVISION"
+                                 constraintName="FK_FIS_DIVISION_ON_APPROPRIATION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_APPROPRIATION"/>
+    </changeSet>
+    <changeSet id="88" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_APP_DIVCODE_FUND" tableName="FIS_DIVISION">
+            <column name="APPROPRIATION_ID"/>
+            <column name="DIVISION_CODE"/>
+            <column name="FUND_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="FUND_ID" baseTableName="FIS_DIVISION"
+                                 constraintName="FK_FIS_DIVISION_ON_FUND" referencedColumnNames="ID"
+                                 referencedTableName="FIS_FUND"/>
+    </changeSet>
+    <changeSet id="89" author="fis">
+        <createIndex indexName="IDX_FIS_DIVISION_FUND" tableName="FIS_DIVISION">
+            <column name="FUND_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="90" author="fis">
+        <createIndex indexName="IDX_FIS_DOCUMENT" tableName="FIS_DOCUMENT">
+            <column name="BBFY"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="91" author="fis">
+        <createIndex indexName="IDX_FIS_DOCUMENT_AUDIT" tableName="FIS_DOCUMENT_AUDIT">
+            <column name="DOCUMENT_BBFY"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="92" author="fis">
+        <createIndex indexName="IDX_FIS_DOCUMENT_AUDIT_PROCESS_IDX" tableName="FIS_DOCUMENT_AUDIT">
+            <column name="DOCUMENT_BBFY"/>
+            <column name="DOCUMENT_FUND_CODE"/>
+            <column name="DOCUMENT_BUDGET_ORG"/>
+            <column name="DOCUMENT_BOC"/>
+            <column name="DOCUMENT_DOCUMENT_NUMBER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="93" author="fis">
+        <createIndex indexName="IDX_FIS_DOCUMENT_AUDIT_REJECT_IDX" tableName="FIS_DOCUMENT_AUDIT">
+            <column name="PROCESS_STATUS"/>
+            <column name="DOCUMENT_FUND_CODE"/>
+            <column name="DOCUMENT_BBFY"/>
+            <column name="DOCUMENT_BUDGET_ORG"/>
+            <column name="DOCUMENT_DOCUMENT_TYPE"/>
+            <column name="DOCUMENT_DOCUMENT_NUMBER"/>
+            <column name="DOCUMENT_LINE_NUMBER"/>
+            <column name="DOCUMENT_BOC"/>
+            <column name="DOCUMENT_AMOUNT"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="94" author="fis">
+        <createIndex indexName="IDX_FIS_DOCUMENT_EXCEPTION_UNQ" tableName="FIS_DOCUMENT_EXCEPTION" unique="true">
+            <column name="FUND_CODE"/>
+            <column name="BBFY"/>
+            <column name="BUDGET_ORG"/>
+            <column name="BOC"/>
+            <column name="DOCUMENT_TYPE"/>
+            <column name="DOCUMENT_NUMBER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="95" author="fis">
+        <createIndex indexName="IDX_FIS_FCN_OBLIGATION" tableName="FIS_FCN">
+            <column name="OBLIGATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBLIGATION_ID" baseTableName="FIS_FCN"
+                                 constraintName="FK_FIS_FCN_ON_OBLIGATION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBLIGATION"/>
+    </changeSet>
+    <changeSet id="96" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_ACTIVITY" tableName="FIS_FILE_ATTACHMENT">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="FIS_FILE_ATTACHMENT"
+                                 constraintName="FK_FIS_FILE_ATTACHMENT_ON_ACTIVITY" referencedColumnNames="ID"
+                                 referencedTableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="97" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_CATEGORY" tableName="FIS_FILE_ATTACHMENT">
+            <column name="CATEGORY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="CATEGORY_ID" baseTableName="FIS_FILE_ATTACHMENT"
+                                 constraintName="FK_FIS_FILE_ATTACHMENT_ON_CATEGORY" referencedColumnNames="ID"
+                                 referencedTableName="FIS_FILE_ATTACHMENT_CATEGORY"/>
+    </changeSet>
+    <changeSet id="98" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_CATEGORY_UNQ" tableName="FIS_FILE_ATTACHMENT_CATEGORY"
+                     unique="true">
+            <column name="TITLE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="99" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_FUND_CONTROL_NOTICE" tableName="FIS_FILE_ATTACHMENT">
+            <column name="FUND_CONTROL_NOTICE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="FUND_CONTROL_NOTICE_ID" baseTableName="FIS_FILE_ATTACHMENT"
+                                 constraintName="FK_FIS_FILE_ATTACHMENT_ON_FUND_CONTROL_NOTICE"
+                                 referencedColumnNames="ID" referencedTableName="FIS_FCN"/>
+    </changeSet>
+    <changeSet id="100" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_INVOICE" tableName="FIS_FILE_ATTACHMENT">
+            <column name="INVOICE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="INVOICE_ID" baseTableName="FIS_FILE_ATTACHMENT"
+                                 constraintName="FK_FIS_FILE_ATTACHMENT_ON_INVOICE" referencedColumnNames="ID"
+                                 referencedTableName="FIS_INVOICE"/>
+    </changeSet>
+    <changeSet id="101" author="fis">
+        <createIndex indexName="IDX_FIS_FILE_ATTACHMENT_OBLIGATION" tableName="FIS_FILE_ATTACHMENT">
+            <column name="OBLIGATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBLIGATION_ID" baseTableName="FIS_FILE_ATTACHMENT"
+                                 constraintName="FK_FIS_FILE_ATTACHMENT_ON_OBLIGATION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBLIGATION"/>
+    </changeSet>
+    <changeSet id="102" author="fis">
+        <createIndex indexName="IDX_FIS_GROUP_DIVISION" tableName="FIS_GROUP">
+            <column name="DIVISION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_GROUP"
+                                 constraintName="FK_FIS_GROUP_ON_DIVISION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="103" author="fis">
+        <createIndex indexName="IDX_FIS_INVOICE_OBLIGATION" tableName="FIS_INVOICE">
+            <column name="OBLIGATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBLIGATION_ID" baseTableName="FIS_INVOICE"
+                                 constraintName="FK_FIS_INVOICE_ON_OBLIGATION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBLIGATION"/>
+    </changeSet>
+    <changeSet id="104" author="fis">
+        <createIndex indexName="IDX_FIS_JITF_TRANSFER_OBJECT_CLASS" tableName="FIS_JITF_TRANSFER">
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CLASS_ID" baseTableName="FIS_JITF_TRANSFER"
+                                 constraintName="FK_FIS_JITF_TRANSFER_ON_OBJECT_CLASS" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="105" author="fis">
+        <createIndex indexName="IDX_FIS_LOCALITY_AREA_UNQ" tableName="FIS_LOCALITY_AREA" unique="true">
+            <column name="GVT_LOCALITY_AREA"/>
+            <column name="EFFDT"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="106" author="fis">
+        <createIndex indexName="IDX_FIS_OBJECT_CATEGORY_APPROPRIATION" tableName="FIS_OBJECT_CATEGORY">
+            <column name="APPROPRIATION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="APPROPRIATION_ID" baseTableName="FIS_OBJECT_CATEGORY"
+                                 constraintName="FK_FIS_OBJECT_CATEGORY_ON_APPROPRIATION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_APPROPRIATION"/>
+    </changeSet>
+    <changeSet id="107" author="fis">
+        <createIndex indexName="IDX_FIS_OBJECT_CLASS_CATEGORY" tableName="FIS_OBJECT_CLASS">
+            <column name="OBJECT_CATEGORY_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CATEGORY_ID" baseTableName="FIS_OBJECT_CLASS"
+                                 constraintName="FK_FIS_OBJECT_CLASS_ON_OBJECT_CATEGORY" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBJECT_CATEGORY"/>
+    </changeSet>
+    <changeSet id="108" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION" tableName="FIS_OBLIGATION">
+            <column name="ACTIVITY_ID"/>
+            <column name="STATUS"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTIVITY_ID" baseTableName="FIS_OBLIGATION"
+                                 constraintName="FK_FIS_OBLIGATION_ON_ACTIVITY" referencedColumnNames="ID"
+                                 referencedTableName="FIS_ACTIVITY"/>
+    </changeSet>
+    <changeSet id="109" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION_ACTIVITY" tableName="FIS_OBLIGATION">
+            <column name="ACTIVITY_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="110" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION_ACTIVITY_OBJCLASS" tableName="FIS_OBLIGATION">
+            <column name="ACTIVITY_ID"/>
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="OBJECT_CLASS_ID" baseTableName="FIS_OBLIGATION"
+                                 constraintName="FK_FIS_OBLIGATION_ON_OBJECT_CLASS" referencedColumnNames="ID"
+                                 referencedTableName="FIS_OBJECT_CLASS"/>
+    </changeSet>
+    <changeSet id="111" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION_COST_ORG" tableName="FIS_OBLIGATION">
+            <column name="COST_ORG_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="COST_ORG_ID" baseTableName="FIS_OBLIGATION"
+                                 constraintName="FK_FIS_OBLIGATION_ON_COST_ORG" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="112" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION_OBJECT_CLASS" tableName="FIS_OBLIGATION">
+            <column name="OBJECT_CLASS_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="113" author="fis">
+        <createIndex indexName="IDX_FIS_OBLIGATION_VENDOR_CODE_ADDRESS_CODE" tableName="FIS_OBLIGATION">
+            <column name="VENDOR_CODE"/>
+            <column name="ADDRESS_CODE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="114" author="fis">
+        <createIndex indexName="IDX_FIS_PAY_GRADE_RATE_EFFECTIVE_PAY_PERIOD" tableName="FIS_PAY_GRADE_RATE">
+            <column name="PAY_PERIOD_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_PERIOD_ID" baseTableName="FIS_PAY_GRADE_RATE"
+                                 constraintName="FK_FIS_PAY_GRADE_RATE_ON_PAY_PERIOD" referencedColumnNames="ID"
+                                 referencedTableName="FIS_PAY_PERIOD"/>
+    </changeSet>
+    <changeSet id="115" author="fis">
+        <createIndex indexName="IDX_FIS_PAY_GRADE_RATE_PAY_GRADE" tableName="FIS_PAY_GRADE_RATE">
+            <column name="PAY_GRADE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_GRADE_ID" baseTableName="FIS_PAY_GRADE_RATE"
+                                 constraintName="FK_FIS_PAY_GRADE_RATE_ON_PAY_GRADE" referencedColumnNames="ID"
+                                 referencedTableName="FIS_PAY_GRADE"/>
+    </changeSet>
+    <changeSet id="116" author="fis">
+        <createIndex indexName="IDX_FIS_PAY_GRADE_RATE_UNQ" tableName="FIS_PAY_GRADE_RATE" unique="true">
+            <column name="PAY_GRADE_ID"/>
+            <column name="EFFDATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="117" author="fis">
+        <createIndex indexName="IDX_FIS_PAY_GRADE_UNQ" tableName="FIS_PAY_GRADE" unique="true">
+            <column name="SETID"/>
+            <column name="SAL_ADMIN_PLAN"/>
+            <column name="GRADE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="118" author="fis">
+        <createIndex indexName="IDX_FIS_POSITION_ACTION_ACTION_CODE" tableName="FIS_POSITION_ACTION">
+            <column name="ACTION_CODE_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="ACTION_CODE_ID" baseTableName="FIS_POSITION_ACTION"
+                                 constraintName="FK_FIS_POSITION_ACTION_ON_ACTION_CODE" referencedColumnNames="ID"
+                                 referencedTableName="FIS_ACTION_CODE"/>
+    </changeSet>
+    <changeSet id="119" author="fis">
+        <createIndex indexName="IDX_FIS_POSITION_ACTION_PAY_PERIOD" tableName="FIS_POSITION_ACTION">
+            <column name="PAY_PERIOD_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="PAY_PERIOD_ID" baseTableName="FIS_POSITION_ACTION"
+                                 constraintName="FK_FIS_POSITION_ACTION_ON_PAY_PERIOD" referencedColumnNames="ID"
+                                 referencedTableName="FIS_PAY_PERIOD"/>
+    </changeSet>
+    <changeSet id="120" author="fis">
+        <createIndex indexName="IDX_FIS_POSITION_ACTION_POSITION" tableName="FIS_POSITION_ACTION">
+            <column name="POSITION_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="POSITION_ID" baseTableName="FIS_POSITION_ACTION"
+                                 constraintName="FK_FIS_POSITION_ACTION_ON_POSITION" onDelete="CASCADE"
+                                 referencedColumnNames="ID" referencedTableName="FIS_POSITION"/>
+    </changeSet>
+    <changeSet id="121" author="fis">
+        <createIndex indexName="IDX_FIS_PROCESS_IDX" tableName="FIS_DOCUMENT">
+            <column name="BBFY"/>
+            <column name="BUDGET_ORG"/>
+            <column name="DOCUMENT_NUMBER"/>
+            <column name="BOC"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="122" author="fis">
+        <addForeignKeyConstraint baseColumnNames="DIVISION_ID" baseTableName="FIS_BONUS_PROJECTION"
+                                 constraintName="FK_FIS_BONUS_PROJECTION_ON_DIVISION" referencedColumnNames="ID"
+                                 referencedTableName="FIS_DIVISION"/>
+    </changeSet>
+    <changeSet id="123" author="fis">
+        <addForeignKeyConstraint baseColumnNames="PAY_PERIOD_ID" baseTableName="FIS_PAY_ADJUSTMENT"
+                                 constraintName="FK_FIS_PAY_ADJUSTMENT_ON_PAY_PERIOD" referencedColumnNames="ID"
+                                 referencedTableName="FIS_PAY_PERIOD"/>
+    </changeSet>
+</databaseChangeLog>
