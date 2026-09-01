@@ -16,8 +16,10 @@ import gov.fjc.fis.view.obligation.ObligationLookupView;
 import io.jmix.core.EntityStates;
 import io.jmix.core.session.SessionData;
 import io.jmix.flowui.DialogWindows;
+import io.jmix.flowui.Fragments;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.datepicker.TypedDatePicker;
+import io.jmix.flowui.component.details.JmixDetails;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.textarea.JmixTextArea;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -42,6 +44,8 @@ public class FundControlNoticeDetailView extends StandardDetailView<FundControlN
     private SessionData sessionData;
     @Autowired
     private EntityStates entityStates;
+    @Autowired
+    private Fragments fragments;
 
     @Autowired
     private AppropriationService appropriationService;
@@ -60,8 +64,11 @@ public class FundControlNoticeDetailView extends StandardDetailView<FundControlN
     private TypedDatePicker<Date> travelStartDateField;
     @ViewComponent
     private TypedDatePicker<Date> travelEndDateField;
+
     @ViewComponent
-    private FileAttachmentFragment attachmentFragment;
+    private Paragraph attachmentNote;
+    @ViewComponent
+    private JmixDetails attachmentDetails;
     @ViewComponent
     private Paragraph aoSyncStringField;
     @ViewComponent
@@ -79,7 +86,7 @@ public class FundControlNoticeDetailView extends StandardDetailView<FundControlN
     @Subscribe
     protected void onBeforeShow(final BeforeShowEvent event) {
         var fcn = getEditedEntity();
-        attachmentFragment.setHostEntity(fcn);
+//        attachmentFragment.setHostEntity(fcn);
         if (entityStates.isNew(fcn)) {
             entryBfy = appropriationService.getBfyEntryAppropriation(sessionData);
             if (entryBfy != null) {
@@ -94,10 +101,16 @@ public class FundControlNoticeDetailView extends StandardDetailView<FundControlN
             aoSyncStringField.setText(fcn.getAoSyncString());
             createdByString.setText(fcn.getCreatedByString());
             obligationInfoForm.setVisible(true);
+
+            FileAttachmentFragment fileAttachmentFragment = fragments.create(this, FileAttachmentFragment.class);
+            attachmentDetails.add(fileAttachmentFragment);
+            attachmentNote.setVisible(false);
+            fileAttachmentFragment.setHostEntity(fcn);
+
             fcnDateField.focus();
             if (!entryBfy.getStatus()) {
                 readOnlyViewsSupport.setViewReadOnly(this, true);
-                attachmentFragment.setReadOnly(true);
+                fileAttachmentFragment.setReadOnly(true);
             }
         }
     }

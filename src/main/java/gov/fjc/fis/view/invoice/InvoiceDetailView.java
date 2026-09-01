@@ -15,8 +15,10 @@ import gov.fjc.fis.view.obligation.ObligationLookupView;
 import io.jmix.core.EntityStates;
 import io.jmix.core.session.SessionData;
 import io.jmix.flowui.DialogWindows;
+import io.jmix.flowui.Fragments;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.datepicker.TypedDatePicker;
+import io.jmix.flowui.component.details.JmixDetails;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.textarea.JmixTextArea;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -41,6 +43,8 @@ public class InvoiceDetailView extends StandardDetailView<Invoice> {
     private SessionData sessionData;
     @Autowired
     private EntityStates entityStates;
+    @Autowired
+    private Fragments fragments;
 
     @Autowired
     private AppropriationService appropriationService;
@@ -57,8 +61,11 @@ public class InvoiceDetailView extends StandardDetailView<Invoice> {
     private TypedDatePicker<Date> invoiceDateField;
     @ViewComponent
     private TypedDatePicker<Date> paymentDateField;
+
     @ViewComponent
-    private FileAttachmentFragment attachmentFragment;
+    private Paragraph attachmentNote;
+    @ViewComponent
+    private JmixDetails attachmentDetails;
     @ViewComponent
     private Paragraph createdByString;
 
@@ -74,7 +81,7 @@ public class InvoiceDetailView extends StandardDetailView<Invoice> {
     @Subscribe
     protected void onBeforeShow(final BeforeShowEvent event) {
         var invoice = getEditedEntity();
-        attachmentFragment.setHostEntity(invoice);
+//        attachmentFragment.setHostEntity(invoice);
         if (entityStates.isNew(invoice)) {
             entryBfy = appropriationService.getBfyEntryAppropriation(sessionData);
             if (entryBfy != null) {
@@ -92,11 +99,16 @@ public class InvoiceDetailView extends StandardDetailView<Invoice> {
             createdByString.setText(invoice.getCreatedByString());
             obligationInfoForm.setVisible(true);
 
+            FileAttachmentFragment fileAttachmentFragment = fragments.create(this, FileAttachmentFragment.class);
+            attachmentDetails.add(fileAttachmentFragment);
+            attachmentNote.setVisible(false);
+            fileAttachmentFragment.setHostEntity(invoice);
+
             invoiceNumberField.setAutoselect(true);
             invoiceNumberField.focus();
             if (!entryBfy.getStatus()) {
                 readOnlyViewsSupport.setViewReadOnly(this, true);
-                attachmentFragment.setReadOnly(true);
+                fileAttachmentFragment.setReadOnly(true);
             }
         }
     }

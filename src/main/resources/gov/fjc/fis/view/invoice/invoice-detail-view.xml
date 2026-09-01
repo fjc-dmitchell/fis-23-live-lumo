@@ -78,21 +78,22 @@
                 </vbox>
             </div>
             <div classNames="grid-panel">
-                <vbox classNames="contrast-panel">
-                    <details opened="true" summaryText="Attachments" width="100%">
-                        <fragment id="attachmentFragment"
-                                  class="gov.fjc.fis.view.fileattachmentfragment.FileAttachmentFragment" colspan="2"/>
+                <vbox classNames="contrast-panel" spacing="false">
+                    <details id="attachmentDetails" opened="true" summaryText="Attachments" width="100%">
+                        <vbox>
+                            <p id="attachmentNote" text="File attachments cannot be added until the entity is saved."/>
+                        </vbox>
                     </details>
                 </vbox>
             </div>
         </vbox>
         <vbox>
             <p id="createdByString"/>
+            <hbox id="detailActions"
+                  classNames="px-m py-s bg-contrast-5">
+                <button id="saveAndCloseBtn" action="saveAction"/>
+                <button id="closeBtn" action="closeAction"/>
+            </hbox>
         </vbox>
-        <hbox id="detailActions"
-              classNames="px-m py-s bg-contrast-5">
-            <button id="saveAndCloseBtn" action="saveAction"/>
-            <button id="closeBtn" action="closeAction"/>
-        </hbox>
     </layout>
 </view>
