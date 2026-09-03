@@ -13,7 +13,7 @@ jmix {
 }
 
 group = 'gov.fjc'
-version = '2.3.3-LIVE'
+version = '2.3.4-LIVE'
 
 repositories {
     mavenCentral()
@@ -30,6 +30,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.jmix.jmxconsole:jmix-jmxconsole-starter'
+
     implementation 'io.jmix.audit:jmix-audit-starter'
     implementation 'io.jmix.audit:jmix-audit-flowui-starter'
 

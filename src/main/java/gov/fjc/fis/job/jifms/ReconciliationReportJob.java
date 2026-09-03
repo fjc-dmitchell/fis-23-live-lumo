@@ -24,7 +24,7 @@ public class ReconciliationReportJob implements Job {
     @Autowired
     private AdministrationService administrationService;
 
-    @Value("${reconciliation.email.addresses}")
+    @Value("${jifms.email.reconcilation.addresses}")
     private String reconciliationEmailAddresses;
 
     private static final Logger log = LoggerFactory.getLogger(ReconciliationReportJob.class);

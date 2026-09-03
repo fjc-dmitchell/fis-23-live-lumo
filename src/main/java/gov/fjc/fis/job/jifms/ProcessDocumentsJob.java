@@ -2,10 +2,7 @@ package gov.fjc.fis.job.jifms;
 
 import gov.fjc.fis.entity.*;
 import io.jmix.core.security.Authenticated;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,8 @@ public class ProcessDocumentsJob implements Job {
     private JifmsQueryService jifmsQueryService;
     @Autowired
     private DocumentAuditService documentAuditService;
+    @Autowired
+    Scheduler scheduler;
 
     private static final Logger log = LoggerFactory.getLogger(gov.fjc.fis.job.jifms.ProcessDocumentsJob.class);
 
@@ -27,6 +26,7 @@ public class ProcessDocumentsJob implements Job {
     private static final String OBBBA_BUDGET_ORG = "JXXMAPP";
     private static final List<String> TRAVEL_DOCUMENT_TYPES = List.of("TA", "TAJ", "JTA");
     private static final List<String> PURCHASE_DOCUMENT_TYPES = List.of("MO", "MOJ");
+    private static final JobKey RECONCILIATION_REPORT_JOB_KEY = new JobKey("reconciliationReport", "JIFMS");
 
     @Authenticated
     @Override
@@ -109,5 +109,10 @@ public class ProcessDocumentsJob implements Job {
             }
         }
         log.info("Processing completed");
+        try {
+            scheduler.triggerJob(RECONCILIATION_REPORT_JOB_KEY);
+        } catch (SchedulerException e) {
+            throw new JobExecutionException("Unable to trigger Reconcilation report", e);
+        }
     }
 }

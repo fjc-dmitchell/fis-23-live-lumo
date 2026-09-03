@@ -79,7 +79,7 @@ public class LoadDocumentsJob implements Job {
 
         try {
             processDocuments(purchasePath, travelPath);
-//            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
+            scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
         } catch (Exception ex) {
             handleProcessingFailure(ex);
             throw new JobExecutionException("LoadDocuments failed", ex);
