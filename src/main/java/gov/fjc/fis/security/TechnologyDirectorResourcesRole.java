@@ -1,7 +1,7 @@
 package gov.fjc.fis.security;
 
 import gov.fjc.fis.entity.*;
-import gov.fjc.fis.entity.dto.ObligationDto;
+import gov.fjc.fis.entity.dto.*;
 import io.jmix.security.model.EntityAttributePolicyAction;
 import io.jmix.security.model.EntityPolicyAction;
 import io.jmix.security.role.annotation.EntityAttributePolicy;
@@ -42,7 +42,40 @@ public interface TechnologyDirectorResourcesRole extends UiMinimalRole, ReportRe
     @EntityPolicy(entityClass = ObligationDto.class, actions = EntityPolicyAction.ALL)
     void obligationDto();
 
-    @MenuPolicy(menuIds = {"fis_Activity.list", "fis_Obligation.list", "fis_Invoice.list", "fis_ReportRouter#openDivisionObligationsReport", "fis_SpendingChartDashboardView", "fis_ObjectClass.list", "fis_ObjectCategory.list"})
-    @ViewPolicy(viewIds = {"fis_Activity.list", "fis_Obligation.list", "fis_Invoice.list", "fis_SpendingChartDashboardView", "fis_ObjectClass.list", "fis_ObjectCategory.list", "fis_Activity.detail", "fis_OpenObligationsReportView"})
+    @MenuPolicy(menuIds = "fis_ReportRouter#openDivisionObligationsReport")
+    @ViewPolicy(viewIds = "fis_DivisionObligationsReportView")
     void screens();
+
+    @EntityPolicy(entityClass = ActivityDto.class, actions = EntityPolicyAction.ALL)
+    void activityDto();
+
+    @EntityPolicy(entityClass = ActivityProjectionDto.class, actions = EntityPolicyAction.ALL)
+    void activityProjectionDto();
+
+    @EntityPolicy(entityClass = ActivityReimbursementDto.class, actions = EntityPolicyAction.ALL)
+    void activityReimbursementDto();
+
+    @EntityPolicy(entityClass = AmountsDto.class, actions = EntityPolicyAction.ALL)
+    void amountsDto();
+
+    @EntityPolicy(entityClass = AppropriationDto.class, actions = EntityPolicyAction.ALL)
+    void appropriationDto();
+
+    @EntityPolicy(entityClass = BranchDto.class, actions = EntityPolicyAction.ALL)
+    void branchDto();
+
+    @EntityPolicy(entityClass = DivisionDto.class, actions = EntityPolicyAction.ALL)
+    void divisionDto();
+
+    @EntityPolicy(entityClass = GroupDto.class, actions = EntityPolicyAction.ALL)
+    void groupDto();
+
+    @EntityPolicy(entityClass = JitfTransferDto.class, actions = EntityPolicyAction.ALL)
+    void jitfTransferDto();
+
+    @EntityPolicy(entityClass = ObjectCategoryDto.class, actions = EntityPolicyAction.ALL)
+    void objectCategoryDto();
+
+    @EntityPolicy(entityClass = ObjectClassDto.class, actions = EntityPolicyAction.ALL)
+    void objectClassDto();
 }

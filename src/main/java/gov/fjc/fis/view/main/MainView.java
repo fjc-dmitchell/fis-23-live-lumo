@@ -92,6 +92,7 @@ public class MainView extends StandardTabbedModeMainView {
         initApplicationTitle();
         fetchMessages();
         refreshMessageBox();
+        bfyEntry.setTooltipText("Open Appropriations");
     }
 
     @Subscribe

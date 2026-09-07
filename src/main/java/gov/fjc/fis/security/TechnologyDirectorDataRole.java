@@ -10,30 +10,30 @@ public interface TechnologyDirectorDataRole extends AppropriationYearsDataRole {
 
     @JpqlRowLevelPolicy(
             entityClass = Division.class,
-            where = "{E}.divisionCode in ('1','5')")
+            where = "{E}.divisionCode = '1'")
     void division();
 
     @JpqlRowLevelPolicy(
             entityClass = Branch.class,
-            join = "{E}.division d",
-            where = "{E}.branchCode in ('02','03') and d.divisionCode='1'")
+            join = "join {E}.division sec_d",
+            where = "{E}.branchCode in ('02','03') and sec_d.divisionCode='1'")
     void branch();
 
     @JpqlRowLevelPolicy(
             entityClass = Activity.class,
-            join = "left join {E}.branch b join {E}.division d",
-            where = "(b.branchCode in ('02','03') and d.divisionCode='1') or d.divisionCode='5'")
+            join = "join {E}.branch sec_b join {E}.division sec_d",
+            where = "sec_b.branchCode in ('02','03') and sec_d.divisionCode='1'")
     void activity();
 
     @JpqlRowLevelPolicy(
             entityClass = ActivityProjection.class,
-            join = "{E}.activity a join a.division d left join a.branch b",
-            where = "(b.branchCode in ('02','03') and d.divisionCode='1') or d.divisionCode='5'")
+            join = "join {E}.activity sec_a join a.division sec_d left join a.branch sec_b",
+            where = "sec_b.branchCode in ('02','03') and sec_d.divisionCode='1'")
     void activityProjection();
 
     @JpqlRowLevelPolicy(
             entityClass = Obligation.class,
-            join = "{E}.activity a join a.division d left join a.branch b",
-            where = "(b.branchCode in ('02','03') and d.divisionCode='1') or d.divisionCode='5'")
+            join = "join {E}.activity sec_a join sec_a.division sec_d left join sec_a.branch sec_b",
+            where = "sec_b.branchCode in ('02','03') and sec_d.divisionCode='1'")
     void obligation();
 }

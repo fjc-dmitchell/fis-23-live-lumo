@@ -2,6 +2,21 @@
 
 /* new for 3.0 */
 
+/*.bfy-search-picker vaadin-tooltip::part(overlay) {*/
+/*    background: #333;*/
+/*    color: #fff;*/
+/*}*/
+
+vaadin-tooltip::part(overlay) {
+    background: #333;
+    color: #fff;
+    font-family: sans-serif;
+}
+
+vaadin-tooltip::part(content) {
+    max-width: 260px;
+}
+
 /* Make dropdown items black */
 
 
