@@ -37,7 +37,6 @@ public class DivisionObligationsReportService {
     private List<Activity> getActivities(Division division, Branch branch) {
         return dataManager.load(Activity.class)
                 .query("SELECT a FROM fis_Activity a"
-                        + " LEFT JOIN fis_Branch b ON b = a.branch"
                         + " WHERE (:anyBranch = true AND a.division = :division)"
                         + " OR (:anyBranch = false AND a.branch = :branch)"
                         + " ORDER BY a.sortCode, a.activityNumber")
