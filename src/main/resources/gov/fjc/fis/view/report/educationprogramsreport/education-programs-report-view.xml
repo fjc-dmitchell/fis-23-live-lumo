@@ -5,6 +5,9 @@
         <collection id="appropriationsDc" class="gov.fjc.fis.entity.Appropriation">
             <loader id="appropriationsDl" readOnly="true"/>
         </collection>
+        <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
+            <loader id="divisionsDl" readOnly="true"/>
+        </collection>
         <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
             <loader id="branchesDl" readOnly="true"/>
         </collection>
@@ -13,6 +16,8 @@
         <vbox classNames="jmix-main-view-navigation bordered-panel" width="100%" spacing="false">
             <entityComboBox id="bfySelectorField" itemsContainer="appropriationsDc" required="true"
                             metaClass="fis_Appropriation" label="Fiscal Year" width="8em"/>
+            <entityComboBox id="divisionSelectorField" itemsContainer="divisionsDc" title="Division"
+                            metaClass="fis_Division" label="Division" width="35em" required="true" visible="true"/>
             <entityComboBox id="branchSelectorField" itemsContainer="branchesDc" title="Branch"
                             metaClass="fis_Branch" label="Branch" width="35em">
                 <actions>

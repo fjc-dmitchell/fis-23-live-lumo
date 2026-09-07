@@ -318,6 +318,17 @@ public class DivisionService {
                 .orElse(null);
     }
 
+    public List<Division> fetchEducationPlusObbaDivisions(Appropriation appropriation) {
+        return dataManager.load(Division.class)
+                .query("SELECT e FROM fis_Division e" +
+                        " WHERE e.appropriation = :appropriation" +
+                        " AND (e.divisionCode = :divisionCode OR e.budgetOrg = :budgetOrg)" )
+                .parameter("appropriation", appropriation)
+                .parameter("divisionCode", EDUCATION_DIVISION_CODE)
+                .parameter("budgetOrg", OBBBA_BUDGET_ORG)
+                .list();
+    }
+
     public Division getResearchDivision(Appropriation appropriation) {
         return getDivision(appropriation, RESEARCH_DIVISION_CODE);
 //        return dataManager.load(Division.class)

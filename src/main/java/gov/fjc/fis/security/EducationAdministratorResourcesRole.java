@@ -15,11 +15,94 @@ import io.jmix.securityflowui.role.annotation.ViewPolicy;
 public interface EducationAdministratorResourcesRole extends UiMinimalRole, ReportResourcesRole {
     String CODE = "resources-ed-admin";
 
-    @MenuPolicy(menuIds = {"fis_Division.list", "fis_Activity.list", "fis_Obligation.list", "fis_Invoice.list", "fis_FundControlNotice.list", "fis_Branch.list", "fis_Group.list", "fis_ReportRouter#openEducationProgramsReport", "fis_DistanceLearning.list", "fis_Ape.list", "fis_ReportRouter#openEducationBranchReport"})
-    @ViewPolicy(viewIds = {"fis_Division.list", "fis_Activity.list", "fis_Obligation.list", "fis_Invoice.list", "fis_FundControlNotice.list", "fis_Branch.list", "fis_Group.list", "fis_ReportRouter#openEducationProgramsReport", "fis_DistanceLearning.list", "fis_Ape.list", "fis_EducationProgramsReportView", "fis_EducationBranchReportView"})
+    @MenuPolicy(menuIds = {
+            "fis_Obligation.list",
+            "fis_Branch.list",
+            "fis_Group.list",
+            "fis_ReportRouter#openEducationProgramsReport",
+            "fis_ReportRouter#openOpenTravelObligationsReport",
+            "fis_ReportRouter#openOpenObligationsReport",
+            "fis_ReportRouter#openDivisionObligationsReport",
+            "fis_ActivityProjection.list",
+            "flowui_UserSettingsItem.list"
+    })
+    @ViewPolicy(viewIds = {
+            "fis_Obligation.list",
+            "fis_Branch.list",
+            "fis_Group.list",
+            "fis_EducationProgramsReportView",
+            "fis_Branch.detail",
+            "fis_ActivityReimbursement.detail",
+            "ActivityFragment",
+            "fis_ObjectCategory.detail",
+            "fis_ObjectClass.detail",
+            "fis_Obligation.detail",
+            "fis_OpenTravelObligationsReportView",
+            "fis_OpenObligationsReportView",
+            "fis_DivisionObligationsReportView",
+            "ActivitySearchFragment",
+            "CustomSearchFragment",
+            "EntitySearchFragment",
+            "FcnSearchFragment",
+            "InvoiceSearchFragment",
+            "ObligationSearchFragment",
+            "fis_Group.detail",
+            "fis_ActivityProjection.list",
+            "fis_Invoice_dialog.detail",
+            "fis_FundControlNotice_dialog.detail",
+            "flowui_UserSettingsItem.detail",
+            "flowui_UserSettingsItem.list"
+    })
     void screens();
 
-    @EntityAttributePolicy(entityClass = Activity.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityAttributePolicy(entityClass = Activity.class,
+            attributes = {
+                    "division",
+                    "fund",
+                    "branch",
+                    "group",
+                    "costOrg",
+                    "activityNumber",
+                    "genericProjection",
+                    "title",
+                    "shortTitle",
+                    "city",
+                    "state",
+                    "startDate",
+                    "endDate",
+                    "programDirector",
+                    "numberParticipants",
+                    "numberPrograms",
+                    "numberFaculty",
+                    "sortCode",
+                    "note",
+                    "trainingProject",
+                    "canceled",
+                    "projectedAmount",
+                    "reimbursedAmount",
+                    "obligatedAmount",
+                    "projections",
+                    "auditProjections",
+                    "reimbursements",
+                    "obligations",
+                    "attachments",
+                    "reportNote",
+                    "participantCountFinal",
+                    "addedToPlan",
+                    "initialProjection",
+                    "version",
+                    "createdBy",
+                    "createdDate",
+                    "lastModifiedBy",
+                    "lastModifiedDate",
+                    "budgetOrgOfCostOrg",
+                    "addedToPlanString",
+                    "genericActivityNumber",
+                    "createdByString",
+                    "titleAndCode",
+                    "isGeneric",
+                    "id"
+            }, action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = Activity.class, actions = EntityPolicyAction.READ)
     void activity();
 
@@ -60,7 +143,6 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
     void division();
 
     @EntityAttributePolicy(entityClass = DivisionAllocation.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
-    @EntityPolicy(entityClass = DivisionAllocation.class, actions = EntityPolicyAction.READ)
     void divisionAllocation();
 
     @EntityAttributePolicy(entityClass = ObjectCategory.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
@@ -110,4 +192,16 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
     @EntityAttributePolicy(entityClass = Branch.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = Branch.class, actions = EntityPolicyAction.READ)
     void branch();
+
+    @EntityPolicy(entityClass = BranchDto.class, actions = EntityPolicyAction.ALL)
+    void branchDto();
+
+    @EntityPolicy(entityClass = DivisionDto.class, actions = EntityPolicyAction.ALL)
+    void divisionDto();
+
+    @EntityPolicy(entityClass = Vendor.class, actions = EntityPolicyAction.READ)
+    void vendor();
+
+    @EntityPolicy(entityClass = AmountsDto.class, actions = EntityPolicyAction.ALL)
+    void amountsDto();
 }
