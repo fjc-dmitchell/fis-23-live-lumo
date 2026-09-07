@@ -84,7 +84,7 @@ public class SyncEmployeeToPositionJob implements Job {
     @Authenticated
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        log.info("SyncEmployeeToPosition starting");
+        log.info("SyncEmployeeToPosition has started");
 
         try {
             List<Employee> employees = fetchAllEmployees();

@@ -8,6 +8,7 @@ import gov.fjc.fis.entity.personnel.Employee;
 import gov.fjc.fis.service.AdministrationService;
 import io.jmix.core.SaveContext;
 import io.jmix.core.UnconstrainedDataManager;
+import io.jmix.core.security.Authenticated;
 import io.jmix.email.*;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -47,9 +48,10 @@ public class LoadEmployeesJob implements Job {
     private static final String ABEND_SUBJECT = "HRMIS feed processing ABENDED";
     private static final Logger log = LoggerFactory.getLogger(LoadEmployeesJob.class);
 
+    @Authenticated
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        log.info("LoadEmployeesJob has been executed.");
+        log.info("LoadEmployeesJob has started");
         var employeeFilePath = Path.of(feedDirectory, employeeFile);
 
         if (!Files.exists(employeeFilePath)) {
@@ -63,7 +65,6 @@ public class LoadEmployeesJob implements Job {
             administrationService.archiveFile(jobStatusEmailAddresses, ABEND_SUBJECT,
                     feedDirectory, archiveDirectory, employeeFile);
             scheduler.triggerJob(SYNC_EMPLOYEES_JOB_KEY);
-            log.info("LoadEmployees completed");
         } catch (SchedulerException e) {
             notifyFailure("<strong>LoadEmployees</strong> failed to trigger <strong>syncEmployeeToPosition</strong>");
             throw new JobExecutionException(ABEND_SUBJECT, e);
@@ -72,6 +73,7 @@ public class LoadEmployeesJob implements Job {
             notifyFailure("<strong>LoadEmployees</strong> failed while loading employees: " + e.getMessage());
             throw new JobExecutionException(ABEND_SUBJECT, e);
         }
+        log.info("LoadEmployeesJob has ended");
     }
 
     private void notifyFileMissing(Path employeeFilePath) {

@@ -92,7 +92,10 @@ public class ProcessDocumentsJob implements Job {
                             Processors.vendor(jifmsQueryService)
                     ));
 
+                    // perform operations in processing pipeline
                     ProcessingResult processingResult = processingPipeline.apply(resolvedContext);
+
+                    // if outcome not ignore, then insert or update
                     if (!(processingResult instanceof ProcessingResult.Ignored)) {
                         if ((processingResult instanceof ProcessingResult.Inserted)) {
                             documentAuditService.recordInsert(resolvedContext, audit);

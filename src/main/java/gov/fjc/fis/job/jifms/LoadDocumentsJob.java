@@ -84,7 +84,7 @@ public class LoadDocumentsJob implements Job {
             handleProcessingFailure(ex);
             throw new JobExecutionException("LoadDocuments failed", ex);
         }
-        log.info("LoadDocuments has been ended.");
+        log.info("LoadDocuments has ended.");
     }
 
     private void processDocuments(Path purchasePath, Path travelPath) {
