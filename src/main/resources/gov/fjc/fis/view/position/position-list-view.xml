@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
       title="msg://positionListView.title"
       focusComponent="positionsDataGrid">
     <data>
@@ -26,17 +25,40 @@
                 <tab id="divisionSearch" label="Quick Search">
                     <vbox>
                         <hbox width="100%">
-                            <button id="showAll" width="170px" text="Show All"/>
-                            <hbox id="divisionSearchButtons">
-                                <button id="showDiv1Btn" action="showDivisionAction" text="Show JXXXXXF (GA)"/>
-                                <button id="showDiv2Btn" action="showDivisionAction" text="Show JXXXXXA (ED)"/>
-                                <button id="showDiv3Btn" action="showDivisionAction" text="Show JXXXXXD (EIS)"/>
-                                <button id="showDiv4Btn" action="showDivisionAction" text="Show JXXXXXC (RES)"/>
-                                <button id="showDiv5Btn" action="showDivisionAction" text="Show JXXXXXB (ITO)"/>
-                            </hbox>
-                            <hbox id="otherSearchButtons">
-                                <button id="showActions" text="Show positions having Actions"/>
-                            </hbox>
+                            <vbox>
+                                <hbox>
+                                    <button id="showAll" text="Show All" width="15em"/>
+                                    <hbox id="divisionSearchButtons">
+                                        <button id="showDiv1Btn" action="showDivisionAction" text="Show JXXXXXF (GA)"
+                                                width="14em"/>
+                                        <button id="showDiv2Btn" action="showDivisionAction" text="Show JXXXXXA (ED)"
+                                                width="14em"/>
+                                        <button id="showDiv3Btn" action="showDivisionAction" text="Show JXXXXXD (EIS)"
+                                                width="14em"/>
+                                        <button id="showDiv4Btn" action="showDivisionAction" text="Show JXXXXXC (RES)"
+                                                width="14em"/>
+                                        <button id="showDiv5Btn" action="showDivisionAction" text="Show JXXXXXB (ITO)"
+                                                width="14em"/>
+                                    </hbox>
+                                </hbox>
+                                <hbox>
+                                    <hbox id="otherSearchButtons">
+                                        <button id="showActions" text="Positions having Actions" width="15em"/>
+                                        <hbox id="divisionActionSearchButtons">
+                                            <button id="showDivAct1Btn" action="showDivisionAction"
+                                                    text="JXXXXXF (GA) actions" width="14em"/>
+                                            <button id="showDivAct2Btn" action="showDivisionAction"
+                                                    text="JXXXXXA (ED) actions" width="14em"/>
+                                            <button id="showDivAct3Btn" action="showDivisionAction"
+                                                    text="JXXXXXD (EIS) actions" width="14em"/>
+                                            <button id="showDivAct4Btn" action="showDivisionAction"
+                                                    text="JXXXXXC (RES) actions" width="14em"/>
+                                            <button id="showDivAct5Btn" action="showDivisionAction"
+                                                    text="JXXXXXB (ITO) actions" width="14em"/>
+                                        </hbox>
+                                    </hbox>
+                                </hbox>
+                            </vbox>
                         </hbox>
                     </vbox>
                 </tab>

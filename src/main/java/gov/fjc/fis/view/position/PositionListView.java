@@ -44,23 +44,30 @@ public class PositionListView extends StandardListView<Position> {
 
     @Subscribe("showDivisionAction")
     public void onShowDivisionAction(final ActionPerformedEvent event) {
-        if (event.getComponent().getId().isPresent()) {
-            clearCustomSearchParameters();
-            String btnId = event.getComponent().getId().get();
-            String budgetOrg = switch (btnId) {
-                case "showDiv1Btn" -> "JXXXXXF";
-                case "showDiv2Btn" -> "JXXXXXA";
-                case "showDiv3Btn" -> "JXXXXXD";
-                case "showDiv4Btn" -> "JXXXXXC";
-                case "showDiv5Btn" -> "JXXXXXB";
-                default -> null;
-            };
-
-            if (budgetOrg != null) {
-                positionsDl.setParameter("costOrgFilterField", budgetOrg);
-                performSearch();
-            }
+        if (event.getComponent().getId().isEmpty()) {
+            return;
         }
+
+        String btnId = event.getComponent().getId().get();
+        String budgetOrg = switch (btnId) {
+            case "showDiv1Btn", "showDivAct1Btn" -> "JXXXXXF";
+            case "showDiv2Btn", "showDivAct2Btn" -> "JXXXXXA";
+            case "showDiv3Btn", "showDivAct3Btn" -> "JXXXXXD";
+            case "showDiv4Btn", "showDivAct4Btn" -> "JXXXXXC";
+            case "showDiv5Btn", "showDivAct5Btn" -> "JXXXXXB";
+            default -> null;
+        };
+
+        if (budgetOrg == null) {
+            return;
+        }
+
+        clearCustomSearchParameters();
+        positionsDl.setParameter("costOrgFilterField", budgetOrg);
+        if (btnId.startsWith("showDivAct")) {
+            positionsDl.setParameter("actionsSize", 0);
+        }
+        performSearch();
     }
 
     private void clearCustomSearchParameters() {
