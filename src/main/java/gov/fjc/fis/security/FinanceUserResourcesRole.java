@@ -312,7 +312,8 @@ public interface FinanceUserResourcesRole extends UiMinimalRole, ReportResources
             "fis_EducationBranchReportView",
             "fis_PositionAudit.list",
             "fis_PositionAction_dialog.detail",
-            "fis_SalaryProjectionsReportView"
+            "fis_SalaryProjectionsReportView",
+            "fis_ActivityProjectionUpdate.detail"
     })
     void screens();
 
