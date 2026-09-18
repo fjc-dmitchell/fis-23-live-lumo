@@ -77,10 +77,10 @@
         </vbox>
         <vbox>
             <p id="createdByString"/>
+            <hbox id="detailActions">
+                <button id="saveAndCloseButton" action="saveAction"/>
+                <button id="closeButton" action="closeAction"/>
+            </hbox>
         </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
-            <button id="saveAndCloseButton" action="saveAction"/>
-            <button id="closeButton" action="closeAction"/>
-        </hbox>
     </layout>
 </view>

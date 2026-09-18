@@ -32,11 +32,13 @@
                     <responsiveSteps>
                         <responsiveStep minWidth="0" columns="1" labelsPosition="ASIDE"/>
                     </responsiveSteps>
-                    <formItem id="categoryFormItem" label="Category">
-                        <entityComboBox id="categoryField" itemsContainer="categoriesDc" metaClass="fis_ObjectCategory"/>
+                    <formItem id="categoryFormItem" label="Category" visible="false">
+                        <entityComboBox id="categoryField" itemsContainer="categoriesDc" metaClass="fis_ObjectCategory"
+                                        visible="false"/>
                     </formItem>
                     <formItem>
-                        <entityComboBox id="objectClassField" property="objectClass" itemsContainer="objectClassesDc"/>
+                        <entityComboBox id="objectClassField" property="objectClass" itemsContainer="objectClassesDc"
+                                        readOnly="true"/>
                     </formItem>
                     <formItem>
                         <textField id="amountField" property="amount"/>
@@ -46,10 +48,10 @@
         </vbox>
         <vbox>
             <p id="createdByString"/>
-        </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+        <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
+    </vbox>
     </layout>
 </view>

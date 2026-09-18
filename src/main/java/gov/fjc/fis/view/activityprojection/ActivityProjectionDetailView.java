@@ -121,9 +121,9 @@ public class ActivityProjectionDetailView extends StandardDetailView<ActivityPro
 //    protected Object categoryFieldItemLabelGenerator(final Category category) {
 //        return category.getTitleAndCode();
 //    }
-//
-//    @Install(to = "objectClassField", subject = "itemLabelGenerator")
-//    protected String objectClassFieldItemLabelGenerator(final ObjectClass objectClass) {
-//        return objectClass.getTitleAndCode();
-//    }
+
+    @Install(to = "objectClassField", subject = "itemLabelGenerator")
+    protected String objectClassFieldItemLabelGenerator(final ObjectClass objectClass) {
+        return objectClass.getTitleAndCode();
+    }
 }
