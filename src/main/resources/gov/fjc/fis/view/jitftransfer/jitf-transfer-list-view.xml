@@ -8,6 +8,13 @@
                     class="gov.fjc.fis.entity.JitfTransfer">
             <fetchPlan extends="_base">
                 <property name="createdByString"/>
+                <property name="objectClass" fetchPlan="_base">
+                    <property name="objectCategory" fetchPlan="_base">
+                        <property name="appropriation" fetchPlan="_base">
+                            <property name="budgetFiscalYear"/>
+                        </property>
+                    </property>
+                </property>
             </fetchPlan>
             <loader id="jitfTransfersDl" readOnly="true">
                 <query>
@@ -46,7 +53,7 @@
                 <action id="remove" type="list_remove"/>
             </actions>
             <columns resizable="true">
-<!--                <column property="objectClass.category.appropriation.budgetFiscalYear" width="70px" header="BFY"/>-->
+                <column property="objectClass.objectCategory.appropriation.budgetFiscalYear" width="70px" header="BFY"/>
                 <column property="objectClass.budgetObjectClass" width="90px" header="BOC"/>
                 <column property="transferDate" width="140px" header="Transfer Date" textAlign="END"/>
                 <column property="amount" width="140px" textAlign="END">

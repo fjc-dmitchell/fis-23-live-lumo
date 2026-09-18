@@ -24,17 +24,31 @@
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
-    <layout alignItems="STRETCH"
-            padding="false" spacing="false"
-            expand="contentBox">
-        <vbox id="contentBox" classNames="overflow-auto" maxWidth="1000px">
-            <div classNames="grid-panel">
-                <vbox classNames="contrast-panel">
+<!--
+        <vbox id="contentBox" css="overflow: auto" padding="false">
+            <vbox id="formWrapper" classNames="contrast-panel">
+                <formLayout id="form" dataContainer="fundDc" colspan="2">
+                    <textField id="fundCodeField" property="fundCode" width="200px"/>
+                    <textField id="titleField" property="title"/>
+                    <textArea id="memoField" property="memo" minHeight="5em" colspan="2"/>
+                </formLayout>
+            </vbox>
+        </vbox>
+        <p id="createdByString"/>
+        <hbox id="detailActions">
+            <button id="saveAndCloseBtn" action="saveAction"/>
+            <button id="closeBtn" action="closeAction"/>
+        </hbox>
+    </layout>-->
+    <layout expand="contentBox">
+        <vbox id="contentBox" css="overflow: auto" padding="false" maxWidth="1000px">
+        <vbox id="formWrapper" classNames="contrast-panel">
+
                     <textField id="budgetFiscalYearField"
                                label="Budget Fiscal Year" datatype="string" readOnly="true"/>
                     <formLayout id="form" dataContainer="jitfTransferDc">
                         <entityComboBox id="categoryField" itemsContainer="categoriesDc"
-                                        metaClass="fis_ObjectCategory" label="Category (MOC)"/>
+                                        metaClass="fis_ObjectCategory" label="Object Category (MOC)" required="true"/>
                         <entityComboBox id="budgetObjectClassField" itemsContainer="objectClassesDc"
                                         property="objectClass" label="Object Class (BOC)"/>
                         <datePicker id="transferDateField" property="transferDate"/>
@@ -42,12 +56,9 @@
                         <textArea id="memoField" property="memo" minHeight="5em" colspan="2"/>
                     </formLayout>
                 </vbox>
-            </div>
         </vbox>
-        <vbox>
             <p id="createdByString"/>
-        </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+        <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
