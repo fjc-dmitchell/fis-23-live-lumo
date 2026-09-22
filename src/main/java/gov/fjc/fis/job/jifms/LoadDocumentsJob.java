@@ -78,7 +78,7 @@ public class LoadDocumentsJob implements Job {
         }
 
         try {
-            processDocuments(purchasePath, travelPath);
+            loadDocuments(purchasePath, travelPath);
             scheduler.triggerJob(PROCESS_DOCUMENTS_JOB_KEY);
         } catch (Exception ex) {
             handleProcessingFailure(ex);
@@ -87,7 +87,7 @@ public class LoadDocumentsJob implements Job {
         log.info("LoadDocuments has ended.");
     }
 
-    private void processDocuments(Path purchasePath, Path travelPath) {
+    private void loadDocuments(Path purchasePath, Path travelPath) {
         jdbcTemplate.execute("TRUNCATE TABLE FIS_DOCUMENT");
 
         loadPurchaseOrders(purchasePath);
