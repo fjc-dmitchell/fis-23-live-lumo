@@ -42,7 +42,6 @@ public class ObjectClassDto {
     private BigDecimal obligated = BigDecimal.ZERO;
     private BigDecimal disbursed = BigDecimal.ZERO;
 
-    private BigDecimal total = BigDecimal.ZERO;
 
     public Integer getId() {
         return id;
@@ -62,6 +61,12 @@ public class ObjectClassDto {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTitleBoc() {
+        return (budgetObjectClass == null || budgetObjectClass.isBlank())
+                ? title
+                : title + " (" + budgetObjectClass + ")";
     }
 
     public void setTitle(String title) {
@@ -218,6 +223,34 @@ public class ObjectClassDto {
 
     public void addCurrentTwoYearDisbursed(BigDecimal currenteTwoYearDisbursed) {
         this.currentTwoYearDisbursed = getTotalNullAllowed(this.currentTwoYearDisbursed, currenteTwoYearDisbursed);
+    }
+
+    public BigDecimal getDisbursed() {
+        return disbursed;
+    }
+
+    public void setDisbursed(BigDecimal disbursed) {
+        this.disbursed = disbursed;
+    }
+
+    public BigDecimal getObligated() {
+        return obligated;
+    }
+
+    public void setObligated(BigDecimal obligated) {
+        this.obligated = obligated;
+    }
+
+    public BigDecimal getProjected() {
+        return projected;
+    }
+
+    public void setProjected(BigDecimal projected) {
+        this.projected = projected;
+    }
+
+    public BigDecimal getTotal() {
+        return projected.add(disbursed).add(obligated);
     }
 
     public boolean showOnReport() {

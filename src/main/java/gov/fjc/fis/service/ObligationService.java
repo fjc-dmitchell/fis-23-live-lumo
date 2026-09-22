@@ -406,7 +406,7 @@ public class ObligationService {
         return dataManager.loadValues(
                         "SELECT o.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.id, act.activityNumber,"
                                 + " act.title, bch.id, bch.branchCode, grp.id, grp.groupCode, cat.id, cat.majorObjectClass, obj.id, obj.budgetObjectClass,"
-                                + " o.documentNumber, o.documentDate, o.status, o.vendor, o.amount,"
+                                + " o.documentNumber, o.documentDate, o.status, o.vendor, o.documentType, o.amount,"
                                 + " CASE WHEN o.status=TRUE THEN o.amount ELSE 0 END,"
                                 + " CASE WHEN o.status=FALSE THEN o.amount ELSE 0 END,"
                                 + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN o.amount ELSE 0 END,"
@@ -436,9 +436,9 @@ public class ObligationService {
                 .parameter("activities", activityIds)
                 .properties("id", "fundId", "fundCode", "appropriationId", "budgetFiscalYear", "divisionId", "divisionCode", "activityId", "activityNumber",
                         "activityTitle", "branchId", "branchCode", "groupId", "groupCode", "categoryId", "majorObjectClass", "objectClassId",
-                        "budgetObjectClass", "documentNumber", "documentDate", "status", "vendor", "amount", "obligated", "disbursed", "priorTwoYearAmount",
-                        "priorTwoYearObligated", "priorTwoYearDisbursed", "currentOneYearAmount", "currentOneYearObligated", "currentOneYearDisbursed",
-                        "currentTwoYearAmount", "currentTwoYearObligated", "currentTwoYearDisbursed")
+                        "budgetObjectClass", "documentNumber", "documentDate", "status", "vendor", "doctype", "amount", "obligated", "disbursed",
+                        "priorTwoYearAmount", "priorTwoYearObligated", "priorTwoYearDisbursed", "currentOneYearAmount", "currentOneYearObligated",
+                        "currentOneYearDisbursed", "currentTwoYearAmount", "currentTwoYearObligated", "currentTwoYearDisbursed")
                 .list();
     }
 
@@ -668,6 +668,11 @@ public class ObligationService {
             dto.setCurrentTwoYearAmount(kvEntity.getValue("currentTwoYearAmount"));
             dto.setCurrentTwoYearObligated(kvEntity.getValue("currentTwoYearObligated"));
             dto.setCurrentTwoYearDisbursed(kvEntity.getValue("currentTwoYearDisbursed"));
+            if ("taj".equalsIgnoreCase(kvEntity.getValue("doctype"))) {
+                dto.setDocumentType(DocumentType.TRAVEL_AUTHORIZATION);
+            } else {
+                dto.setDocumentType(DocumentType.MISCELLANEOUS_OBLIGATION);
+            }
             obligationDtos.add(dto);
         }
         return obligationDtos;

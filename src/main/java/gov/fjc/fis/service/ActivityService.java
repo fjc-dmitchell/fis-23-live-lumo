@@ -403,50 +403,6 @@ public class ActivityService {
                 .list();
     }
 
-    public List<KeyValueEntity> fetchBiFiscalActivitiesNew(Division division, Branch branch) {
-        Appropriation currentYearAppropriation = division.getAppropriation();
-        String branchCode = branch == null ? null : branch.getBranchCode();
-        Appropriation priorYearAppropriation = appropriationService.getPreviousFiscalYear(currentYearAppropriation);
-        Fund oneYearFund = fundService.getAppropriationOneYearFund();
-        Fund twoYearFund = fundService.getAppropriationTwoYearFund();
-        Date bfyStartDate = appropriationService.getFirstDayOfAppropriationBfy(currentYearAppropriation);
-        Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
-
-        return dataManager.loadValues(
-                        "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.activityNumber,"
-                                + " act.title, act.startDate, act.endDate, bch.id, bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
-                                + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
-                                + "      ELSE :currentOneYearFund"
-                                + " END"
-                                + " FROM fis_Activity act"
-                                + " LEFT JOIN fis_Branch bch ON bch=act.branch"
-                                + " LEFT JOIN fis_Group grp ON grp=act.group"
-                                + " INNER JOIN fis_Division dv ON dv=act.division"
-                                + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
-                                + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " WHERE dv.divisionCode = :divisionCode"
-                                + " AND (:anyBranch = true OR bch.branchCode = :branchCode)"
-                                + " AND ((dv.appropriation = :currentYear AND act.fund = :oneYearFund)"
-                                + " OR (dv.appropriation = :priorYear AND act.fund = :twoYearFund AND act.endDate >= :bfyStartDate)"
-                                + " OR (dv.appropriation = :currentYear AND act.fund = :twoYearFund AND (act.endDate IS NULL OR act.endDate <= :bfyEndDate)))"
-                                + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, act.activityNumber")
-                .parameter("divisionCode", division.getDivisionCode())
-                .parameter("anyBranch", branch == null)
-                .parameter("branchCode", branchCode)
-                .parameter("currentYear", currentYearAppropriation)
-                .parameter("priorYear", priorYearAppropriation)
-                .parameter("oneYearFund", oneYearFund)
-                .parameter("twoYearFund", twoYearFund)
-                .parameter("bfyStartDate", bfyStartDate)
-                .parameter("bfyEndDate", bfyEndDate)
-                .parameter("priorTwoYearFund", PRIOR_TWO_YEAR_FUND.getId())
-                .parameter("currentOneYearFund", CURRENT_ONE_YEAR_FUND.getId())
-                .parameter("currentTwoYearFund", CURRENT_TWO_YEAR_FUND.getId())
-                .properties("id", "fundId", "fundCode", "appropriationId", "budgetFiscalYear", "divisionId", "divisionCode", "activityNumber", "title", "startDate", "endDate", "branchId", "branchCode", "branchTitle", "groupId", "groupCode", "groupTitle", "fundingType")
-                .list();
-    }
-
 
     /**
      * Query database for activity related data for an Appropriation, Division, or Division and Branch
@@ -456,7 +412,7 @@ public class ActivityService {
      * @param branch        Branch entity, null allowed
      * @return List of KeyValue Entities containing matching Activities
      */
-    private List<KeyValueEntity> fetchBiFiscalActivitiesNew2(Appropriation appropriation, Division division, Branch branch) {
+    private List<KeyValueEntity> fetchBiFiscalActivities(Appropriation appropriation, Division division, Branch branch) {
         Appropriation currentYearAppropriation = appropriation == null ? division.getAppropriation() : appropriation;
         String divisionCode = division == null ? "" : division.getDivisionCode();
         String branchCode = branch == null ? "" : branch.getBranchCode();
@@ -470,7 +426,10 @@ public class ActivityService {
                         "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id,"
                                 + " dv.divisionCode, act.costOrg, act.activityNumber, act.title, act.startDate,"
                                 + " act.endDate, act.city, act.state, bch.id, bch.branchCode, bch.title, grp.id,"
-                                + " grp.groupCode, grp.title, grp.sortCode, act.initialProjection,"
+                                + " grp.groupCode, grp.title, grp.sortCode, act.initialProjection, act.shortTitle, act.programDirector,"
+                                + " CASE WHEN act.activityNumber = CONCAT(COALESCE(grp.groupCode, ''), '00') THEN TRUE"
+                                + "     ELSE FALSE"
+                                + " END AS genericActivity,"
                                 + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
                                 + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
                                 + "      ELSE :currentOneYearFund"
@@ -503,55 +462,7 @@ public class ActivityService {
                 .properties("id", "fundId", "fundCode", "appropriationId", "budgetFiscalYear", "divisionId",
                         "divisionCode", "costOrg", "activityNumber", "title", "startDate", "endDate", "city",
                         "state", "branchId", "branchCode", "branchTitle", "groupId", "groupCode", "groupTitle",
-                        "grpSortCode", "initialProjection", "fundingType")
-                .list();
-    }
-
-    /**
-     * get only activities for appropriation that take place in the current year
-     *
-     * @param appropriation
-     * @param division
-     * @param branch
-     * @return
-     */
-    private List<KeyValueEntity> fetchBiFiscalTwoYearActivities(Appropriation appropriation, Division division, Branch branch) {
-        Appropriation currentYearAppropriation = appropriation == null ? division.getAppropriation() : appropriation;
-        String divisionCode = division == null ? "" : division.getDivisionCode();
-        String branchCode = branch == null ? "" : branch.getBranchCode();
-        Fund twoYearFund = fundService.getAppropriationTwoYearFund();
-        Date bfyStartDate = appropriationService.getFirstDayOfAppropriationBfy(currentYearAppropriation);
-        Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
-
-        return dataManager.loadValues(
-                        "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
-                                + " act.activityNumber, act.title, act.startDate, act.endDate, act.city, act.state, bch.id,"
-                                + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, act.initialProjection,"
-                                + " act.fund"
-                                + " FROM fis_Activity act"
-                                + " LEFT JOIN fis_Branch bch ON bch=act.branch"
-                                + " LEFT JOIN fis_Group grp ON grp=act.group"
-                                + " INNER JOIN fis_Division dv ON dv=act.division"
-                                + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
-                                + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " WHERE (:anyDivision = true OR dv.divisionCode = :divisionCode)"
-                                + " AND (:anyBranch = true OR bch.branchCode = :branchCode)"
-                                + " AND (dv.appropriation = :currentYear AND act.fund = :twoYearFund AND (act.endDate IS NULL OR act.endDate <= :bfyEndDate))"
-                                + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, act.activityNumber")
-                .parameter("anyDivision", division == null)
-                .parameter("divisionCode", divisionCode)
-                .parameter("anyBranch", branch == null)
-                .parameter("branchCode", branchCode)
-                .parameter("currentYear", currentYearAppropriation)
-                .parameter("twoYearFund", twoYearFund)
-                .parameter("bfyStartDate", bfyStartDate)
-                .parameter("bfyEndDate", bfyEndDate)
-                .parameter("priorTwoYearFund", PRIOR_TWO_YEAR_FUND.getId())
-                .parameter("currentOneYearFund", CURRENT_ONE_YEAR_FUND.getId())
-                .parameter("currentTwoYearFund", CURRENT_TWO_YEAR_FUND.getId())
-                .properties("id", "fundId", "fundCode", "appropriationId", "budgetFiscalYear", "divisionId", "divisionCode",
-                        "activityNumber", "title", "startDate", "endDate", "city", "state", "branchId", "branchCode",
-                        "branchTitle", "groupId", "groupCode", "groupTitle", "initialProjection", "fundingType")
+                        "grpSortCode", "initialProjection", "shortTitle", "programDirector", "genericActivity", "fundingType")
                 .list();
     }
 
@@ -562,7 +473,7 @@ public class ActivityService {
      * @param branchCodes list of branch codes
      * @return List of KeyValue Entities containing matching Activities
      */
-    private List<KeyValueEntity> fetchBiFiscalActivitiesNew2(Division division, List<String> branchCodes, List<String> groupCodes) {
+    private List<KeyValueEntity> fetchBiFiscalActivities(Division division, List<String> branchCodes, List<String> groupCodes) {
         Appropriation currentYearAppropriation = division.getAppropriation();
         String divisionCode = division == null ? "" : division.getDivisionCode();
         Appropriation priorYearAppropriation = appropriationService.getPreviousFiscalYear(currentYearAppropriation);
@@ -573,7 +484,7 @@ public class ActivityService {
 
         return dataManager.loadValues(
                         "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
-                                + " act.activityNumber, act.title, act.startDate, act.endDate, act.city, act.state, bch.id,"
+                                + " act.activityNumber, act.title, act.startDate, act.endDate, act.programDirector, act.city, act.state, bch.id,"
                                 + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, act.initialProjection,"
                                 + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
                                 + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
@@ -605,7 +516,7 @@ public class ActivityService {
                 .parameter("currentOneYearFund", CURRENT_ONE_YEAR_FUND.getId())
                 .parameter("currentTwoYearFund", CURRENT_TWO_YEAR_FUND.getId())
                 .properties("id", "fundId", "fundCode", "appropriationId", "budgetFiscalYear", "divisionId", "divisionCode",
-                        "activityNumber", "title", "startDate", "endDate", "city", "state", "branchId", "branchCode",
+                        "activityNumber", "title", "startDate", "endDate", "programDirector", "city", "state", "branchId", "branchCode",
                         "branchTitle", "groupId", "groupCode", "groupTitle", "initialProjection", "fundingType")
                 .list();
     }
@@ -626,6 +537,8 @@ public class ActivityService {
             dto.setDivisionCode(kvEntity.getValue("divisionCode"));
             dto.setActivityNumber(kvEntity.getValue("activityNumber"));
             dto.setTitle(kvEntity.getValue("title"));
+            dto.setShortTitle(kvEntity.getValue("shortTitle"));
+            dto.setProgramDirector(kvEntity.getValue("programDirector"));
             dto.setStartDate(kvEntity.getValue("startDate"));
             dto.setCity(kvEntity.getValue("city"));
             dto.setState(kvEntity.getValue("state"));
@@ -637,6 +550,7 @@ public class ActivityService {
             dto.setGroupCode(kvEntity.getValue("groupCode"));
             dto.setGroupTitle(kvEntity.getValue("groupTitle"));
             dto.setGroupSortCode(kvEntity.getValue("grpSortCode"));
+            dto.setGenericActivity(kvEntity.getValue("genericActivity"));
             dto.setInitialProjection(kvEntity.getValue("initialProjection"));
             dto.setFundingType(fromId(kvEntity.getValue("fundingType")));
             activityDtos.add(dto);
@@ -651,23 +565,20 @@ public class ActivityService {
      * @return List of ActivityDTO objects
      */
     public List<ActivityDto> getBiFiscalActivityDtos(Appropriation appropriation) {
-        List<KeyValueEntity> activities = fetchBiFiscalActivitiesNew2(appropriation, null, null);
-        List<ActivityDto> activityDtos = convertBiFiscalEntitiesToActivityDtos(activities);
-        return activityDtos;
+        List<KeyValueEntity> activities = fetchBiFiscalActivities(appropriation, null, null);
+        return convertBiFiscalEntitiesToActivityDtos(activities);
     }
 
     // 2025-02-20 program analysis for Nancy
     public List<ActivityDto> getBiFiscalActivityDtos(Division division, List<String> branchCodes, List<String> groupCodes) {
-        List<KeyValueEntity> activities = fetchBiFiscalActivitiesNew2(division, branchCodes, groupCodes);
-        List<ActivityDto> activityDtos = convertBiFiscalEntitiesToActivityDtos(activities);
-        return activityDtos;
+        List<KeyValueEntity> activities = fetchBiFiscalActivities(division, branchCodes, groupCodes);
+        return convertBiFiscalEntitiesToActivityDtos(activities);
     }
 
     // 2025-06-25 program analysis for Nancy (Mike Zubrensky)
     public List<ActivityDto> getCalendarYearActivityDtos(Appropriation appropriation, List<String> branchCodes, List<String> groupCodes) {
         List<KeyValueEntity> activities = fetchCalendarYearEducationActivities(appropriation, branchCodes, groupCodes);
-        List<ActivityDto> activityDtos = convertBiFiscalEntitiesToActivityDtos(activities);
-        return activityDtos;
+        return convertBiFiscalEntitiesToActivityDtos(activities);
     }
 
     /**
@@ -678,9 +589,8 @@ public class ActivityService {
      * @return List of ActivityDTO objects
      */
     public List<ActivityDto> getBiFiscalActivityDtos(Division division, Branch branch) {
-        List<KeyValueEntity> activities = fetchBiFiscalActivitiesNew2(null, division, branch);
-        List<ActivityDto> activityDtos = convertBiFiscalEntitiesToActivityDtos(activities);
-        return activityDtos;
+        List<KeyValueEntity> activities = fetchBiFiscalActivities(null, division, branch);
+        return convertBiFiscalEntitiesToActivityDtos(activities);
     }
 
     /**

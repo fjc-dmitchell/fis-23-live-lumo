@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity.dto;
 
+import gov.fjc.fis.entity.DocumentType;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.JmixId;
 import io.jmix.core.metamodel.annotation.JmixEntity;
@@ -53,6 +54,8 @@ public class ObligationDto {
 
     private LocalDate documentDate;
 
+    private String documentType;
+
     private String vendor;
 
     private Boolean status;
@@ -96,6 +99,14 @@ public class ObligationDto {
     private BigDecimal priorTwoYearObligated = BigDecimal.ZERO;
 
     private BigDecimal priorTwoYearDisbursed = BigDecimal.ZERO;
+
+    public DocumentType getDocumentType() {
+        return documentType == null ? null : DocumentType.fromId(documentType);
+    }
+
+    public void setDocumentType(DocumentType documentType) {
+        this.documentType = documentType == null ? null : documentType.getId();
+    }
 
     public void setActivityEndDate(LocalDate activityEndDate) {
         this.activityEndDate = activityEndDate;

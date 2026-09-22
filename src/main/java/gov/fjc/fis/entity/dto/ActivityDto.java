@@ -10,6 +10,7 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
@@ -22,6 +23,8 @@ public class ActivityDto {
 
     @InstanceName
     private String title;
+
+    private String shortTitle;
 
     private String city;
 
@@ -54,6 +57,18 @@ public class ActivityDto {
     private String groupTitle;
 
     private Integer groupSortCode;
+
+    private String programDirector;
+
+    public Boolean isGenericActivity() {
+        return genericActivity;
+    }
+
+    public void setGenericActivity(Boolean genericActivity) {
+        this.genericActivity = genericActivity;
+    }
+
+    private Boolean genericActivity;
 
     private Fund fund;
 
@@ -116,6 +131,14 @@ public class ActivityDto {
     private BigDecimal currentTwoYearObligations = BigDecimal.ZERO;
 
     private BigDecimal currentTwoYearDisbursements = BigDecimal.ZERO;
+
+    public String getShortTitle() {
+        return shortTitle;
+    }
+
+    public void setShortTitle(String shortTitle) {
+        this.shortTitle = shortTitle;
+    }
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
@@ -355,12 +378,20 @@ public class ActivityDto {
         this.totalDisbursed = requireNonNullElse(totalDisbursed, BigDecimal.ZERO);
     }
 
+    public void addTotalDisbursed(BigDecimal amount) {
+        this.totalDisbursed = this.totalDisbursed.add(amount);
+    }
+
     public BigDecimal getTotalObligated() {
         return totalObligated;
     }
 
     public void setTotalObligated(BigDecimal totalObligated) {
         this.totalObligated = requireNonNullElse(totalObligated, BigDecimal.ZERO);
+    }
+
+    public void addTotalObligated(BigDecimal amount) {
+        this.totalObligated = this.totalObligated.add(amount);
     }
 
     public BigDecimal getTotalRemaining() {
@@ -544,7 +575,7 @@ public class ActivityDto {
     }
 
     public Boolean hasObligations() {
-        return  obligationDtos != null && !obligationDtos.isEmpty();
+        return obligationDtos != null && !obligationDtos.isEmpty();
     }
 
     public String getBranchTitleAndCode() {
@@ -557,5 +588,55 @@ public class ActivityDto {
 
     public String getTitleAndCode() {
         return title.concat(" (").concat(activityNumber).concat(")");
+    }
+
+    // used by new branch report
+    public BigDecimal getTotal() {
+        return totalProjected.add(totalObligated).add(totalDisbursed);
+    }
+
+    public String getBranchReportActivityTitle() {
+        String myTitle = shortTitle == null ? title : shortTitle;
+        myTitle += " (" + activityNumber + ") ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+
+        String line2 = "";
+        if (!isGenericActivity()) {
+            String safeCity = city == null ? "" : city;
+            String safeState = state == null ? "" : state;
+            String safeStartDate = startDate == null ? "" : startDate.format(formatter);
+            String safeDirector = programDirector == null ? "" : programDirector;
+
+            if (!safeCity.isBlank()) {
+                line2 += ", " + safeCity;
+            }
+
+            if (!safeCity.isBlank() || !safeState.isBlank()) {
+                line2 += ", " + safeState;
+            }
+
+            if (!safeStartDate.isBlank()) {
+                line2 += ", " + safeStartDate;
+            }
+
+            if (!safeDirector.isBlank()) {
+                line2 += " [" + safeDirector + "]";
+            }
+        }
+
+        if (line2.isBlank()) {
+            return myTitle.trim();
+        } else {
+//            return myTitle.concat('\n' + line2);
+            return myTitle.concat(line2);
+        }
+    }
+
+    public String getProgramDirector() {
+        return programDirector;
+    }
+
+    public void setProgramDirector(String programDirector) {
+        this.programDirector = programDirector;
     }
 }

@@ -23,7 +23,8 @@ import io.jmix.reportsflowui.runner.UiReportRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Optional;
+
+import static gov.fjc.fis.FisUtilities.refreshField;
 
 @Route(value = "education-branch-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_EducationBranchReportView")
@@ -39,6 +40,8 @@ public class EducationBranchReportView extends StandardView {
      */
     @ViewComponent
     private CollectionLoader<Appropriation> appropriationsDl;
+    @ViewComponent
+    private CollectionLoader<Division> divisionsDl;
     @ViewComponent
     private CollectionLoader<Branch> branchesDl;
 
@@ -60,6 +63,8 @@ public class EducationBranchReportView extends StandardView {
     @ViewComponent
     private EntityComboBox<Appropriation> bfySelectorField;
     @ViewComponent
+    private EntityComboBox<Division> divisionSelectorField;
+    @ViewComponent
     private EntityComboBox<Branch> branchSelectorField;
     @ViewComponent
     private JmixButton executeBtn;
@@ -67,48 +72,43 @@ public class EducationBranchReportView extends StandardView {
     /**
      * instance variables
      */
+    private Appropriation appropriation;
     private Division division;
 
     @Subscribe
     public void onBeforeShow(final BeforeShowEvent event) {
         appropriationsDl.load();
         bfySelectorField.setValue(appropriationService.getBfyEntryAppropriation(sessionData));
+
+        appropriationsDl.load();
+        bfySelectorField.setValue(appropriationService.getBfyEntryAppropriation(sessionData));
+        appropriation = bfySelectorField.getValue();
+
+        divisionsDl.load();
+        divisionSelectorField.setValue(divisionService.getEducationDivision(appropriation));
+        division = divisionSelectorField.getValue();
     }
 
-    //    @Subscribe("bfySelectorField")
-//    public void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
-//        division = divisionService.getEducationDivision(bfySelectorField.getValue());
-//        branchesDl.load();
-//        if (branchSelectorField.getValue() != null) {
-//            branchSelectorField.setValue(
-//                    branchesDl.getContainer().getItems().stream()
-//                            .filter(bch -> bch.getBranchCode().equals(branchSelectorField.getValue().getBranchCode()))
-//                            .findFirst()
-//                            .orElse(null)
-//            );
-//        }
-//        enableExecuteBtn();
-//    }
     @Subscribe("bfySelectorField")
     public void onBfySelectorFieldComponentValueChange(
             final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
 
-        division = divisionService.getEducationDivision(event.getValue());
+        appropriation = event.getValue();
+        divisionsDl.load();
+        refreshField(divisionsDl, divisionSelectorField, Division::getDivisionCode);
         branchesDl.load();
-
-        Optional.ofNullable(branchSelectorField.getValue())
-                .map(Branch::getBranchCode)
-                .ifPresent(code ->
-                        branchSelectorField.setValue(
-                                branchesDl.getContainer().getItems().stream()
-                                        .filter(bch -> code.equals(bch.getBranchCode()))
-                                        .findFirst()
-                                        .orElse(null)
-                        )
-                );
-
+        refreshField(branchesDl, branchSelectorField, Branch::getBranchCode);
         enableExecuteBtn();
     }
+
+    @Subscribe("divisionSelectorField")
+    public void onDivisionSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Division>, Division> event) {
+        division = event.getValue();
+        branchesDl.load();
+        refreshField(branchesDl, branchSelectorField, Branch::getBranchCode);
+        enableExecuteBtn();
+    }
+
 
     @Subscribe("branchSelectorField")
     public void onBranchSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Branch>, Branch> event) {
@@ -124,9 +124,19 @@ public class EducationBranchReportView extends StandardView {
         return appropriationService.fetchReportFiscalYears(sessionData);
     }
 
+    @Install(to = "divisionsDl", target = Target.DATA_LOADER)
+    private List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
+        return divisionService.fetchEducationPlusObbaDivisions(bfySelectorField.getValue());
+    }
+
     @Install(to = "branchesDl", target = Target.DATA_LOADER)
     private List<Branch> branchesDlLoadDelegate(final LoadContext<Branch> loadContext) {
         return branchService.fetchBranches(division);
+    }
+
+    @Install(to = "divisionSelectorField", subject = "itemLabelGenerator")
+    private Object divisionSelectorFieldItemLabelGenerator(final Division division) {
+        return division.getTitleAndCode();
     }
 
     @Install(to = "branchSelectorField", subject = "itemLabelGenerator")
@@ -148,13 +158,11 @@ public class EducationBranchReportView extends StandardView {
         var fluentUiReportRunner = uiReportRunner.byReportCode("education-branch-report");
 
         fluentUiReportRunner.addParam("reportData", reportData)
-                .withOutputType(ReportOutputType.XLSX)
+                .withOutputType(ReportOutputType.PDF)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
                 .runAndShow();
 
         closeWithDefaultAction();
     }
-
-
 }
