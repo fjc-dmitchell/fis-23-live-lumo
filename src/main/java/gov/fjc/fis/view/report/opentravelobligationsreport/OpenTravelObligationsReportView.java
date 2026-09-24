@@ -25,8 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Route(value = "open-travel-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenTravelObligationsReportView")
@@ -84,10 +86,12 @@ public class OpenTravelObligationsReportView extends StandardView {
         obbbaField.setValue(true);
         divisionsDl.load();
         // set Education and Research as defaults
-        divisionSelectorField.setValue(Set.of(
-                divisionService.getEducationDivision(appropriation),
-                divisionService.getResearchDivision(appropriation))
-        );
+        var divisionSet = Stream.of(
+                        divisionService.getEducationDivision(appropriation),
+                        divisionService.getResearchDivision(appropriation))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        divisionSelectorField.setValue(divisionSet);
 
         setDateFields(LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1));
     }

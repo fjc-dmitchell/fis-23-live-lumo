@@ -16,20 +16,21 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
     String CODE = "resources-ed-admin";
 
     @MenuPolicy(menuIds = {
+            "fis_ReportRouter#openEducationBranchReport",
             "fis_Obligation.list",
+            "fis_ObjectClass.list",
+            "fis_ObjectCategory.list",
+            "fis_ActivityProjection.list",
+            "fis_Activity.list",
             "fis_Branch.list",
             "fis_Group.list",
             "fis_ReportRouter#openEducationProgramsReport",
             "fis_ReportRouter#openOpenTravelObligationsReport",
             "fis_ReportRouter#openOpenObligationsReport",
-            "fis_ReportRouter#openDivisionObligationsReport",
-            "fis_ActivityProjection.list",
-            "flowui_UserSettingsItem.list"
+            "fis_FundControlNotice.list",
+            "fis_Invoice.list"
     })
     @ViewPolicy(viewIds = {
-            "fis_Obligation.list",
-            "fis_Branch.list",
-            "fis_Group.list",
             "fis_EducationProgramsReportView",
             "fis_Branch.detail",
             "fis_ActivityReimbursement.detail",
@@ -47,11 +48,22 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
             "InvoiceSearchFragment",
             "ObligationSearchFragment",
             "fis_Group.detail",
-            "fis_ActivityProjection.list",
             "fis_Invoice_dialog.detail",
             "fis_FundControlNotice_dialog.detail",
             "flowui_UserSettingsItem.detail",
-            "flowui_UserSettingsItem.list"
+            "fis_EducationBranchReportView",
+            "fis_Obligation.list",
+            "fis_ObjectClass.list",
+            "fis_ObjectCategory.list",
+            "fis_ActivityProjection.list",
+            "fis_Activity.list",
+            "fis_Branch.list",
+            "fis_Group.list",
+            "fis_Activity.detail",
+            "fis_FundControlNotice.list",
+            "fis_Invoice.list",
+            "fis_Invoice.detail",
+            "fis_FundControlNotice.detail"
     })
     void screens();
 
@@ -145,7 +157,20 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
     @EntityAttributePolicy(entityClass = DivisionAllocation.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
     void divisionAllocation();
 
-    @EntityAttributePolicy(entityClass = ObjectCategory.class, attributes = "*", action = EntityAttributePolicyAction.VIEW)
+    @EntityAttributePolicy(entityClass = ObjectCategory.class,
+            attributes = {
+                    "appropriation",
+                    "majorObjectClass",
+                    "title",
+                    "budgetObjectClasses",
+                    "version",
+                    "createdBy",
+                    "createdDate",
+                    "lastModifiedBy",
+                    "lastModifiedDate",
+                    "createdByString",
+                    "titleAndCode"
+            }, action = EntityAttributePolicyAction.VIEW)
     @EntityPolicy(entityClass = ObjectCategory.class, actions = EntityPolicyAction.READ)
     void category();
 
@@ -204,4 +229,5 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
 
     @EntityPolicy(entityClass = AmountsDto.class, actions = EntityPolicyAction.ALL)
     void amountsDto();
+
 }

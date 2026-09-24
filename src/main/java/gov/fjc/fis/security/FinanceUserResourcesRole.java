@@ -216,7 +216,8 @@ public interface FinanceUserResourcesRole extends UiMinimalRole, ReportResources
             "fis_ReportRouter#openOpenObligationsReport",
             "fis_ReportRouter#openOpenTravelObligationsReport",
             "fis_PositionAudit.list",
-            "fis_ReportRouter#openSalaryProjectionsReport"
+            "fis_ReportRouter#openSalaryProjectionsReport",
+            "fis_ReportRouter#openEducationBranchReport"
     })
     @ViewPolicy(viewIds = {
             "fis_Appropriation.list",
