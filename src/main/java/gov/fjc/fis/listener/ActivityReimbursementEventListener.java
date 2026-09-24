@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * listen for changes to reimbursements and update totals on activity and appropriation
  *
  * @author Doug Mitchell
- * @version 2.2
+ * @version 2.3
  * @since 2.0
  */
 @Component("fis_ActivityReimbursementEventListener")
@@ -48,10 +48,10 @@ public class ActivityReimbursementEventListener {
         }
 
         activity.setReimbursedAmount(activityReimbursementService.sumReimbursements(activity));
-        dataManager.save(activity);
+        dataManager.saveWithoutReload(activity);
 
         Appropriation appropriation = appropriationService.getAppropriation(activity);
         appropriation.setReimbursedAmount(activityReimbursementService.sumReimbursements(appropriation));
-        dataManager.save(appropriation);
+        dataManager.saveWithoutReload(appropriation);
     }
 }

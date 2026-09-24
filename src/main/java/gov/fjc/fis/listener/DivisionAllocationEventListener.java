@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * listen for changes to allocations and create audit record
  *
  * @author Doug Mitchell
- * @version 2.2
+ * @version 2.3
  * @since 2.1
  */
 @Component("fis_DivisionAllocationEventListener")
@@ -64,6 +64,6 @@ public class DivisionAllocationEventListener {
                 audit.setUpdatedAttributes(changes);
             }
         }
-        dataManager.save(audit);
+        dataManager.saveWithoutReload(audit);
     }
 }
