@@ -53,7 +53,8 @@
                         width="70px"/>
                 <column property="obligation.activity.division.divisionCode" header="Division"
                         width="90px" textAlign="CENTER"/>
-
+                <column property="obligation.activity.costOrg.divisionCode" header="Cost Org"
+                        width="95px" textAlign="CENTER" visible="false"/>
                 <column property="obligation.activity.activityNumber" header="Activity"
                         width="110px" visible="false"/>
                 <column property="obligation.activity.title" header="Activity Title"
