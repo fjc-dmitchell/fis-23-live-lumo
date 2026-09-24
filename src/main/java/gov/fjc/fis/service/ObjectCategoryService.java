@@ -50,9 +50,9 @@ public class ObjectCategoryService {
     public List<ObjectCategory> getStandardReportCategoryEntities(Appropriation appropriation) {
         var categories = getStandardReportCategoryCodes();
         return dataManager.load(ObjectCategory.class)
-                .query("SELECT cat FROM fis_ObjectCategory cat"
-                        + " WHERE cat.appropriation = :appropriation"
-                        + " AND cat.majorObjectClass IN :categoryCodes")
+                .query("SELECT e FROM fis_ObjectCategory e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.majorObjectClass IN :categoryCodes")
                 .parameter("appropriation", appropriation)
                 .parameter("categoryCodes", getStandardReportCategoryCodes())
                 .list();
@@ -68,22 +68,22 @@ public class ObjectCategoryService {
 
     }
 
-    public ObjectCategory getCategoryByCode(List<Appropriation> appropriations, String moc) {
-        return dataManager.load(ObjectCategory.class)
-                .query("SELECT c FROM fis_ObjectCategory c"
-                        + " WHERE c.majorObjectClass = :moc"
-                        + " AND c.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
-                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
-                .parameter("moc", moc)
-                .parameter("appropriations", appropriations)
-                .optional().orElse(null);
-    }
+//    public ObjectCategory getCategoryByCode(List<Appropriation> appropriations, String moc) {
+//        return dataManager.load(ObjectCategory.class)
+//                .query("SELECT c FROM fis_ObjectCategory c"
+//                        + " WHERE c.majorObjectClass = :moc"
+//                        + " AND c.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
+//                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
+//                .parameter("moc", moc)
+//                .parameter("appropriations", appropriations)
+//                .optional().orElse(null);
+//    }
 
     public List<ObjectCategory> getCompensationAndBenefits(List<Appropriation> appropriations) {
         return dataManager.load(ObjectCategory.class)
-                .query("SELECT cat FROM fis_ObjectCategory cat" +
-                        " INNER JOIN fis_Appropriation app ON app = cat.appropriation" +
-                        " WHERE cat.majorObjectClass in :comp_benefits" +
+                .query("SELECT e FROM fis_ObjectCategory e" +
+                        " INNER JOIN fis_Appropriation app ON app = e.appropriation" +
+                        " WHERE e.majorObjectClass in :comp_benefits" +
                         " AND app in :appropriations")
                 .parameter("comp_benefits", getCompensationAndBenefits())
                 .parameter("appropriations", appropriations)
@@ -120,10 +120,10 @@ public class ObjectCategoryService {
         for (Appropriation year : fiscalYears) {
             List<ObjectCategory> categoriesInBfyList =
                     dataManager.load(ObjectCategory.class)
-                            .query("SELECT c FROM fis_ObjectCategory c"
-                                    + " WHERE c.appropriation = :year"
-                                    + " AND c.majorObjectClass NOT IN :categoryCodes"
-                                    + " ORDER BY c.majorObjectClass")
+                            .query("SELECT e FROM fis_ObjectCategory e"
+                                    + " WHERE e.appropriation = :year"
+                                    + " AND e.majorObjectClass NOT IN :categoryCodes"
+                                    + " ORDER BY e.majorObjectClass")
                             .parameter("year", year)
                             .parameter("categoryCodes", categoryCodes)
                             .list();
@@ -142,9 +142,9 @@ public class ObjectCategoryService {
      */
     public List<ObjectCategory> fetchCategories(Appropriation appropriation) {
         return dataManager.load(ObjectCategory.class)
-                .query("SELECT c FROM fis_ObjectCategory c"
-                        + " WHERE c.appropriation = :appropriation"
-                        + " ORDER BY c.majorObjectClass")
+                .query("SELECT e FROM fis_ObjectCategory e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " ORDER BY e.majorObjectClass")
                 .parameter("appropriation", appropriation)
                 .list();
     }
@@ -168,6 +168,7 @@ public class ObjectCategoryService {
     /**
      * used by obligation lookup screen to find categories for given appropriation year, division, and activity
      *
+     * REWRITE TO USE FUND SERVICE INSTEAD OF 812300!
      * @param appropriation required
      * @param division      null allowed
      * @param activity      null allowed
@@ -177,16 +178,16 @@ public class ObjectCategoryService {
     public List<ObjectCategory> getObligationCategoriesForDivision(
             Appropriation appropriation, Division division, Activity activity, boolean foundation) {
         return dataManager.load(ObjectCategory.class)
-                .query("select distinct cat from fis_ObjectCategory cat" +
-                        " inner join fis_Appropriation app on app = cat.appropriation" +
-                        " inner join fis_ObjectClass obj on obj.objectCategory = cat" +
+                .query("select distinct e from fis_ObjectCategory e" +
+                        " inner join fis_Appropriation app on app = e.appropriation" +
+                        " inner join fis_ObjectClass obj on obj.objectCategory = e" +
                         " inner join fis_Obligation obl on obl.objectClass = obj" +
                         " where obj.objectCategory.appropriation = :appropriation" +
                         " and (:divisionNull = true or obl.activity.division = :division)" +
                         " and (:activityNull = true or obl.activity = :activity)" +
                         " and ((:foundation = true and obl.activity.fund.fundCode = '812300') " +
                         " or (:foundation = false and obl.activity.fund.fundCode <> '812300'))" +
-                        " order by cat.majorObjectClass")
+                        " order by e.majorObjectClass")
                 .parameter("appropriation", appropriation)
                 .parameter("divisionNull", division == null)
                 .parameter("division", division)

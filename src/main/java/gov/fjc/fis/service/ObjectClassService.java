@@ -43,14 +43,14 @@ public class ObjectClassService {
         boolean genericProjection = activity.getGenericProjection();
 
         return dataManager.load(ObjectClass.class)
-                .query("SELECT obj FROM fis_ObjectClass obj"
-                        + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
+                .query("SELECT e FROM fis_ObjectClass e"
+                        + " INNER JOIN fis_ObjectCategory cat ON cat=e.objectCategory"
                         + " WHERE cat.appropriation = :appropriation"
                         + " AND (:anyCategory=true OR cat=:category)"
-                        + " AND obj NOT IN :exclusions"
-                        + " AND ((:genericProjection=true AND obj.budgetObjectClass like '%00')"
-                        + " OR (:genericProjection=false AND obj.budgetObjectClass not like '%00'))"
-                        + " ORDER BY obj.budgetObjectClass")
+                        + " AND e NOT IN :exclusions"
+                        + " AND ((:genericProjection=true AND e.budgetObjectClass like '%00')"
+                        + " OR (:genericProjection=false AND e.budgetObjectClass not like '%00'))"
+                        + " ORDER BY e.budgetObjectClass")
                 .parameter("appropriation", appropriation)
                 .parameter("anyCategory", category == null)
                 .parameter("category", category)
@@ -59,40 +59,40 @@ public class ObjectClassService {
                 .list();
     }
 
-    public List<ObjectClass> getReimbursementObjectClasses(Activity activity) {
-        Appropriation appropriation = null;
-        if (activity != null) {
-            appropriation = activity.getDivision().getAppropriation();
-        }
-        return dataManager.load(ObjectClass.class)
-                .query("SELECT o FROM fis_ObjectClass o"
-                        + " INNER JOIN fis_ObjectCategory cat ON cat=o.objectCategory"
-                        + " WHERE cat.appropriation = :appropriation"
-                        + " AND o NOT IN (SELECT e.objectClass FROM fis_ActivityReimbursement e WHERE e.activity = :activity)"
-                        + " ORDER BY o.budgetObjectClass")
-                .parameter("appropriation", appropriation)
-                .parameter("activity", activity)
-                .list();
-    }
+//    public List<ObjectClass> getReimbursementObjectClasses(Activity activity) {
+//        Appropriation appropriation = null;
+//        if (activity != null) {
+//            appropriation = activity.getDivision().getAppropriation();
+//        }
+//        return dataManager.load(ObjectClass.class)
+//                .query("SELECT o FROM fis_ObjectClass o"
+//                        + " INNER JOIN fis_ObjectCategory cat ON cat=o.objectCategory"
+//                        + " WHERE cat.appropriation = :appropriation"
+//                        + " AND o NOT IN (SELECT e.objectClass FROM fis_ActivityReimbursement e WHERE e.activity = :activity)"
+//                        + " ORDER BY o.budgetObjectClass")
+//                .parameter("appropriation", appropriation)
+//                .parameter("activity", activity)
+//                .list();
+//    }
 
-    public ObjectClass getObjectClassByCode(List<Appropriation> appropriations, String boc) {
-        return dataManager.load(ObjectClass.class)
-                .query("SELECT o FROM fis_ObjectClass o"
-                        + " WHERE o.budgetObjectClass = :boc"
-                        + " AND o.objectCategory.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
-                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
-                .parameter("boc", boc)
-                .parameter("appropriations", appropriations)
-                .optional().orElse(null);
-    }
+//    public ObjectClass getObjectClassByCode(List<Appropriation> appropriations, String boc) {
+//        return dataManager.load(ObjectClass.class)
+//                .query("SELECT o FROM fis_ObjectClass o"
+//                        + " WHERE o.budgetObjectClass = :boc"
+//                        + " AND o.objectCategory.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
+//                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
+//                .parameter("boc", boc)
+//                .parameter("appropriations", appropriations)
+//                .optional().orElse(null);
+//    }
 
     public List<ObjectClass> fetchObjectClasses(ObjectCategory category, boolean generic) {
         return dataManager.load(ObjectClass.class)
-                .query("SELECT o FROM fis_ObjectClass o"
-                        + " WHERE o.objectCategory = :category"
-                        + " AND ((o.budgetObjectClass NOT LIKE '%00') "
-                        + " OR (:generic = true AND o.budgetObjectClass LIKE '%00'))"
-                        + " ORDER BY o.budgetObjectClass")
+                .query("SELECT e FROM fis_ObjectClass e"
+                        + " WHERE e.objectCategory = :category"
+                        + " AND ((e.budgetObjectClass NOT LIKE '%00') "
+                        + " OR (:generic = true AND e.budgetObjectClass LIKE '%00'))"
+                        + " ORDER BY e.budgetObjectClass")
                 .parameter("category", category)
                 .parameter("generic", generic)
                 .list();
@@ -116,16 +116,16 @@ public class ObjectClassService {
                                                         boolean foundation) {
         Fund foundationFund = fundService.getFoundationFund();
         return dataManager.load(ObjectClass.class)
-                .query("SELECT DISTINCT obj FROM fis_ObjectClass obj"
-                        + " INNER JOIN fis_Appropriation app ON app = obj.objectCategory.appropriation"
-                        + " INNER JOIN fis_Obligation obl ON obl.objectClass = obj"
-                        + " WHERE obj.objectCategory.appropriation = :appropriation"
+                .query("SELECT DISTINCT e FROM fis_ObjectClass e"
+                        + " INNER JOIN fis_Appropriation app ON app = e.objectCategory.appropriation"
+                        + " INNER JOIN fis_Obligation obl ON obl.objectClass = e"
+                        + " WHERE e.objectCategory.appropriation = :appropriation"
                         + " AND (:divisionNull = true OR obl.activity.division = :division)"
                         + " AND (:activityNull = true OR obl.activity = :activity)"
-                        + " AND (:categoryNull = true OR obj.objectCategory = :category)"
+                        + " AND (:categoryNull = true OR e.objectCategory = :category)"
                         + " AND ((:foundation = true AND obl.activity.fund = :foundationFund) "
                         + " OR (:foundation = false AND obl.activity.fund <> :foundationFund))"
-                        + " ORDER BY obj.budgetObjectClass")
+                        + " ORDER BY e.budgetObjectClass")
                 .parameter("appropriation", appropriation)
                 .parameter("division", division)
                 .parameter("divisionNull", division == null)
@@ -147,11 +147,11 @@ public class ObjectClassService {
         for (Appropriation year : fiscalYears) {
             List<ObjectClass> objectClassesInBfyList =
                     dataManager.load(ObjectClass.class)
-                            .query("SELECT c FROM fis_ObjectClass c"
-                                    + " WHERE c.objectCategory.appropriation = :year"
-                                    + " AND c.budgetObjectClass NOT IN :bocCodes"
-                                    + " AND (:generic = true OR c.budgetObjectClass NOT LIKE '%00')"
-                                    + " AND (:moc IS NULL OR c.objectCategory.majorObjectClass = :moc)")
+                            .query("SELECT e FROM fis_ObjectClass e"
+                                    + " WHERE e.objectCategory.appropriation = :year"
+                                    + " AND e.budgetObjectClass NOT IN :bocCodes"
+                                    + " AND (:generic = true OR e.budgetObjectClass NOT LIKE '%00')"
+                                    + " AND (:moc IS NULL OR e.objectCategory.majorObjectClass = :moc)")
                             .parameter("year", year)
                             .parameter("bocCodes", bocCodes)
                             .parameter("moc", moc)

@@ -81,13 +81,13 @@ public class ActivityProjectionService {
 
     public List<ActivityProjection> getActivitiesByProjectionMoc(ObjectCategory category, List<Fund> funds) {
         return dataManager.load(ActivityProjection.class)
-                .query("SELECT p FROM fis_ActivityProjection p"
-                        + " INNER JOIN fis_Activity act ON p.activity=act"
+                .query("SELECT e FROM fis_ActivityProjection e"
+                        + " INNER JOIN fis_Activity act ON e.activity=act"
                         + " INNER JOIN fis_Fund fund ON act.fund=fund"
                         + " INNER JOIN fis_Division dv ON act.division=dv"
-                        + " INNER JOIN fis_ObjectClass obj ON p.objectClass = obj"
+                        + " INNER JOIN fis_ObjectClass obj ON e.objectClass = obj"
                         + " INNER JOIN fis_ObjectCategory cat ON obj.objectCategory = cat"
-                        + " WHERE cat = :category AND p.amount <> 0 AND act.fund in :funds"
+                        + " WHERE cat = :category AND e.amount <> 0 AND act.fund in :funds"
                         + " ORDER BY dv.divisionCode, fund.fundCode, act.activityNumber, cat.majorObjectClass, obj.budgetObjectClass")
                 .parameter("category", category)
                 .parameter("funds", funds)
@@ -128,13 +128,13 @@ public class ActivityProjectionService {
 
     public List<ActivityProjection> getActivitiesByProjectionBoc(ObjectClass objectClass) {
         return dataManager.load(ActivityProjection.class)
-                .query("SELECT p FROM fis_ActivityProjection p"
-                        + " INNER JOIN fis_Activity act ON p.activity=act"
+                .query("SELECT e FROM fis_ActivityProjection e"
+                        + " INNER JOIN fis_Activity act ON e.activity=act"
                         + " INNER JOIN fis_Fund fund ON act.fund=fund"
                         + " INNER JOIN fis_Division dv ON act.division=dv"
-                        + " INNER JOIN fis_ObjectClass obj ON p.objectClass = obj"
+                        + " INNER JOIN fis_ObjectClass obj ON e.objectClass = obj"
                         + " INNER JOIN fis_ObjectCategory cat ON obj.objectCategory = cat"
-                        + " WHERE obj = :objectClass AND p.amount <> 0"
+                        + " WHERE obj = :objectClass AND e.amount <> 0"
                         + " ORDER BY dv.divisionCode, fund.fundCode, act.activityNumber, cat.majorObjectClass, obj.budgetObjectClass")
                 .parameter("objectClass", objectClass)
                 .fetchPlan("activityProjection-fetch-plan")
@@ -260,11 +260,11 @@ public class ActivityProjectionService {
             throw new RuntimeException("FIS coding error: division and branch cannot both be null");
         }
         return dataManager.loadValues(
-                        "SELECT p.activity, COALESCE(SUM(p.amount),0) from fis_ActivityProjection p"
-                                + " INNER JOIN fis_Activity a ON a=p.activity"
+                        "SELECT e.activity, COALESCE(SUM(e.amount),0) from fis_ActivityProjection e"
+                                + " INNER JOIN fis_Activity a ON a=e.activity"
                                 + " WHERE (:anyDivision = true OR a.division = :division)"
                                 + " AND (:anyBranch = true OR a.branch = :branch)"
-                                + " GROUP BY p.activity")
+                                + " GROUP BY e.activity")
                 .parameter("anyDivision", division == null)
                 .parameter("division", division)
                 .parameter("anyBranch", branch == null)
@@ -275,10 +275,10 @@ public class ActivityProjectionService {
 
     public List<KeyValueEntity> aggregateProjectionsByActivity(List<Activity> activities) {
         return dataManager.loadValues(
-                        "SELECT p.activity, COALESCE(SUM(p.amount),0)"
-                                + " FROM fis_ActivityProjection p"
-                                + " WHERE p.activity IN :activities"
-                                + " GROUP BY p.activity")
+                        "SELECT e.activity, COALESCE(SUM(e.amount),0)"
+                                + " FROM fis_ActivityProjection e"
+                                + " WHERE e.activity IN :activities"
+                                + " GROUP BY e.activity")
                 .parameter("activities", activities)
                 .properties("activity", "amount")
                 .list();
@@ -297,19 +297,19 @@ public class ActivityProjectionService {
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
         return dataManager.loadValues(
                         "SELECT fund.fundCode, app.budgetFiscalYear, dv.divisionCode, act.activityNumber,"
-                                + " act.title, cat.majorObjectClass, obj.budgetObjectClass, p.amount,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN p.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN p.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN p.amount ELSE 0 END"
-                                + " FROM fis_ActivityProjection p"
-                                + " INNER JOIN fis_Activity act ON act=p.activity"
+                                + " act.title, cat.majorObjectClass, obj.budgetObjectClass, e.amount,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN e.amount ELSE 0 END"
+                                + " FROM fis_ActivityProjection e"
+                                + " INNER JOIN fis_Activity act ON act=e.activity"
                                 + " INNER JOIN fis_Division dv ON dv=act.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                 + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " INNER JOIN fis_ObjectClass obj ON obj=p.objectClass"
+                                + " INNER JOIN fis_ObjectClass obj ON obj=e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
-                                + " WHERE p.activity IN :activities"
-                                + " AND (:allowZeros = true OR p.amount <> 0)"
+                                + " WHERE e.activity IN :activities"
+                                + " AND (:allowZeros = true OR e.amount <> 0)"
                                 + " ORDER BY app.budgetFiscalYear, fund.fundCode, act.activityNumber, obj.budgetObjectClass")
                 .parameter("priorYear", priorYear)
                 .parameter("appropriation", appropriation)
@@ -334,20 +334,20 @@ public class ActivityProjectionService {
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
         var activityIds = activities.stream().map(ActivityDto::getId).toList();
         return dataManager.loadValues(
-                        "SELECT p.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.id, act.activityNumber,"
-                                + " act.title, cat.id, cat.majorObjectClass, obj.id, obj.budgetObjectClass, p.amount,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN p.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN p.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN p.amount ELSE 0 END"
-                                + " FROM fis_ActivityProjection p"
-                                + " INNER JOIN fis_Activity act ON act=p.activity"
+                        "SELECT e.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.id, act.activityNumber,"
+                                + " act.title, cat.id, cat.majorObjectClass, obj.id, obj.budgetObjectClass, e.amount,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN e.amount ELSE 0 END"
+                                + " FROM fis_ActivityProjection e"
+                                + " INNER JOIN fis_Activity act ON act=e.activity"
                                 + " INNER JOIN fis_Division dv ON dv=act.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                 + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " INNER JOIN fis_ObjectClass obj ON obj=p.objectClass"
+                                + " INNER JOIN fis_ObjectClass obj ON obj=e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
-                                + " WHERE p.activity.id IN :activities"
-                                + " AND (:allowZeros = true OR p.amount <> 0)"
+                                + " WHERE e.activity.id IN :activities"
+                                + " AND (:allowZeros = true OR e.amount <> 0)"
                                 + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, act.activityNumber, obj.budgetObjectClass")
                 .parameter("priorYear", priorYear)
                 .parameter("appropriation", appropriation)
@@ -361,11 +361,11 @@ public class ActivityProjectionService {
 
     public List<KeyValueEntity> fetchProjectionSums(Appropriation appropriation, List<Fund> funds) {
         return dataManager.loadValues(
-                        "SELECT cat.majorObjectClass, div.divisionCode, act.fund, sum(proj.amount)"
-                                + " FROM fis_ActivityProjection proj"
-                                + " INNER JOIN fis_ObjectClass obj ON obj = proj.objectClass"
+                        "SELECT cat.majorObjectClass, div.divisionCode, act.fund, sum(e.amount)"
+                                + " FROM fis_ActivityProjection e"
+                                + " INNER JOIN fis_ObjectClass obj ON obj = e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat = obj.objectCategory"
-                                + " INNER JOIN fis_Activity act ON act = proj.activity"
+                                + " INNER JOIN fis_Activity act ON act = e.activity"
                                 + " INNER JOIN fis_Division div ON div = act.division"
                                 + " WHERE div.appropriation = :appropriation"
                                 + " AND act.fund in :funds"
@@ -378,28 +378,28 @@ public class ActivityProjectionService {
     }
 
     public BigDecimal sumProjections(Activity activity) {
-        return dataManager.loadValue("SELECT coalesce(sum(p.amount),0)"
-                        + " FROM fis_ActivityProjection p"
-                        + " WHERE p.activity=:activity", BigDecimal.class)
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityProjection e"
+                        + " WHERE e.activity=:activity", BigDecimal.class)
                 .parameter("activity", activity)
                 .one();
     }
 
     public BigDecimal sumProjections(List<Activity> activities) {
-        return dataManager.loadValue("SELECT coalesce(sum(p.amount),0)"
-                        + " FROM fis_ActivityProjection p"
-                        + " WHERE p.activity IN :activities", BigDecimal.class)
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityProjection e"
+                        + " WHERE e.activity IN :activities", BigDecimal.class)
                 .parameter("activities", activities)
                 .one();
     }
 
     public List<KeyValueEntity> sumActivityProjections(List<Division> divisions, Fund fund) {
         return dataManager.loadValues(
-                        "SELECT act.fund, act.division, COALESCE(SUM(proj.amount),0)"
-                                + " FROM fis_Activity act"
-                                + " INNER JOIN fis_ActivityProjection proj ON act=proj.activity"
-                                + " WHERE act.division IN :divisions AND act.fund=:fund"
-                                + " GROUP BY act.fund, act.division")
+                        "SELECT e.fund, e.division, COALESCE(SUM(proj.amount),0)"
+                                + " FROM fis_Activity e"
+                                + " INNER JOIN fis_ActivityProjection proj ON e=proj.activity"
+                                + " WHERE e.division IN :divisions AND e.fund=:fund"
+                                + " GROUP BY e.fund, e.division")
                 .parameter("divisions", divisions)
                 .parameter("fund", fund)
                 .properties("fund", "division", "amount")
@@ -426,12 +426,12 @@ public class ActivityProjectionService {
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
 
         return dataManager.load(ActivityProjection.class)
-                .query("SELECT p FROM fis_ActivityProjection p"
-                        + " INNER JOIN fis_Activity act ON act = p.activity"
+                .query("SELECT e FROM fis_ActivityProjection e"
+                        + " INNER JOIN fis_Activity act ON act = e.activity"
                         + " INNER JOIN fis_Division dv ON dv = act.division"
                         + " INNER JOIN fis_Appropriation app ON app = dv.appropriation"
                         + " INNER JOIN fis_Fund fund ON fund = act.fund"
-                        + " WHERE p.amount <> 0 AND p.activity IN "
+                        + " WHERE e.amount <> 0 AND e.activity IN "
                         + " (SELECT a FROM fis_Activity a"
                         + " INNER JOIN fis_Division dv ON dv = a.division"
                         + " INNER JOIN fis_Appropriation app ON app = dv.appropriation"
@@ -489,10 +489,10 @@ public class ActivityProjectionService {
      * @return
      */
     public BigDecimal sumProjections(ActivityDto activityDto, boolean travel) {
-        return dataManager.loadValue("SELECT coalesce(sum(proj.amount),0)"
-                        + " FROM fis_ActivityProjection proj"
-                        + " INNER JOIN fis_Activity act ON act=proj.activity"
-                        + " INNER JOIN fis_ObjectClass obj ON obj=proj.objectClass"
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityProjection e"
+                        + " INNER JOIN fis_Activity act ON act=e.activity"
+                        + " INNER JOIN fis_ObjectClass obj ON obj=e.objectClass"
                         + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
                         + " WHERE act.id = :activity"
                         + " AND ((:travel=TRUE AND cat.majorObjectClass='21')"
@@ -504,8 +504,8 @@ public class ActivityProjectionService {
 
     public ActivityProjection findOrCreateActivityProjection(Activity activity, ObjectClass objectClass) {
         return dataManager.load(ActivityProjection.class)
-                .query("SELECT p FROM fis_ActivityProjection p"
-                        + " WHERE p.activity = :activity AND p.objectClass = :objectClass")
+                .query("SELECT e FROM fis_ActivityProjection e"
+                        + " WHERE e.activity = :activity AND e.objectClass = :objectClass")
                 .parameter("activity", activity)
                 .parameter("objectClass", objectClass)
                 .optional()

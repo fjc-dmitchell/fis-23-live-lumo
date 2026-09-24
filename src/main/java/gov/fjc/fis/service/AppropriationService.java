@@ -27,9 +27,9 @@ public class AppropriationService {
     public List<Appropriation> getReconciliationAppropriations(int numberOfYears) {
         String currentBfy = getCurrentBfy();
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a"
-                        + " WHERE a.budgetFiscalYear <= :currentBfy"
-                        + " ORDER BY a.budgetFiscalYear DESC")
+                .query("SELECT e FROM fis_Appropriation e"
+                        + " WHERE e.budgetFiscalYear <= :currentBfy"
+                        + " ORDER BY e.budgetFiscalYear DESC")
                 .parameter("currentBfy", currentBfy)
                 .maxResults(numberOfYears)
                 .list();
@@ -37,7 +37,7 @@ public class AppropriationService {
 
     public List<Appropriation> getAppropriations() {
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a ORDER BY a.budgetFiscalYear DESC")
+                .query("SELECT e FROM fis_Appropriation e ORDER BY e.budgetFiscalYear DESC")
                 .list();
     }
 
@@ -49,17 +49,17 @@ public class AppropriationService {
      */
     public List<Appropriation> getAppropriations(List<String> budgetFiscalYears) {
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a"
-                        + " WHERE a.budgetFiscalYear IN :budgetFiscalYears"
-                        + " ORDER BY a.budgetFiscalYear DESC")
+                .query("SELECT e FROM fis_Appropriation e"
+                        + " WHERE e.budgetFiscalYear IN :budgetFiscalYears"
+                        + " ORDER BY e.budgetFiscalYear DESC")
                 .parameter("budgetFiscalYears", budgetFiscalYears)
                 .list();
     }
 
     public Appropriation getAppropriation(Activity activity) {
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a"
-                        + " INNER JOIN fis_Division dv ON dv.appropriation = a"
+                .query("SELECT e FROM fis_Appropriation e"
+                        + " INNER JOIN fis_Division dv ON dv.appropriation = e"
                         + " INNER JOIN fis_Activity act ON act.division = dv"
                         + " WHERE act=:activity")
                 .parameter("activity", activity)
@@ -88,9 +88,9 @@ public class AppropriationService {
 
     public List<Appropriation> getOpenAppropriations() {
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a" +
-                        " WHERE a.status = TRUE" +
-                        " ORDER BY a.budgetFiscalYear DESC")
+                .query("SELECT e FROM fis_Appropriation e" +
+                        " WHERE e.status = TRUE" +
+                        " ORDER BY e.budgetFiscalYear DESC")
                 .list();
     }
 
@@ -186,8 +186,8 @@ public class AppropriationService {
 
     public Appropriation getCurrentBudgetFiscalYear() {
         return dataManager.load(Appropriation.class)
-                .query("select a from fis_Appropriation a" +
-                        " where a.budgetFiscalYear = :bFy")
+                .query("select e from fis_Appropriation e" +
+                        " where e.budgetFiscalYear = :bFy")
                 .parameter("bFy", getCurrentBfy())
                 .optional().orElse(null);
     }
@@ -223,8 +223,8 @@ public class AppropriationService {
             priorFiscalYear = 0;
         }
         return dataManager.load(Appropriation.class)
-                .query("select a from fis_Appropriation a" +
-                        " where a.budgetFiscalYear = :priorFiscalYear")
+                .query("select e from fis_Appropriation e" +
+                        " where e.budgetFiscalYear = :priorFiscalYear")
                 .parameter("priorFiscalYear", Integer.toString(priorFiscalYear))
                 .optional()
                 .orElse(dataManager.create(Appropriation.class));
@@ -241,9 +241,9 @@ public class AppropriationService {
         // ToDo - unchecked cast here; should check type and throw exception (it'll never happen)
         Set<Appropriation> searchYears = (Set<Appropriation>) sessionData.getAttribute("bfySearch");
         return dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a"
-                        + " WHERE a.status = TRUE OR a IN :searchYears"
-                        + " ORDER BY a.budgetFiscalYear DESC")
+                .query("SELECT e FROM fis_Appropriation e"
+                        + " WHERE e.status = TRUE OR e IN :searchYears"
+                        + " ORDER BY e.budgetFiscalYear DESC")
                 .parameter("searchYears", searchYears)
                 .list();
     }
@@ -292,8 +292,8 @@ public class AppropriationService {
      */
     public Boolean isAppropriationBefore2014(Appropriation appropriation) {
         var oldAppropriations = dataManager.load(Appropriation.class)
-                .query("SELECT a FROM fis_Appropriation a"
-                        + " WHERE a.budgetFiscalYear < '2014'")
+                .query("SELECT e FROM fis_Appropriation e"
+                        + " WHERE e.budgetFiscalYear < '2014'")
                 .list();
         return oldAppropriations.contains(appropriation);
     }
@@ -306,13 +306,13 @@ public class AppropriationService {
      */
     public KeyValueEntity getSpendingAuthority(Appropriation appropriation) {
         return dataManager.loadValues(
-                        "SELECT app.oneYearAmount, app.twoYearAmount,"
+                        "SELECT e.oneYearAmount, e.twoYearAmount,"
                                 + " COALESCE(SUM(adj.oneYearAmount),0), COALESCE(SUM(adj.twoYearAmount),0),"
-                                + " app.oneYearAmount+COALESCE(SUM(adj.oneYearAmount),0), app.twoYearAmount+COALESCE(SUM(adj.twoYearAmount),0)"
-                                + " FROM fis_Appropriation app"
+                                + " e.oneYearAmount+COALESCE(SUM(adj.oneYearAmount),0), e.twoYearAmount+COALESCE(SUM(adj.twoYearAmount),0)"
+                                + " FROM fis_Appropriation e"
                                 + " LEFT JOIN fis_AppropriationAdjustment adj ON adj.appropriation=app"
-                                + " WHERE app=:appropriation"
-                                + " GROUP BY app.oneYearAmount, app.twoYearAmount")
+                                + " WHERE e=:appropriation"
+                                + " GROUP BY e.oneYearAmount, e.twoYearAmount")
                 .parameter("appropriation", appropriation)
                 .properties("one_year_appropriation", "two_year_appropriation", "one_year_adjust", "two_year_adjust", "one_year_total", "two_year_total")
                 .optional().orElse(createDefaultSpendingAuthority());

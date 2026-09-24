@@ -28,7 +28,7 @@ public class FundService {
 
     private Fund fetchFund(String fundCode) {
         return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f WHERE f.fundCode = :fundcode")
+                .query("SELECT e FROM fis_Fund e WHERE e.fundCode = :fundcode")
                 .parameter("fundcode", fundCode)
                 .one();
     }
@@ -52,17 +52,17 @@ public class FundService {
     public List<Fund> getAppropriationFunds() {
         var funds = Arrays.asList(oneYearFund, twoYearFund);
         return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f"
-                        + " WHERE f.fundCode IN :funds")
+                .query("SELECT e FROM fis_Fund e"
+                        + " WHERE e.fundCode IN :funds")
                 .parameter("funds", funds)
                 .list();
     }
 
     public List<Fund> fetchFundSearchList(boolean foundation) {
         return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f WHERE "
-                        + "((:foundation = TRUE AND f.fundCode = :foundationFund) OR "
-                        + "(:foundation = FALSE AND f.fundCode <> :foundationFund))")
+                .query("SELECT e FROM fis_Fund e WHERE "
+                        + "((:foundation = TRUE AND e.fundCode = :foundationFund) OR "
+                        + "(:foundation = FALSE AND e.fundCode <> :foundationFund))")
                 .parameter("foundation", foundation)
                 .parameter("foundationFund", foundationFund)
                 .list();
@@ -70,20 +70,20 @@ public class FundService {
 
     public List<Fund> getFundList() {
         return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f ORDER BY f.fundCode")
+                .query("SELECT e FROM fis_Fund e ORDER BY e.fundCode")
                 .list();
     }
 
-    public List<Fund> getFundReportList() {
-        return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f ORDER BY f.id")
-                .list();
-    }
+//    public List<Fund> getFundReportList() {
+//        return dataManager.load(Fund.class)
+//                .query("SELECT e FROM fis_Fund e ORDER BY e.id")
+//                .list();
+//    }
 
     public List<Fund> getAppropriatedFundsList() {
         return dataManager.load(Fund.class)
-                .query("SELECT f FROM fis_Fund f"
-                        + " WHERE f.fundCode IN (:oneYearFund, :twoYearFund) ORDER BY f.id")
+                .query("SELECT e FROM fis_Fund e"
+                        + " WHERE e.fundCode IN (:oneYearFund, :twoYearFund) ORDER BY e.id")
                 .parameter("oneYearFund", oneYearFund)
                 .parameter("twoYearFund", twoYearFund)
                 .list();

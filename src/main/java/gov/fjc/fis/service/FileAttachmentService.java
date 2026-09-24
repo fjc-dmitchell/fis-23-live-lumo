@@ -27,8 +27,8 @@ public class FileAttachmentService {
 
     private List<FileAttachment> fetchFor(String field, FileAttachable entity) {
         return dataManager.load(FileAttachment.class)
-                .query("SELECT a FROM fis_FileAttachment a"
-                        + " WHERE a." + field + " = :ref")
+                .query("SELECT e FROM fis_FileAttachment e"
+                        + " WHERE e." + field + " = :ref")
                 .parameter("ref", entity)
                 .list();
     }

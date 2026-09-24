@@ -15,8 +15,12 @@ import java.util.stream.Collectors;
 
 @Component("fis_DivisionObligationsReportService")
 public class DivisionObligationsReportService {
-    @Autowired
-    private DataManager dataManager;
+
+    private final DataManager dataManager;
+
+    public DivisionObligationsReportService(DataManager dataManager) {
+        this.dataManager = dataManager;
+    }
 
     public DivisionObligationReportData generateReportDate(Division division, Branch branch) {
         division = branch == null ? division : branch.getDivision();
@@ -36,10 +40,10 @@ public class DivisionObligationsReportService {
 
     private List<Activity> getActivities(Division division, Branch branch) {
         return dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " WHERE (:anyBranch = true AND a.division = :division)"
-                        + " OR (:anyBranch = false AND a.branch = :branch)"
-                        + " ORDER BY a.sortCode, a.activityNumber")
+                .query("SELECT e FROM fis_Activity e"
+                        + " WHERE (:anyBranch = true AND e.division = :division)"
+                        + " OR (:anyBranch = false AND e.branch = :branch)"
+                        + " ORDER BY e.sortCode, e.activityNumber")
                 .parameter("anyBranch", branch == null)
                 .parameter("branch", branch)
                 .parameter("division", division)

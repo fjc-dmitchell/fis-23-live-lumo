@@ -77,9 +77,9 @@ public class GroupService {
                 ? activityNumber.substring(0, 2)
                 : activityNumber;
         return dataManager.load(Group.class)
-                .query("SELECT g FROM fis_Group g"
-                        + " WHERE g.groupCode = :groupCode"
-                        + " AND g.division = :division")
+                .query("SELECT e FROM fis_Group e"
+                        + " WHERE e.groupCode = :groupCode"
+                        + " AND e.division = :division")
                 .parameter("groupCode", groupCode)
                 .parameter("division", division)
                 .optional()

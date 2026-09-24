@@ -26,9 +26,9 @@ public class AppropriationAdjustmentService {
     // why is this here rather than reimbursement service?
     BigDecimal sumReimbursements(Appropriation appropriation, Fund fund) {
         return dataManager.loadValue(
-                        "SELECT COALESCE(SUM(r.amount),0)"
-                                + " FROM fis_ActivityReimbursement r"
-                                + " INNER JOIN fis_Activity act ON act=r.activity"
+                        "SELECT COALESCE(SUM(e.amount),0)"
+                                + " FROM fis_ActivityReimbursement e"
+                                + " INNER JOIN fis_Activity act ON act=e.activity"
                                 + " INNER JOIN fis_Fund fund ON fund=act.fund"
                                 + " INNER JOIN fis_Division dv ON dv=act.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
@@ -39,30 +39,30 @@ public class AppropriationAdjustmentService {
                 .one();
     }
 
-    public BigDecimal sumAppropriationAdjustments(Appropriation appropriation) {
-        return dataManager.loadValue(
-                        "SELECT COALESCE(SUM(adj.oneYearAmount),0)+COALESCE(SUM(adj.twoYearAmount),0)"
-                                + " FROM fis_AppropriationAdjustment adj"
-                                + " INNER JOIN fis_Appropriation app ON app= adj.appropriation"
-                                + " WHERE app = :appropriation", BigDecimal.class)
-                .parameter("appropriation", appropriation)
-                .one();
-    }
+//    public BigDecimal sumAppropriationAdjustments(Appropriation appropriation) {
+//        return dataManager.loadValue(
+//                        "SELECT COALESCE(SUM(adj.oneYearAmount),0)+COALESCE(SUM(adj.twoYearAmount),0)"
+//                                + " FROM fis_AppropriationAdjustment adj"
+//                                + " INNER JOIN fis_Appropriation app ON app= adj.appropriation"
+//                                + " WHERE app = :appropriation", BigDecimal.class)
+//                .parameter("appropriation", appropriation)
+//                .one();
+//    }
 
     public BigDecimal sumOneYearAdjustments(Appropriation appropriation) {
         return dataManager.loadValue(
-                        "SELECT COALESCE(SUM(adj.oneYearAmount),0)"
-                                + " FROM fis_AppropriationAdjustment adj"
-                                + " WHERE adj.appropriation = :appropriation", BigDecimal.class)
+                        "SELECT COALESCE(SUM(e.oneYearAmount),0)"
+                                + " FROM fis_AppropriationAdjustment e"
+                                + " WHERE e.appropriation = :appropriation", BigDecimal.class)
                 .parameter("appropriation", appropriation)
                 .one();
     }
 
     public BigDecimal sumTwoYearAdjustments(Appropriation appropriation) {
         return dataManager.loadValue(
-                        "SELECT COALESCE(SUM(adj.twoYearAmount),0)"
-                                + " FROM fis_AppropriationAdjustment adj"
-                                + " WHERE adj.appropriation = :appropriation", BigDecimal.class)
+                        "SELECT COALESCE(SUM(e.twoYearAmount),0)"
+                                + " FROM fis_AppropriationAdjustment e"
+                                + " WHERE e.appropriation = :appropriation", BigDecimal.class)
                 .parameter("appropriation", appropriation)
                 .one();
     }

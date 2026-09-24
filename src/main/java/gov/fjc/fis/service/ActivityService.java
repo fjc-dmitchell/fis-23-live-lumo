@@ -50,9 +50,9 @@ public class ActivityService {
         }
         String genericNumber = activity.getBranch().getBranchCode().concat("00");
         Optional<Activity> genericActivity = dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " WHERE a.division = :division"
-                        + " AND a.activityNumber = :genericActivity")
+                .query("SELECT e FROM fis_Activity e"
+                        + " WHERE e.division = :division"
+                        + " AND e.activityNumber = :genericActivity")
                 .parameter("division", activity.getDivision())
                 .parameter("genericActivity", genericNumber)
                 .optional();
@@ -70,9 +70,9 @@ public class ActivityService {
 
     public BigDecimal sumProjections(Activity activity) {
         BigDecimal projections = dataManager.load(BigDecimal.class)
-                .query("SELECT coalesce(sum(p.amount),0)"
-                        + " FROM fis_ActivityProjection p"
-                        + " WHERE p.activity = :activity")
+                .query("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityProjection e"
+                        + " WHERE e.activity = :activity")
                 .parameter("activity", activity)
                 .one();
         return BigDecimal.ZERO;
@@ -80,10 +80,10 @@ public class ActivityService {
 
     public Activity getTrainingActivity(Division division, String activityNumber) {
         return dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " WHERE a.division = :division"
-                        + " AND a.trainingProject = true"
-                        + " AND a.activityNumber = :activityNumber")
+                .query("SELECT e FROM fis_Activity e"
+                        + " WHERE e.division = :division"
+                        + " AND e.trainingProject = true"
+                        + " AND e.activityNumber = :activityNumber")
                 .parameter("division", division)
                 .parameter("activityNumber", activityNumber)
                 .optional()
@@ -130,17 +130,17 @@ public class ActivityService {
 //                        + " AND (:anyBranch = true OR a.branch = :branch)"
 //                        + " AND (:anyGroup = true OR a.group = :group)"
 //                        + " ORDER BY dv.divisionCode, a.startDate, a.activityNumber")
-                .query("SELECT a FROM fis_Activity a"
-                        + " INNER JOIN fis_Division dv ON dv = a.division"
-                        + " INNER JOIN fis_Fund fund ON fund = a.fund"
-                        + " LEFT JOIN fis_Branch bch ON bch = a.branch"
-                        + " LEFT JOIN fis_Group grp ON grp = a.group"
+                .query("SELECT e FROM fis_Activity e"
+                        + " INNER JOIN fis_Division dv ON dv = e.division"
+                        + " INNER JOIN fis_Fund fund ON fund = e.fund"
+                        + " LEFT JOIN fis_Branch bch ON bch = e.branch"
+                        + " LEFT JOIN fis_Group grp ON grp = e.group"
                         + " WHERE (:anyFund = true OR fund = :fund)"
                         + " AND (:anyAppropriation = true OR dv.appropriation = :appropriation)"
                         + " AND (:anyDivision = true OR dv = :division)"
                         + " AND (:anyBranch = true OR bch = :branch)"
                         + " AND (:anyGroup = true OR grp = :group)"
-                        + " ORDER BY dv.divisionCode, a.startDate, a.activityNumber")
+                        + " ORDER BY dv.divisionCode, e.startDate, e.activityNumber")
                 .parameter("anyFund", fund == null)
                 .parameter("fund", fund)
                 .parameter("anyAppropriation", appropriation == null)
@@ -172,17 +172,17 @@ public class ActivityService {
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
 
         return dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " LEFT JOIN fis_Branch bch ON bch = a.branch"
-                        + " INNER JOIN fis_Division dv ON dv = a.division"
+                .query("SELECT e FROM fis_Activity e"
+                        + " LEFT JOIN fis_Branch bch ON bch = e.branch"
+                        + " INNER JOIN fis_Division dv ON dv = e.division"
                         + " INNER JOIN fis_Appropriation app ON app = dv.appropriation"
-                        + " INNER JOIN fis_Fund fund ON fund = a.fund"
+                        + " INNER JOIN fis_Fund fund ON fund = e.fund"
                         + " WHERE dv.divisionCode = :divisionCode"
                         + " AND (:anyBranch = true OR bch.branchCode = :branchCode)"
-                        + " AND ((dv.appropriation = :currentYear AND a.fund = :oneYearFund)"
-                        + " OR (dv.appropriation = :priorYear AND a.fund = :twoYearFund AND a.endDate >= :bfyStartDate)"
-                        + " OR (dv.appropriation = :currentYear AND a.fund = :twoYearFund AND (a.endDate IS NULL OR a.endDate <= :bfyEndDate)))"
-                        + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, a.activityNumber")
+                        + " AND ((dv.appropriation = :currentYear AND e.fund = :oneYearFund)"
+                        + " OR (dv.appropriation = :priorYear AND e.fund = :twoYearFund AND e.endDate >= :bfyStartDate)"
+                        + " OR (dv.appropriation = :currentYear AND e.fund = :twoYearFund AND (e.endDate IS NULL OR e.endDate <= :bfyEndDate)))"
+                        + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, e.activityNumber")
                 .parameter("divisionCode", division.getDivisionCode())
                 .parameter("anyBranch", branch == null)
                 .parameter("branchCode", branchCode)
@@ -207,14 +207,14 @@ public class ActivityService {
     public List<Activity> getObligationActivities(Appropriation appropriation, Division division, boolean foundation) {
         Fund fund = fundService.getFoundationFund();
         return dataManager.load(Activity.class)
-                .query("SELECT distinct act FROM fis_Activity act"
-                        + " INNER JOIN fis_Division dv ON dv = act.division"
-                        + " INNER JOIN fis_Obligation obl ON obl.activity = act"
-                        + " WHERE act.division.appropriation= :appropriation"
-                        + " AND (:divisionNull = true OR act.division = :division)"
-                        + " AND ((:foundation = true AND act.fund = :fund) "
-                        + " OR (:foundation = false AND act.fund <> :fund))"
-                        + " ORDER BY dv.divisionCode, act.activityNumber")
+                .query("SELECT distinct e FROM fis_Activity e"
+                        + " INNER JOIN fis_Division dv ON dv = e.division"
+                        + " INNER JOIN fis_Obligation obl ON obl.activity = e"
+                        + " WHERE e.division.appropriation= :appropriation"
+                        + " AND (:divisionNull = true OR e.division = :division)"
+                        + " AND ((:foundation = true AND e.fund = :fund) "
+                        + " OR (:foundation = false AND e.fund <> :fund))"
+                        + " ORDER BY dv.divisionCode, e.activityNumber")
                 .parameter("appropriation", appropriation)
                 .parameter("divisionNull", division == null)
                 .parameter("division", division)
@@ -228,11 +228,11 @@ public class ActivityService {
         var twoYearFund = fundService.getAppropriationTwoYearFund();
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(appropriation);
         return dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " INNER JOIN fis_Division dv ON dv = a.division"
+                .query("SELECT e FROM fis_Activity e"
+                        + " INNER JOIN fis_Division dv ON dv = e.division"
                         + " WHERE dv.appropriation = :appropriation"
-                        + " AND a.fund = :twoYearFund"
-                        + " AND (a.endDate IS NULL OR a.endDate <= :bfyEndDate)")
+                        + " AND e.fund = :twoYearFund"
+                        + " AND (e.endDate IS NULL OR e.endDate <= :bfyEndDate)")
                 .parameter("appropriation", appropriation)
                 .parameter("twoYearFund", twoYearFund)
                 .parameter("bfyEndDate", bfyEndDate)
@@ -247,14 +247,14 @@ public class ActivityService {
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
 
         return dataManager.load(Activity.class)
-                .query("SELECT a FROM fis_Activity a"
-                        + " INNER JOIN fis_Division dv ON dv = a.division"
+                .query("SELECT e FROM fis_Activity e"
+                        + " INNER JOIN fis_Division dv ON dv = e.division"
                         + " INNER JOIN fis_Appropriation app ON app = dv.appropriation"
-                        + " INNER JOIN fis_Fund fund ON fund = a.fund"
+                        + " INNER JOIN fis_Fund fund ON fund = e.fund"
                         + " WHERE (app = :currentYear AND fund = :oneYearFund)"
-                        + " OR (app = :priorYear AND fund = :twoYearFund AND a.endDate >= :bfyStartDate)"
-                        + " OR (app = :currentYear AND fund = :twoYearFund AND (a.endDate IS NULL OR a.endDate <= :bfyEndDate))"
-                        + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, a.activityNumber")
+                        + " OR (app = :priorYear AND fund = :twoYearFund AND e.endDate >= :bfyStartDate)"
+                        + " OR (app = :currentYear AND fund = :twoYearFund AND (e.endDate IS NULL OR e.endDate <= :bfyEndDate))"
+                        + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, e.activityNumber")
                 .parameter("currentYear", currentYearAppropriation)
                 .parameter("priorYear", priorYearAppropriation)
                 .parameter("oneYearFund", oneYearFund)
@@ -292,25 +292,25 @@ public class ActivityService {
             throw new RuntimeException("unable to parse date " + calendarYear);
         }
         return dataManager.loadValues(
-                        "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
-                                + " act.activityNumber, act.title, act.startDate, act.endDate, act.city, act.state, bch.id,"
-                                + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, act.initialProjection,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
-                                + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
+                        "SELECT e.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
+                                + " e.activityNumber, e.title, e.startDate, e.endDate, e.city, e.state, bch.id,"
+                                + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, e.initialProjection,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND e.fund = :twoYearFund THEN :priorTwoYearFund"
+                                + "      WHEN dv.appropriation = :currentYear AND e.fund = :twoYearFund THEN :currentTwoYearFund"
                                 + "      ELSE :currentOneYearFund"
                                 + " END"
-                                + " FROM fis_Activity act"
-                                + " LEFT JOIN fis_Branch bch ON bch=act.branch"
-                                + " LEFT JOIN fis_Group grp ON grp=act.group"
-                                + " INNER JOIN fis_Division dv ON dv=act.division"
+                                + " FROM fis_Activity e"
+                                + " LEFT JOIN fis_Branch bch ON bch=e.branch"
+                                + " LEFT JOIN fis_Group grp ON grp=e.group"
+                                + " INNER JOIN fis_Division dv ON dv=e.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
-                                + " INNER JOIN fis_Fund fund ON fund=act.fund"
+                                + " INNER JOIN fis_Fund fund ON fund=e.fund"
                                 + " WHERE (dv.divisionCode = :divisionCode)"
                                 + " AND (bch.branchCode in :branchCodes) AND (grp.groupCode in :groupCodes)"
-                                + " AND ((act.startDate BETWEEN :firstDayOfCalendarYear AND :lastDayOfCalendarYear)"
-                                + " OR (act.endDate BETWEEN :firstDayOfCalendarYear AND :lastDayOfCalendarYear)"
-                                + " OR (act.endDate IS NULL and act.startDate IS NULL AND app=:currentYear))"
-                                + " ORDER BY bch.branchCode, app.budgetFiscalYear, fund.fundCode, dv.divisionCode, act.activityNumber")
+                                + " AND ((e.startDate BETWEEN :firstDayOfCalendarYear AND :lastDayOfCalendarYear)"
+                                + " OR (e.endDate BETWEEN :firstDayOfCalendarYear AND :lastDayOfCalendarYear)"
+                                + " OR (e.endDate IS NULL and e.startDate IS NULL AND app=:currentYear))"
+                                + " ORDER BY bch.branchCode, app.budgetFiscalYear, fund.fundCode, dv.divisionCode, e.activityNumber")
                 .parameter("divisionCode", divisionCode)
                 .parameter("branchCodes", branchCodes)
                 .parameter("groupCodes", groupCodes)
@@ -423,29 +423,29 @@ public class ActivityService {
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
 
         return dataManager.loadValues(
-                        "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id,"
-                                + " dv.divisionCode, act.costOrg, act.activityNumber, act.title, act.startDate,"
-                                + " act.endDate, act.city, act.state, bch.id, bch.branchCode, bch.title, grp.id,"
-                                + " grp.groupCode, grp.title, grp.sortCode, act.initialProjection, act.shortTitle, act.programDirector,"
-                                + " CASE WHEN act.activityNumber = CONCAT(COALESCE(grp.groupCode, ''), '00') THEN TRUE"
+                        "SELECT e.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id,"
+                                + " dv.divisionCode, e.costOrg, e.activityNumber, e.title, e.startDate,"
+                                + " e.endDate, e.city, e.state, bch.id, bch.branchCode, bch.title, grp.id,"
+                                + " grp.groupCode, grp.title, grp.sortCode, e.initialProjection, e.shortTitle, e.programDirector,"
+                                + " CASE WHEN e.activityNumber = CONCAT(COALESCE(grp.groupCode, ''), '00') THEN TRUE"
                                 + "     ELSE FALSE"
                                 + " END AS genericActivity,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
-                                + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
+                                + " CASE WHEN dv.appropriation = :priorYear AND e.fund = :twoYearFund THEN :priorTwoYearFund"
+                                + "      WHEN dv.appropriation = :currentYear AND e.fund = :twoYearFund THEN :currentTwoYearFund"
                                 + "      ELSE :currentOneYearFund"
                                 + " END"
-                                + " FROM fis_Activity act"
-                                + " LEFT JOIN fis_Branch bch ON bch=act.branch"
-                                + " LEFT JOIN fis_Group grp ON grp=act.group"
-                                + " INNER JOIN fis_Division dv ON dv=act.division"
+                                + " FROM fis_Activity e"
+                                + " LEFT JOIN fis_Branch bch ON bch=e.branch"
+                                + " LEFT JOIN fis_Group grp ON grp=e.group"
+                                + " INNER JOIN fis_Division dv ON dv=e.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
-                                + " INNER JOIN fis_Fund fund ON fund=act.fund"
+                                + " INNER JOIN fis_Fund fund ON fund=e.fund"
                                 + " WHERE (:anyDivision = true OR dv.divisionCode = :divisionCode)"
                                 + " AND (:anyBranch = true OR bch.branchCode = :branchCode)"
-                                + " AND ((dv.appropriation = :currentYear AND act.fund = :oneYearFund)"
-                                + " OR (dv.appropriation = :priorYear AND act.fund = :twoYearFund AND act.endDate >= :bfyStartDate)"
-                                + " OR (dv.appropriation = :currentYear AND act.fund = :twoYearFund AND (act.endDate IS NULL OR act.endDate <= :bfyEndDate)))"
-                                + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, act.activityNumber")
+                                + " AND ((dv.appropriation = :currentYear AND e.fund = :oneYearFund)"
+                                + " OR (dv.appropriation = :priorYear AND e.fund = :twoYearFund AND e.endDate >= :bfyStartDate)"
+                                + " OR (dv.appropriation = :currentYear AND e.fund = :twoYearFund AND (e.endDate IS NULL OR e.endDate <= :bfyEndDate)))"
+                                + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, bch.sortCode, bch.branchCode, e.activityNumber")
                 .parameter("anyDivision", division == null)
                 .parameter("divisionCode", divisionCode)
                 .parameter("anyBranch", branch == null)
@@ -483,25 +483,25 @@ public class ActivityService {
         Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
 
         return dataManager.loadValues(
-                        "SELECT act.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
-                                + " act.activityNumber, act.title, act.startDate, act.endDate, act.programDirector, act.city, act.state, bch.id,"
-                                + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, act.initialProjection,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN :priorTwoYearFund"
-                                + "      WHEN dv.appropriation = :currentYear AND act.fund = :twoYearFund THEN :currentTwoYearFund"
+                        "SELECT e.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode,"
+                                + " e.activityNumber, e.title, e.startDate, e.endDate, e.programDirector, e.city, e.state, bch.id,"
+                                + " bch.branchCode, bch.title, grp.id, grp.groupCode, grp.title, e.initialProjection,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND e.fund = :twoYearFund THEN :priorTwoYearFund"
+                                + "      WHEN dv.appropriation = :currentYear AND e.fund = :twoYearFund THEN :currentTwoYearFund"
                                 + "      ELSE :currentOneYearFund"
                                 + " END"
-                                + " FROM fis_Activity act"
-                                + " LEFT JOIN fis_Branch bch ON bch=act.branch"
-                                + " LEFT JOIN fis_Group grp ON grp=act.group"
-                                + " INNER JOIN fis_Division dv ON dv=act.division"
+                                + " FROM fis_Activity e"
+                                + " LEFT JOIN fis_Branch bch ON bch=e.branch"
+                                + " LEFT JOIN fis_Group grp ON grp=e.group"
+                                + " INNER JOIN fis_Division dv ON dv=e.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
-                                + " INNER JOIN fis_Fund fund ON fund=act.fund"
+                                + " INNER JOIN fis_Fund fund ON fund=e.fund"
                                 + " WHERE (:anyDivision = true OR dv.divisionCode = :divisionCode)"
                                 + " AND (bch.branchCode in :branchCodes) AND (grp.groupCode in :groupCodes)"
-                                + " AND ((dv.appropriation = :currentYear AND act.fund = :oneYearFund)"
-                                + " OR (dv.appropriation = :priorYear AND act.fund = :twoYearFund AND act.endDate >= :bfyStartDate)"
-                                + " OR (dv.appropriation = :currentYear AND act.fund = :twoYearFund AND (act.endDate IS NULL OR act.endDate <= :bfyEndDate)))"
-                                + " ORDER BY bch.branchCode, app.budgetFiscalYear, fund.fundCode, dv.divisionCode, act.activityNumber")
+                                + " AND ((dv.appropriation = :currentYear AND e.fund = :oneYearFund)"
+                                + " OR (dv.appropriation = :priorYear AND e.fund = :twoYearFund AND e.endDate >= :bfyStartDate)"
+                                + " OR (dv.appropriation = :currentYear AND e.fund = :twoYearFund AND (e.endDate IS NULL OR e.endDate <= :bfyEndDate)))"
+                                + " ORDER BY bch.branchCode, app.budgetFiscalYear, fund.fundCode, dv.divisionCode, e.activityNumber")
                 .parameter("anyDivision", division == null)
                 .parameter("divisionCode", divisionCode)
                 .parameter("branchCodes", branchCodes)

@@ -45,17 +45,17 @@ public class OpenTravelObligationsReportService {
         var travelAuthorizationId = DocumentType.TRAVEL_AUTHORIZATION.getId();
         var obligations = dataManager.loadValues(
                         "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, a.activityNumber,"
-                                + " a.title,o.documentNumber, o.documentDate, o.vendor, o.amount,"
-                                + " o.lineNumber, COALESCE(a.endDate, o.travelEndDate)"
-                                + " FROM fis_Obligation o"
-                                + " INNER JOIN fis_Activity a ON a=o.activity"
+                                + " a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
+                                + " e.lineNumber, COALESCE(a.endDate, e.travelEndDate)"
+                                + " FROM fis_Obligation e"
+                                + " INNER JOIN fis_Activity a ON a=e.activity"
                                 + " INNER JOIN fis_Division dv ON dv=a.division"
                                 + " INNER JOIN fis_Fund f ON f=a.fund"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                 + " WHERE app IN :appropriations"
                                 + " AND dv.divisionCode IN :divisionCodes"
-                                + " AND o.status=true"
-                                + " AND o.documentType = :ta"
+                                + " AND e.status=true"
+                                + " AND e.documentType = :ta"
                                 + " AND (:anyBeginDate=true OR a.endDate >=:beginDate)"
                                 + " AND (:anyEndDate=true OR a.endDate <=:endDate)")
                 .parameter("ta", travelAuthorizationId)
@@ -75,18 +75,18 @@ public class OpenTravelObligationsReportService {
 
             var obbbaObligations = dataManager.loadValues(
                             "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, a.activityNumber,"
-                                    + " a.title,o.documentNumber, o.documentDate, o.vendor, o.amount,"
-                                    + " o.lineNumber, COALESCE(a.endDate, o.travelEndDate)"
-                                    + " FROM fis_Obligation o"
-                                    + " INNER JOIN fis_Activity a ON a=o.activity"
+                                    + " a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
+                                    + " e.lineNumber, COALESCE(a.endDate, e.travelEndDate)"
+                                    + " FROM fis_Obligation e"
+                                    + " INNER JOIN fis_Activity a ON a=e.activity"
                                     + " INNER JOIN fis_Division dv ON dv=a.costOrg"
                                     + " INNER JOIN fis_Fund f ON f=a.fund"
                                     + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                     + " WHERE app IN :appropriations"
                                     + " AND a.division IN :obbaDivisions"
                                     + " AND dv.divisionCode IN :divisionCodes"
-                                    + " AND o.status=true"
-                                    + " AND o.documentType = :ta"
+                                    + " AND e.status=true"
+                                    + " AND e.documentType = :ta"
                                     + " AND (:anyBeginDate=true OR a.endDate >=:beginDate)"
                                     + " AND (:anyEndDate=true OR a.endDate <=:endDate)")
                     .parameter("ta", travelAuthorizationId)

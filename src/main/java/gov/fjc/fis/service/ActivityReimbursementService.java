@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component("fis_ActivityReimbursementService")
@@ -27,26 +26,26 @@ public class ActivityReimbursementService {
     }
 
     public BigDecimal sumReimbursements(Activity activity) {
-        return dataManager.loadValue("SELECT coalesce(sum(r.amount),0)"
-                        + " FROM fis_ActivityReimbursement r"
-                        + " WHERE r.activity=:activity", BigDecimal.class)
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityReimbursement e"
+                        + " WHERE e.activity=:activity", BigDecimal.class)
                 .parameter("activity", activity)
                 .one();
     }
 
     public BigDecimal sumReimbursements(List<Activity> activities) {
-        return dataManager.loadValue("SELECT coalesce(sum(r.amount),0)"
-                        + " FROM fis_ActivityReimbursement r"
-                        + " WHERE r.activity IN :activities", BigDecimal.class)
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityReimbursement e"
+                        + " WHERE e.activity IN :activities", BigDecimal.class)
                 .parameter("activities", activities)
                 .one();
     }
 
     public BigDecimal sumReimbursements(Appropriation appropriation) {
         var funds = fundService.getAppropriationFunds();
-        return dataManager.loadValue("SELECT coalesce(sum(r.amount),0)"
-                        + " FROM fis_ActivityReimbursement r"
-                        + " INNER JOIN fis_Activity act ON r.activity=act"
+        return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
+                        + " FROM fis_ActivityReimbursement e"
+                        + " INNER JOIN fis_Activity act ON e.activity=act"
                         + " INNER JOIN fis_Division dv ON act.division=dv"
                         + " WHERE dv.appropriation=:appropriation"
                         + " AND act.fund IN :funds", BigDecimal.class)
@@ -57,11 +56,11 @@ public class ActivityReimbursementService {
 
     public List<KeyValueEntity> sumActivityReimbursements(List<Division> divisions, Fund fund) {
         return dataManager.loadValues(
-                        "SELECT act.fund, act.division, COALESCE(SUM(reim.amount),0)"
-                                + " FROM fis_Activity act"
-                                + " INNER JOIN fis_ActivityReimbursement reim ON act=reim.activity"
-                                + " WHERE act.division IN :divisions AND act.fund=:fund"
-                                + " GROUP BY act.fund, act.division")
+                        "SELECT e.fund, e.division, COALESCE(SUM(reim.amount),0)"
+                                + " FROM fis_Activity e"
+                                + " INNER JOIN fis_ActivityReimbursement reim ON e=reim.activity"
+                                + " WHERE e.division IN :divisions AND e.fund=:fund"
+                                + " GROUP BY e.fund, e.division")
                 .parameter("divisions", divisions)
                 .parameter("fund", fund)
                 .properties("fund", "division", "amount")
@@ -213,19 +212,19 @@ public class ActivityReimbursementService {
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
         return dataManager.loadValues(
                         "SELECT fund.fundCode, app.budgetFiscalYear, dv.divisionCode, act.activityNumber,"
-                                + " act.title, cat.majorObjectClass, obj.budgetObjectClass, r.documentNumber,"
-                                + " r.source, r.amount, r.documentDate, r.memo,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN r.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN r.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN r.amount ELSE 0 END"
-                                + " FROM fis_ActivityReimbursement r"
-                                + " INNER JOIN fis_Activity act ON act=r.activity"
+                                + " act.title, cat.majorObjectClass, obj.budgetObjectClass, e.documentNumber,"
+                                + " e.source, e.amount, e.documentDate, e.memo,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN e.amount ELSE 0 END"
+                                + " FROM fis_ActivityReimbursement e"
+                                + " INNER JOIN fis_Activity act ON act=e.activity"
                                 + " INNER JOIN fis_Division dv ON dv=act.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                 + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " INNER JOIN fis_ObjectClass obj ON obj=r.objectClass"
+                                + " INNER JOIN fis_ObjectClass obj ON obj=e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
-                                + " WHERE r.activity IN :activities"
+                                + " WHERE e.activity IN :activities"
                                 + " ORDER BY app.budgetFiscalYear, fund.fundCode, act.activityNumber, obj.budgetObjectClass")
                 .parameter("priorYear", priorYear)
                 .parameter("appropriation", appropriation)
@@ -249,20 +248,20 @@ public class ActivityReimbursementService {
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
         var activityIds = activities.stream().map(ActivityDto::getId).toList();
         return dataManager.loadValues(
-                        "SELECT r.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.id, act.activityNumber,"
-                                + " act.title, cat.id, cat.majorObjectClass, obj.id, obj.budgetObjectClass, r.documentNumber, r.documentDate, r.memo,"
-                                + " r.source, r.amount,"
-                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN r.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN r.amount ELSE 0 END,"
-                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN r.amount ELSE 0 END"
-                                + " FROM fis_ActivityReimbursement r"
-                                + " INNER JOIN fis_Activity act ON act=r.activity"
+                        "SELECT e.id, fund.id, fund.fundCode, app.id, app.budgetFiscalYear, dv.id, dv.divisionCode, act.id, act.activityNumber,"
+                                + " act.title, cat.id, cat.majorObjectClass, obj.id, obj.budgetObjectClass, e.documentNumber, e.documentDate, e.memo,"
+                                + " e.source, e.amount,"
+                                + " CASE WHEN dv.appropriation = :priorYear AND act.fund = :twoYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :oneYearFund THEN e.amount ELSE 0 END,"
+                                + " CASE WHEN dv.appropriation = :appropriation AND act.fund = :twoYearFund THEN e.amount ELSE 0 END"
+                                + " FROM fis_ActivityReimbursement e"
+                                + " INNER JOIN fis_Activity act ON act=e.activity"
                                 + " INNER JOIN fis_Division dv ON dv=act.division"
                                 + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                 + " INNER JOIN fis_Fund fund ON fund=act.fund"
-                                + " INNER JOIN fis_ObjectClass obj ON obj=r.objectClass"
+                                + " INNER JOIN fis_ObjectClass obj ON obj=e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat=obj.objectCategory"
-                                + " WHERE r.activity.id IN :activities"
+                                + " WHERE e.activity.id IN :activities"
                                 + " ORDER BY app.budgetFiscalYear, fund.fundCode, dv.divisionCode, act.activityNumber, obj.budgetObjectClass")
                 .parameter("priorYear", priorYear)
                 .parameter("appropriation", appropriation)
@@ -275,11 +274,11 @@ public class ActivityReimbursementService {
 
     public List<KeyValueEntity> fetchReimbursementSums(Appropriation appropriation, List<Fund> funds) {
         return dataManager.loadValues(
-                        "SELECT cat.majorObjectClass, div.divisionCode, act.fund, sum(reim.amount)"
-                                + " FROM fis_ActivityReimbursement reim"
-                                + " INNER JOIN fis_ObjectClass obj ON obj = reim.objectClass"
+                        "SELECT cat.majorObjectClass, div.divisionCode, act.fund, sum(e.amount)"
+                                + " FROM fis_ActivityReimbursement e"
+                                + " INNER JOIN fis_ObjectClass obj ON obj = e.objectClass"
                                 + " INNER JOIN fis_ObjectCategory cat ON cat = obj.objectCategory"
-                                + " INNER JOIN fis_Activity act ON act = reim.activity"
+                                + " INNER JOIN fis_Activity act ON act = e.activity"
                                 + " INNER JOIN fis_Division div ON div = act.division"
                                 + " WHERE div.appropriation = :appropriation"
                                 + " AND act.fund in :funds"
@@ -291,31 +290,32 @@ public class ActivityReimbursementService {
                 .list();
     }
 
-    public List<ActivityReimbursement> fetchBiFiscalActivityReimbursements(Appropriation currentYearAppropriation) {
-        Appropriation priorYearAppropriation = appropriationService.getPreviousFiscalYear(currentYearAppropriation);
-        Fund oneYearFund = fundService.getAppropriationOneYearFund();
-        Fund twoYearFund = fundService.getAppropriationTwoYearFund();
-        Date bfyStartDate = appropriationService.getFirstDayOfAppropriationBfy(currentYearAppropriation);
-        Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
-
-        return dataManager.load(ActivityReimbursement.class)
-                .query("SELECT r FROM fis_ActivityReimbursement r"
-                        + " WHERE r.activity IN "
-                        + " (SELECT a FROM fis_Activity a"
-                        + " INNER JOIN fis_Division dv ON dv = a.division"
-                        + " INNER JOIN fis_Fund fund ON fund = a.fund"
-                        + " WHERE (dv.appropriation = :currentYear AND a.fund = :oneYearFund)"
-                        + " OR (dv.appropriation = :priorYear AND a.fund = :twoYearFund AND a.endDate >= :bfyStartDate)"
-                        + " OR (dv.appropriation = :currentYear AND a.fund = :twoYearFund AND (a.endDate IS NULL OR a.endDate <= :bfyEndDate)))")
-                .parameter("currentYear", currentYearAppropriation)
-                .parameter("priorYear", priorYearAppropriation)
-                .parameter("oneYearFund", oneYearFund)
-                .parameter("twoYearFund", twoYearFund)
-                .parameter("bfyStartDate", bfyStartDate)
-                .parameter("bfyEndDate", bfyEndDate)
-                .fetchPlan("extended")
-                .list();
-    }
+    // 2026-09-23 - not used but should be rewritten for security rules {E}
+//    public List<ActivityReimbursement> fetchBiFiscalActivityReimbursements(Appropriation currentYearAppropriation) {
+//        Appropriation priorYearAppropriation = appropriationService.getPreviousFiscalYear(currentYearAppropriation);
+//        Fund oneYearFund = fundService.getAppropriationOneYearFund();
+//        Fund twoYearFund = fundService.getAppropriationTwoYearFund();
+//        Date bfyStartDate = appropriationService.getFirstDayOfAppropriationBfy(currentYearAppropriation);
+//        Date bfyEndDate = appropriationService.getLastDayOfAppropriationBfy(currentYearAppropriation);
+//
+//        return dataManager.load(ActivityReimbursement.class)
+//                .query("SELECT r FROM fis_ActivityReimbursement r"
+//                        + " WHERE r.activity IN "
+//                        + " (SELECT a FROM fis_Activity a"
+//                        + " INNER JOIN fis_Division dv ON dv = a.division"
+//                        + " INNER JOIN fis_Fund fund ON fund = a.fund"
+//                        + " WHERE (dv.appropriation = :currentYear AND a.fund = :oneYearFund)"
+//                        + " OR (dv.appropriation = :priorYear AND a.fund = :twoYearFund AND a.endDate >= :bfyStartDate)"
+//                        + " OR (dv.appropriation = :currentYear AND a.fund = :twoYearFund AND (a.endDate IS NULL OR a.endDate <= :bfyEndDate)))")
+//                .parameter("currentYear", currentYearAppropriation)
+//                .parameter("priorYear", priorYearAppropriation)
+//                .parameter("oneYearFund", oneYearFund)
+//                .parameter("twoYearFund", twoYearFund)
+//                .parameter("bfyStartDate", bfyStartDate)
+//                .parameter("bfyEndDate", bfyEndDate)
+//                .fetchPlan("extended")
+//                .list();
+//    }
 
     public List<ActivityReimbursementDto> getReimbursementDtos(Appropriation appropriation, List<ActivityDto> activityDtos) {
         var reimbursements = getReimbursementsNew(appropriation, activityDtos);

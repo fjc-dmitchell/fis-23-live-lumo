@@ -29,16 +29,16 @@ public class DivisionService {
     // temporary service while creating views for Jmix 2.2
     public List<Division> getDivisions() {
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d INNER JOIN fis_Appropriation a ORDER BY a.budgetFiscalYear DESC, d.divisionCode ASC")
+                .query("SELECT e FROM fis_Division e INNER JOIN fis_Appropriation a ORDER BY a.budgetFiscalYear DESC, e.divisionCode ASC")
                 .list();
     }
 
     public List<Division> getCostOrgDivisions(Appropriation appropriation) {
         var oneYearFund = fundService.getAppropriationOneYearFund();
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation=:appropriation"
-                        + " AND d.fund=:oneYearFund")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation=:appropriation"
+                        + " AND e.fund=:oneYearFund")
                 .parameter("appropriation", appropriation)
                 .parameter("oneYearFund", oneYearFund)
                 .list();
@@ -61,9 +61,9 @@ public class DivisionService {
 
     public Division fetchMandatoryDivision(Appropriation appropriation) {
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.budgetOrg = :budgetOrg")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.budgetOrg = :budgetOrg")
                 .parameter("appropriation", appropriation)
                 .parameter("budgetOrg", OBBBA_BUDGET_ORG)
                 .maxResults(1)
@@ -76,10 +76,10 @@ public class DivisionService {
         funds.add(fundService.getAppropriationOneYearFund());
         funds.add(fundService.getAppropriationTwoYearFund());
         return dataManager.load(Division.class)
-                .query("SELECT d from fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.fund in :funds"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e from fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.fund in :funds"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("funds", funds)
                 .list();
@@ -87,11 +87,11 @@ public class DivisionService {
 
     public List<Division> getDivisions(Appropriation appropriation, boolean foundation) {
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND ((:foundation = true AND d.fund = :foundationFund) "
-                        + " OR (:foundation = false AND d.fund <> :foundationFund))"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND ((:foundation = true AND e.fund = :foundationFund) "
+                        + " OR (:foundation = false AND e.fund <> :foundationFund))"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("foundation", foundation)
                 .parameter("foundationFund", fundService.getFoundationFund())
@@ -104,10 +104,10 @@ public class DivisionService {
 
     public List<Division> getAllDivisionsWithBudgetOrgs(Appropriation appropriation) {
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.budgetOrg IS NOT NULL AND d.budgetOrg <> ''"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.budgetOrg IS NOT NULL AND e.budgetOrg <> ''"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .list();
     }
@@ -121,12 +121,12 @@ public class DivisionService {
      */
     public List<Division> getObligationDivisionsForAppropriationFoundation(Appropriation appropriation, boolean foundation) {
         return dataManager.load(Division.class)
-                .query("SELECT distinct d FROM fis_Division d"
-                        + " INNER JOIN fis_Obligation obl ON obl.activity.division.id = d.id"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND ((:foundation = true AND d.fund = :foundationFund)"
-                        + " OR (:foundation = false AND d.fund <> :foundationFund))"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT distinct e FROM fis_Division e"
+                        + " INNER JOIN fis_Obligation obl ON obl.activity.division.id = e.id"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND ((:foundation = true AND e.fund = :foundationFund)"
+                        + " OR (:foundation = false AND e.fund <> :foundationFund))"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("foundation", foundation)
                 .parameter("foundationFund", fundService.getFoundationFund())
@@ -154,11 +154,11 @@ public class DivisionService {
         for (Appropriation year : fiscalYears) {
             List<Division> divisionsInBfyList =
                     dataManager.load(Division.class)
-                            .query("SELECT d FROM fis_Division d"
-                                    + " WHERE d.appropriation = :year"
-                                    + " AND d.divisionCode NOT IN :divisionCodes"
-                                    + " AND ((:foundation = true AND d.fund = :foundationFund) "
-                                    + " OR (:foundation = false AND d.fund <> :foundationFund))")
+                            .query("SELECT e FROM fis_Division e"
+                                    + " WHERE e.appropriation = :year"
+                                    + " AND e.divisionCode NOT IN :divisionCodes"
+                                    + " AND ((:foundation = true AND e.fund = :foundationFund) "
+                                    + " OR (:foundation = false AND e.fund <> :foundationFund))")
                             .parameter("year", year)
                             .parameter("divisionCodes", divisionCodes)
                             .parameter("foundation", foundation)
@@ -171,23 +171,23 @@ public class DivisionService {
         return divisionList.stream().sorted(Comparator.comparing(Division::getDivisionCode)).toList();
     }
 
-    public Division getDivisionByCode(List<Appropriation> appropriations, String divisionCode) {
-        return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.divisionCode = :divisionCode"
-                        + " AND d.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
-                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
-                .parameter("divisionCode", divisionCode)
-                .parameter("appropriations", appropriations)
-                .optional().orElse(null);
-    }
+//    public Division getDivisionByCode(List<Appropriation> appropriations, String divisionCode) {
+//        return dataManager.load(Division.class)
+//                .query("SELECT d FROM fis_Division d"
+//                        + " WHERE d.divisionCode = :divisionCode"
+//                        + " AND d.appropriation.budgetFiscalYear = (SELECT MAX(e.budgetFiscalYear)"
+//                        + " FROM fis_Appropriation e WHERE e IN :appropriations)")
+//                .parameter("divisionCode", divisionCode)
+//                .parameter("appropriations", appropriations)
+//                .optional().orElse(null);
+//    }
 
     public List<Division> fetchDivisions(Appropriation appropriation, Fund fund) {
         return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.fund=:fund"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.fund=:fund"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("fund", fund)
                 .list();
@@ -221,9 +221,9 @@ public class DivisionService {
 
     public List<DivisionDto> getDivisionDtos(Appropriation appropriation, List<Fund> funds) {
         var divisions = dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation AND d.fund IN :funds"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation AND e.fund IN :funds"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("funds", funds)
                 .list();
@@ -239,21 +239,21 @@ public class DivisionService {
      * @param combinedYear for multi-year fund, return both one and two year divisions
      * @return list of division entities
      */
-    public List<Division> getDivisionReportList(Fund fund, Appropriation bfy, boolean combinedYear) {
-        List<Fund> funds = new ArrayList<>();
-        funds.add(fund);
-        if (combinedYear && fund.equals(fundService.getAppropriationTwoYearFund())) {
-            funds.add(fundService.getAppropriationOneYearFund());
-        }
-        return dataManager.load(Division.class)
-                .query("select d from fis_Division d" +
-                        " where d.appropriation = :bfy" +
-                        " and d.fund in :funds" +
-                        " order by d.divisionCode")
-                .parameter("bfy", bfy)
-                .parameter("funds", funds)
-                .list();
-    }
+//    public List<Division> getDivisionReportList(Fund fund, Appropriation bfy, boolean combinedYear) {
+//        List<Fund> funds = new ArrayList<>();
+//        funds.add(fund);
+//        if (combinedYear && fund.equals(fundService.getAppropriationTwoYearFund())) {
+//            funds.add(fundService.getAppropriationOneYearFund());
+//        }
+//        return dataManager.load(Division.class)
+//                .query("select d from fis_Division d" +
+//                        " where d.appropriation = :bfy" +
+//                        " and d.fund in :funds" +
+//                        " order by d.divisionCode")
+//                .parameter("bfy", bfy)
+//                .parameter("funds", funds)
+//                .list();
+//    }
 
     //    /**
 //     * Get division allocations for Category
@@ -279,15 +279,15 @@ public class DivisionService {
      * @param appropriation
      * @return
      */
-    public Division getEducationDivisionNull(Appropriation appropriation) {
-        return dataManager.load(Division.class)
-                .query("SELECT e FROM fis_Division e" +
-                        " WHERE e.appropriation = :appropriation" +
-                        " AND e.divisionCode = '2'")
-                .parameter("appropriation", appropriation)
-                .optional()
-                .orElse(dataManager.create(Division.class));
-    }
+//    public Division getEducationDivisionNull(Appropriation appropriation) {
+//        return dataManager.load(Division.class)
+//                .query("SELECT e FROM fis_Division e" +
+//                        " WHERE e.appropriation = :appropriation" +
+//                        " AND e.divisionCode = '2'")
+//                .parameter("appropriation", appropriation)
+//                .optional()
+//                .orElse(dataManager.create(Division.class));
+//    }
 
     /**
      * for reports, check for null!
@@ -378,30 +378,30 @@ public class DivisionService {
         var funds = fundService.getAppropriatedFundsList();
         var appropriation = appropriationService.getCurrentBudgetFiscalYear();
         var divisions = dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.fund IN :funds"
-                        + " AND d.budgetOrg IN (SELECT DISTINCT p.jlCostOrgCd FROM fis_Position p)"
-                        + " ORDER BY d.divisionCode")
+                .query("SELECT e FROM fis_Division e"
+                        + " WHERE e.appropriation = :appropriation"
+                        + " AND e.fund IN :funds"
+                        + " AND e.budgetOrg IN (SELECT DISTINCT p.jlCostOrgCd FROM fis_Position p)"
+                        + " ORDER BY e.divisionCode")
                 .parameter("appropriation", appropriation)
                 .parameter("funds", funds)
                 .list();
         return divisions.stream().collect(Collectors.toMap(Division::getBudgetOrg, Division::getTitleAndBudgetOrg));
     }
 
-    public Division getDivisionByBudgetOrg(String budgetOrg) {
-        var funds = fundService.getAppropriatedFundsList();
-        var appropriation = appropriationService.getCurrentBudgetFiscalYear();
-        return dataManager.load(Division.class)
-                .query("SELECT d FROM fis_Division d"
-                        + " WHERE d.appropriation = :appropriation"
-                        + " AND d.fund IN :funds"
-                        + " AND d.budgetOrg = :budgetOrg"
-                        + " ORDER BY d.divisionCode")
-                .parameter("appropriation", appropriation)
-                .parameter("funds", funds)
-                .parameter("budgetOrg", budgetOrg)
-                .optional()
-                .orElse(null);
-    }
+//    public Division getDivisionByBudgetOrg(String budgetOrg) {
+//        var funds = fundService.getAppropriatedFundsList();
+//        var appropriation = appropriationService.getCurrentBudgetFiscalYear();
+//        return dataManager.load(Division.class)
+//                .query("SELECT d FROM fis_Division d"
+//                        + " WHERE d.appropriation = :appropriation"
+//                        + " AND d.fund IN :funds"
+//                        + " AND d.budgetOrg = :budgetOrg"
+//                        + " ORDER BY d.divisionCode")
+//                .parameter("appropriation", appropriation)
+//                .parameter("funds", funds)
+//                .parameter("budgetOrg", budgetOrg)
+//                .optional()
+//                .orElse(null);
+//    }
 }

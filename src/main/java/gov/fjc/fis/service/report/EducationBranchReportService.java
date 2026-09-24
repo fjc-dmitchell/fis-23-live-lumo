@@ -141,7 +141,7 @@ public class EducationBranchReportService {
                 groupDto = dataManager.create(GroupDto.class);
                 groupDto.setId(activityDto.getGroupId());
                 groupDto.setGroupCode(activityDto.getGroupCode());
-                if (activityDto.getGroupCode().isEmpty()) {
+                if (activityDto.getGroupCode()==null || activityDto.getGroupCode().isEmpty()) {
                     groupDto.setTitle("Uncategorized");
                 } else {
                     groupDto.setTitle(activityDto.getGroupTitle());
@@ -316,11 +316,10 @@ public class EducationBranchReportService {
     // factor to boc service. exclude comp & benefits via service
     private Map<String, String> fetchObjectClasses(Appropriation appropriation) {
         List<KeyValueEntity> bocList = dataManager.loadValues(
-                        "SELECT o.budgetObjectClass AS boc,"
-                                + " o.title AS title "
-                                + " FROM fis_ObjectClass o"
-                                + " WHERE o.objectCategory.appropriation = :appropriation"
-                                + " AND o.objectCategory.majorObjectClass NOT IN ('11','12','13')")
+                        "SELECT e.budgetObjectClass AS boc,"
+                                + " e.title AS title "
+                                + " FROM fis_ObjectClass e"
+                                + " WHERE e.objectCategory.appropriation = :appropriation")
                 .parameter("appropriation", appropriation)
                 .properties("boc", "title")
                 .list();

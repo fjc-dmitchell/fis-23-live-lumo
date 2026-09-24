@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import static gov.fjc.fis.FisUtilities.getCurrentDateMinusDays;
@@ -39,14 +38,14 @@ public class OpenObligationsReportService {
         var endDate = getCurrentDateMinusDays(numberOfDays);
         var travelAuthorizationId = DocumentType.TRAVEL_AUTHORIZATION.getId();
         var obligations = dataManager.loadValues(
-                        "SELECT o.amount, o.documentNumber, o.vendor, a.activityNumber, a.title, a.city,"
-                                + " a.state, a.endDate, o.lineNumber"
-                                + " FROM fis_Obligation o"
-                                + " INNER JOIN fis_Activity a ON a=o.activity"
+                        "SELECT e.amount, e.documentNumber, e.vendor, a.activityNumber, a.title, a.city,"
+                                + " a.state, a.endDate, e.lineNumber"
+                                + " FROM fis_Obligation e"
+                                + " INNER JOIN fis_Activity a ON a=e.activity"
                                 + " WHERE ((:anyBranch = true AND a.division = :division)"
                                 + " OR (:anyBranch = false AND a.branch = :branch))"
-                                + " AND o.status=true"
-                                + " AND o.documentType <> :ta"
+                                + " AND e.status=true"
+                                + " AND e.documentType <> :ta"
                                 + " AND ((:numberOfDays<>0 AND a.endDate <= :endDate) OR :numberOfDays=0)"
                 )
                 .parameter("ta", travelAuthorizationId)
