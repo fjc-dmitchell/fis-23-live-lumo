@@ -465,6 +465,23 @@ public class ObligationService {
                 .one();
     }
 
+    public Integer fetchNextObligationLineNumber(Appropriation appropriation, String documentNumber) {
+
+        if(appropriation == null || documentNumber == null) {
+            return 0;
+        }
+        return dataManager.loadValue(
+                        "SELECT COALESCE(MAX(o.lineNumber), 0) + 1 " +
+                                "FROM fis_Obligation o " +
+                                "WHERE o.activity.division.appropriation = :appropriation " +
+                                "AND o.documentNumber = :docid",
+                        Integer.class
+                )
+                .parameter("appropriation", appropriation)
+                .parameter("docid", documentNumber)
+                .one();
+    }
+
     /**
      * Determine whether obligation is unique by Budget Fiscal Year, Document Number and BOC
      *

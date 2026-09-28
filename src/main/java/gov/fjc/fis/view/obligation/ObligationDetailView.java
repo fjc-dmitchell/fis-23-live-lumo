@@ -14,7 +14,6 @@ import io.jmix.core.FetchPlan;
 import io.jmix.core.LoadContext;
 import io.jmix.core.session.SessionData;
 import io.jmix.flowui.DialogWindows;
-import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.datepicker.TypedDatePicker;
@@ -52,18 +51,20 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     @Autowired
     private ActivityService activityService;
     @Autowired
+    private ObligationService obligationService;
+    @Autowired
     private ObjectCategoryService categoryService;
     @Autowired
     private ObjectClassService objectClassService;
     @Autowired
     private ActivityProjectionService activityProjectionService;
 
-    @Autowired
-    private UiComponents uiComponents;
     @ViewComponent
     private CollectionLoader<Division> divisionsDl;
     @ViewComponent
     private CollectionLoader<Activity> activitiesDl;
+    @ViewComponent
+    private InstanceLoader<Obligation> obligationDl;
     @ViewComponent
     private CollectionLoader<ObjectCategory> categoriesDl;
     @ViewComponent
@@ -103,12 +104,8 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private JmixSelect<DocumentType> docType;
     @Autowired
     private DialogWindows dialogWindows;
-    @ViewComponent
-    private TypedTextField<BigDecimal> amountField;
 
     private BigDecimal originalAmount;
-    private BigDecimal amountBeforeSave;
-
 
     public void setFjcFoundation(Boolean fjcFoundation) {
         this.fjcFoundation = fjcFoundation;
@@ -117,10 +114,6 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
             divisionsDl.load();
         }
     }
-
-
-    @ViewComponent
-    private InstanceLoader<Obligation> obligationDl;
 
     @Subscribe
     protected void onInit(final InitEvent event) {
@@ -260,13 +253,16 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
         return map;
     }
 
-
     // ---------------------------------------------------------------
-    // Capture the original amount before the save commits
+    // if necessary, increment line number immediately before save
     // ---------------------------------------------------------------
     @Subscribe
     public void onBeforeSave(BeforeSaveEvent event) {
-        amountBeforeSave = amountField.getTypedValue();
+        Obligation obligation = getEditedEntity();
+        if (entityStates.isNew(obligation)) {
+            obligation.setLineNumber(obligationService
+                    .fetchNextObligationLineNumber(entryBfy, obligation.getDocumentNumber()));
+        }
     }
 
     // ---------------------------------------------------------------
@@ -315,7 +311,6 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
         dialog.getView().setAdjustment(delta);
         dialog.open();
     }
-
 
     @Autowired
     private DataManager dataManager;
