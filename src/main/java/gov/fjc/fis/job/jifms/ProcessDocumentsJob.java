@@ -70,7 +70,8 @@ public class ProcessDocumentsJob implements Job {
                             Validators.documentNumberRule(
                                     TRAVEL_DOCUMENT_TYPES,
                                     PURCHASE_DOCUMENT_TYPES,
-                                    OBBBA_BUDGET_ORG)
+                                    OBBBA_BUDGET_ORG),
+                            Validators.duplicateBocExists(jifmsQueryService)
                     ));
 
                     // perform operations in validation pipeline

@@ -133,4 +133,15 @@ final class Validators {
             return ValidationResult.Ok.INSTANCE;
         };
     }
+
+    static Validator duplicateBocExists(JifmsQueryService q) {
+        return ctx -> {
+            var doc = ctx.getDocument();
+            if (q.duplicateBocExists(doc.getDocumentNumber(), doc.getBudgetObjectClass(), doc.getLineNumber())) {
+                return new ValidationResult.Fail(String.format("Duplicate boc %s exists for %s",
+                        doc.getBudgetObjectClass(), doc.getDocumentNumber()));
+            }
+            return ValidationResult.Ok.INSTANCE;
+        };
+    }
 }

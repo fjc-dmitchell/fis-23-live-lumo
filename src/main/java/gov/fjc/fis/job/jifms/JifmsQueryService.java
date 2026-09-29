@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -169,6 +170,18 @@ public class JifmsQueryService {
                 .isPresent();
     }
 
+    Boolean duplicateBocExists(String documentNumber, String budgetObjectClass, Integer lineNumber) {
+        return unconstrainedDataManager.loadValue(
+                        "SELECT e.id FROM fis_Obligation e"
+                                + " WHERE e.documentNumber = :documentNumber"
+                                + " AND e.objectClass.budgetObjectClass = :budgetObjectClass"
+                                + " AND e.lineNumber <> :lineNumber", UUID.class)
+                .parameter("documentNumber", documentNumber)
+                .parameter("budgetObjectClass", budgetObjectClass)
+                .parameter("lineNumber", lineNumber)
+                .optional()
+                .isPresent();
+    }
 
     Obligation fetchObligation(Division division, String documentNumber, Integer lineNumber) {
         return unconstrainedDataManager.load(Obligation.class)
