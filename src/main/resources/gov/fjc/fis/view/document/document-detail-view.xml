@@ -16,8 +16,7 @@
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
-    <layout alignItems="STRETCH"
-            padding="false" spacing="false"
+    <layout
             expand="contentBox">
 
         <vbox id="contentBox" classNames="overflow-auto">
@@ -118,7 +117,7 @@
             </div>
 
         </vbox>
-        <hbox id="detailActions" classNames="px-m py-s bg-contrast-5">
+        <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>
             <button id="closeButton" action="closeAction"/>
         </hbox>
