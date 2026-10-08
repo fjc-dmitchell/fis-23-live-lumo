@@ -56,8 +56,6 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private ObjectCategoryService categoryService;
     @Autowired
     private ObjectClassService objectClassService;
-    @Autowired
-    private ActivityProjectionService activityProjectionService;
 
     @ViewComponent
     private CollectionLoader<Division> divisionsDl;
@@ -278,24 +276,10 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
         BigDecimal delta = originalAmount.subtract(savedAmount);
 
         if (delta.compareTo(BigDecimal.ZERO) != 0) {
-            var genericActivity = getGenericActivity(activity);
-            var myActivity = genericActivity == null ? activity : genericActivity;
-            var projection = activityProjectionService.findOrCreateActivityProjection(myActivity, objectClass);
+            var projection = fetchActivityProjection(activity, objectClass);
             openProjectionDialog(projection, delta);
         }
     }
-
-//    private void openProjectionDialog(Activity activity, ObjectClass objectClass, BigDecimal delta) {
-//        dialogWindows.detail(this, ActivityProjection.class)
-//                .withViewClass(ActivityProjectionUpdateView.class)
-//                .withAfterCloseListener(e -> {
-//                    // optional: react when the dialog closes
-//                    // e.g. refresh a grid on this view if needed
-//                })
-//                .open()
-//                .getView()
-//                .setBaseInformation(activity, objectClass, delta);
-//    }
 
     private void openProjectionDialog(ActivityProjection projection, BigDecimal delta) {
         var dialog = dialogWindows.detail(this, ActivityProjection.class)
@@ -330,5 +314,65 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
                         .add("fund", FetchPlan.BASE)
                         .add("group", FetchPlan.BASE))
                 .optional().orElse(null);
+    }
+
+    /**
+     * Returns the activity that should contain the budget projection.
+     *
+     * @param activity any activity
+     * @return activity for budgeting
+     */
+    Activity fetchProjectionActivity(Activity activity) {
+        if (activity == null) {
+            return null;
+        }
+
+        Group group = activity.getGroup();
+        if (group == null) {
+            return activity;
+        }
+
+        String genericActivityNumber = group.getGroupCode() + "00";
+
+        return dataManager.load(Activity.class)
+                .query("SELECT e FROM fis_Activity e " +
+                        "WHERE e.division = :division AND e.activityNumber = :activityNumber")
+                .parameter("division", activity.getDivision())
+                .parameter("activityNumber", genericActivityNumber)
+                .optional()
+                .orElse(activity);
+    }
+
+    ActivityProjection fetchActivityProjection(Activity activity, ObjectClass objectClass) {
+        Activity projectionActivity = fetchProjectionActivity(activity);
+        if (projectionActivity == null || objectClass == null) {
+            return null;
+        }
+        String projectionObjectClass = projectionActivity.getGenericProjection()
+                ? objectClass.getBudgetObjectClass().substring(0, 2).concat("00")
+                : objectClass.getBudgetObjectClass();
+
+        ObjectClass projectionBoc = dataManager.load(ObjectClass.class)
+                .query("SELECT e FROM fis_ObjectClass e "
+                        + " WHERE e.objectCategory = :objectCategory"
+                        + " AND e.budgetObjectClass = :budgetObjectClass")
+                .parameter("objectCategory", objectClass.getObjectCategory())
+                .parameter("budgetObjectClass", projectionObjectClass)
+                .optional()
+                .orElse(objectClass);
+
+        return dataManager.load(ActivityProjection.class)
+                .query("SELECT e FROM fis_ActivityProjection e"
+                        + " WHERE e.activity = :projectionActivity AND e.objectClass = :projectionObjectClass")
+                .parameter("projectionActivity", projectionActivity)
+                .parameter("projectionObjectClass", projectionBoc)
+                .optional()
+                .orElseGet(() -> {
+                    ActivityProjection newProjection = dataManager.create(ActivityProjection.class);
+                    newProjection.setActivity(projectionActivity);
+                    newProjection.setObjectClass(projectionBoc);
+                    newProjection.setAmount(BigDecimal.ZERO);
+                    return newProjection;
+                });
     }
 }
