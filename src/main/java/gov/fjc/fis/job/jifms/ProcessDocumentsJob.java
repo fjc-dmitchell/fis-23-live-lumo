@@ -116,7 +116,7 @@ public class ProcessDocumentsJob implements Job {
         try {
             scheduler.triggerJob(RECONCILIATION_REPORT_JOB_KEY);
         } catch (SchedulerException e) {
-            throw new JobExecutionException("Unable to trigger Reconcilation report", e);
+            throw new JobExecutionException("Unable to trigger Reconciliation report", e);
         }
     }
 }
