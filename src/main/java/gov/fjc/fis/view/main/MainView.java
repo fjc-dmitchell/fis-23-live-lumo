@@ -44,8 +44,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Route("")
 @ViewController(id = "fis_MainView")
@@ -85,6 +84,7 @@ public class MainView extends StandardTabbedModeMainView {
     @ViewComponent
     private VerticalLayout messageBox;
     private StringBuilder message;
+    private boolean reordering;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -111,6 +111,7 @@ public class MainView extends StandardTabbedModeMainView {
             bfyEntry.setValue(sessionEntryBfy);
         }
 
+        @SuppressWarnings("unchecked")
         var sessionBfySearch = (Set<Appropriation>) sessionData.getAttribute("bfySearch");
         if (sessionBfySearch != null) {
             bfySearch.setValue(sessionBfySearch);
@@ -173,13 +174,55 @@ public class MainView extends StandardTabbedModeMainView {
     }
 
     @Subscribe("bfySearch")
-    public void onBfySearchComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Appropriation>, Set<?>> event) {
-        var sessionBfySearch = (Set<Appropriation>) sessionData.getAttribute("bfySearch");
+    public void onBfySearchComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Appropriation>, Appropriation> event) {
+        // if we're returning after reordering the list, no need to go further
+        if (reordering) {
+            return;
+        }
+
+        Set<Appropriation> value = event.getSource().getValue();
+
+        // get and set old session variable
+        @SuppressWarnings("unchecked")
+        Set<Appropriation> sessionBfySearch =
+                (Set<Appropriation>) sessionData.getAttribute("bfySearch");
         if (!bfySearch.getValue().equals(sessionBfySearch)) {
             sessionData.setAttribute("bfySearch", bfySearch.getValue());
             uiEventPublisher.publishEvent(new FiscalYearChangeEvent(this, "searchYears"));
         }
+
+        // don't bother sort one item, no need to go further
+        if (value == null || value.size() < 2) {
+            return;
+        }
+
+        List<Appropriation> sorted = new ArrayList<>(value);
+        sorted.sort(Comparator.comparing(Appropriation::getBudgetFiscalYear, Comparator.reverseOrder()));
+
+        // only re-set when the order actually differs
+        if (sorted.equals(new ArrayList<>(value))) {
+            return;
+        }
+
+        // re-ordering will trigger another value change event
+        reordering = true;
+        try {
+            bfySearch.clear();
+            bfySearch.setValue(new LinkedHashSet<>(sorted));
+        } finally {
+            reordering = false;
+        }
     }
+
+
+//    @Subscribe("bfySearch")
+//    public void onBfySearchComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Appropriation>, Set<?>> event) {
+//        var sessionBfySearch = (Set<Appropriation>) sessionData.getAttribute("bfySearch");
+//        if (!bfySearch.getValue().equals(sessionBfySearch)) {
+//            sessionData.setAttribute("bfySearch", bfySearch.getValue());
+//            uiEventPublisher.publishEvent(new FiscalYearChangeEvent(this, "searchYears"));
+//        }
+//    }
 
     // added 11/12/2024 to keep user's multiple browser tabs in sync
     @Async
@@ -189,6 +232,7 @@ public class MainView extends StandardTabbedModeMainView {
         if (!bfyEntry.getValue().equals(sessionEntryBfy)) {
             bfyEntry.setValue(sessionEntryBfy);
         }
+        @SuppressWarnings("unchecked")
         var sessionBfySearch = (Set<Appropriation>) sessionData.getAttribute("bfySearch");
         if (!bfySearch.getValue().equals(sessionBfySearch)) {
             bfySearch.setValue(sessionBfySearch);
