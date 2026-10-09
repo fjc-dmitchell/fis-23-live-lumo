@@ -14,12 +14,22 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
 import static java.util.Objects.requireNonNullElse;
 
 public final class FisUtilities {
 
     private FisUtilities() {
         // don't allow this class to be instantiated
+    }
+
+    public static String getCreateDateTimeString(OffsetDateTime createdDate) {
+        if (createdDate == null) {
+            return "";
+        }
+
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm");
+        return f.format(createdDate);
     }
 
     public static String getCreatedModifiedString(String createdBy, OffsetDateTime createdDate) {
@@ -255,11 +265,12 @@ public final class FisUtilities {
     }
 
     public static String safeTrim(String value) {
+        value = sanitize(value);
         return value != null ? value.trim() : null;
     }
 
 
-
+    // should probably use Doug's new AsciiSanitizer instead of this
     public static String cleanText(String str) {
         if (str == null) return null;
         String text = str.trim();
@@ -280,14 +291,15 @@ public final class FisUtilities {
 
     /**
      * updates values in dependent field
+     *
      * @param loader
      * @param field
      * @param keyExtractor
      * @param <T>
      */
     public static <T> void refreshField(CollectionLoader<T> loader,
-                                 EntityComboBox<T> field,
-                                 Function<T, ?> keyExtractor) {
+                                        EntityComboBox<T> field,
+                                        Function<T, ?> keyExtractor) {
         loader.load();
         field.setValue(
                 Optional.ofNullable(field.getValue())

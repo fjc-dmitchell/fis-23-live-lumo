@@ -17,9 +17,9 @@ import org.springframework.data.annotation.CreatedDate;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static gov.fjc.fis.FisUtilities.convertOffsetDateTimeToLocalDateTime;
+import static gov.fjc.fis.FisUtilities.getCreateDateTimeString;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -84,8 +84,7 @@ public class ActivityProjectionAudit {
     @DependsOnProperties({"createdDate"})
     @JmixProperty
     public String getCreatedDateString() {
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm");
-        return f.format(createdDate);
+        return getCreateDateTimeString(createdDate);
     }
 
     public Activity getActivity() {

@@ -12,7 +12,8 @@ public final class AsciiSanitizer {
             Map.entry('\u2013', "-"), Map.entry('\u2014', "-"),    // – —
             Map.entry('\u2026', "..."),                             // …
             Map.entry('\u00A0', " "),                               // NBSP
-            Map.entry('\u2022', "-")                                // •
+            Map.entry('\u2022', "-"),                               // •
+            Map.entry('\u2212', "-")                                // − (unicode minus sign)
     );
 
     private static final Pattern DISALLOWED = Pattern.compile("[^\\x20-\\x7E\\t\\n\\r]");
