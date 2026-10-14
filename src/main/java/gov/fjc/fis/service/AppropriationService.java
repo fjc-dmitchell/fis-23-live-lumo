@@ -310,7 +310,7 @@ public class AppropriationService {
                                 + " COALESCE(SUM(adj.oneYearAmount),0), COALESCE(SUM(adj.twoYearAmount),0),"
                                 + " e.oneYearAmount+COALESCE(SUM(adj.oneYearAmount),0), e.twoYearAmount+COALESCE(SUM(adj.twoYearAmount),0)"
                                 + " FROM fis_Appropriation e"
-                                + " LEFT JOIN fis_AppropriationAdjustment adj ON adj.appropriation=app"
+                                + " LEFT JOIN fis_AppropriationAdjustment adj ON adj.appropriation=e"
                                 + " WHERE e=:appropriation"
                                 + " GROUP BY e.oneYearAmount, e.twoYearAmount")
                 .parameter("appropriation", appropriation)
