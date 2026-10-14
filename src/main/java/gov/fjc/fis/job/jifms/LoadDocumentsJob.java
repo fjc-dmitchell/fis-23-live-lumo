@@ -9,8 +9,6 @@ import org.quartz.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
-import gov.fjc.fis.entity.dto.PurchaseOrderDto;
-import gov.fjc.fis.entity.dto.TravelAuthorizationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,11 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static gov.fjc.fis.FisUtilities.cleanText;
 
@@ -30,7 +33,7 @@ import static gov.fjc.fis.FisUtilities.cleanText;
  * Dependencies: Quartz and Email libraries must be installed and configured (e.g., smtp server).
  *
  * @author Doug Mitchell
- * @version 2.3
+ * @version 2.4
  * @since 2.1
  */
 @DisallowConcurrentExecution
@@ -56,12 +59,15 @@ public class LoadDocumentsJob implements Job {
     private String jobStatusEmailAddresses;
 
     private static final int BATCH_SIZE = 500;
+    private static final String JITF_FUND = "51140X";
+    private static final String JITF_BUDGET_ORG = "JXXXXXF";
+
     private static final JobKey PROCESS_DOCUMENTS_JOB_KEY = new JobKey("processDocuments", "JIFMS");
     private static final String ABEND_SUBJECT = "JIFMS feed processing ABENDED";
     private static final Logger log = LoggerFactory.getLogger(LoadDocumentsJob.class);
 
-    // ToDo: request to AO to limit feeds to five years
-    private final String startingYear = "2021";
+    // ToDo: request to AO to limit feeds to five years, limit loading to open fiscal years
+    private static final String STARTING_YEAR = "2022";
 
     @Authenticated
     @Override
@@ -104,41 +110,38 @@ public class LoadDocumentsJob implements Job {
 
     private void loadPurchaseOrders(Path purchaseFilePath) {
         log.info("LoadDocuments: loading Purchase Orders");
+
         try (Reader reader = Files.newBufferedReader(purchaseFilePath)) {
 
-            CsvToBean<PurchaseOrderDto> csvToBean = new CsvToBeanBuilder<PurchaseOrderDto>(reader)
-                    .withType(PurchaseOrderDto.class)
+            CsvToBean<PurchaseOrderImportRow> csvToBean = new CsvToBeanBuilder<PurchaseOrderImportRow>(reader)
+                    .withType(PurchaseOrderImportRow.class)
                     .withSkipLines(1)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            SaveContext saveContext = new SaveContext();
-            int batchCount = 0;
+            Iterator<PurchaseOrderImportRow> iterator = csvToBean.iterator();
 
-            for (PurchaseOrderDto dto : csvToBean) {
+            BatchProcessor<PurchaseOrderImportRow> processor = new BatchProcessor<>(
+                    BATCH_SIZE,
+                    batch -> {
+                        SaveContext ctx = new SaveContext();
+                        for (PurchaseOrderImportRow dto : batch) {
+                            Document doc = createPurchaseDocument(dto);
+                            ctx.saving(doc);
+                        }
+                        unconstrainedDataManager.save(ctx);
+                    }
+            );
 
-                // business rules
-                if (dto.getFundCode().equals("51140X") && !dto.getBudgetOrg().equals("JXXXXXF")) {
-                    continue;
-                }
-                if (dto.getBbfy().compareTo(startingYear) >= 0) {
-                    Document doc = createPurchaseDocument(dto);
-                    saveContext.saving(doc);
-                    batchCount++;
-                }
+            // Business rules filter
+            Predicate<PurchaseOrderImportRow> filter = row -> {
+                if (row.getFundCode().equals(JITF_FUND) &&
+                        !row.getBudgetOrg().equals(JITF_BUDGET_ORG)) return false;
 
-                // flush batched records
-                if (batchCount == BATCH_SIZE) {
-                    unconstrainedDataManager.save(saveContext);
-                    saveContext = new SaveContext(); // reset for next batch
-                    batchCount = 0;
-                }
-            }
+                return row.getBbfy().compareTo(STARTING_YEAR) >= 0;
+            };
 
-            // flush any remaining records
-            if (batchCount > 0) {
-                unconstrainedDataManager.save(saveContext);
-            }
+            processor.process(iterator, filter);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -147,47 +150,83 @@ public class LoadDocumentsJob implements Job {
 
     private void loadTravelAuthorizations(Path travelFilePath) {
         log.info("LoadDocuments: loading Travel Authorizations");
+
         try (Reader reader = Files.newBufferedReader(travelFilePath)) {
 
-            CsvToBean<TravelAuthorizationDto> csvToBean =
-                    new CsvToBeanBuilder<TravelAuthorizationDto>(reader)
-                            .withType(TravelAuthorizationDto.class)
+            CsvToBean<TravelAuthorizationImportRow> csvToBean =
+                    new CsvToBeanBuilder<TravelAuthorizationImportRow>(reader)
+                            .withType(TravelAuthorizationImportRow.class)
                             .withSkipLines(1)
                             .withIgnoreLeadingWhiteSpace(true)
                             .build();
 
-            SaveContext saveContext = new SaveContext();
-            int batchCount = 0;
+            Iterator<TravelAuthorizationImportRow> iterator = csvToBean.iterator();
 
-            for (TravelAuthorizationDto dto : csvToBean) {
+            BatchProcessor<TravelAuthorizationImportRow> processor = new BatchProcessor<>(
+                    BATCH_SIZE,
+                    batch -> {
+                        SaveContext ctx = new SaveContext();
+                        for (TravelAuthorizationImportRow dto : batch) {
+                            Document doc = createTravelDocument(dto);
+                            ctx.saving(doc);
+                        }
+                        unconstrainedDataManager.save(ctx);
+                    }
+            );
 
-                // business rules
-                if (dto.getFundCode().equals("51140X") && !dto.getBudgetOrg().equals("JXXXXXF")) {
-                    continue;
-                }
-                if (dto.getBbfy().compareTo(startingYear) >= 0) {
-                    Document doc = createTravelDocument(dto);
-                    saveContext.saving(doc);
-                    batchCount++;
-                }
+            // Business rules filter
+            Predicate<TravelAuthorizationImportRow> filter = row -> {
+                if (row.getFundCode().equals(JITF_FUND) &&
+                        !row.getBudgetOrg().equals(JITF_BUDGET_ORG)) return false;
 
-                // flush batched records
-                if (batchCount == BATCH_SIZE) {
-                    unconstrainedDataManager.save(saveContext);
-                    saveContext = new SaveContext();   // reset for next batch
-                    batchCount = 0;
-                }
-            }
+                return row.getBbfy().compareTo(STARTING_YEAR) >= 0;
+            };
 
-            // flush remaining items
-            if (batchCount > 0) {
-                unconstrainedDataManager.save(saveContext);
-            }
+            processor.process(iterator, filter);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * The batch loader should be refactored to its own file. It must not be static!
+     * @param <T>
+     */
+    public class BatchProcessor<T> {
+
+        private final int batchSize;
+        private final Consumer<List<T>> batchConsumer;
+
+        public BatchProcessor(int batchSize, Consumer<List<T>> batchConsumer) {
+            this.batchSize = batchSize;
+            this.batchConsumer = batchConsumer;
+        }
+
+        public void process(Iterator<T> iterator, Predicate<T> filter) {
+            List<T> batch = new ArrayList<>(batchSize);
+
+            while (iterator.hasNext()) {
+                T item = iterator.next();
+
+                if (filter != null && !filter.test(item)) {
+                    continue;
+                }
+
+                batch.add(item);
+
+                if (batch.size() == batchSize) {
+                    batchConsumer.accept(batch);
+                    batch.clear();
+                }
+            }
+
+            if (!batch.isEmpty()) {
+                batchConsumer.accept(batch);
+            }
+        }
+    }
+
 
     private void handleProcessingFailure(Exception ex) {
         administrationService.sendEmail(
@@ -231,86 +270,86 @@ public class LoadDocumentsJob implements Job {
     }
 
     /**
-     * Creates Document entity from Purchase Order DTO. Fields from Purchase Order
+     * Creates Document entity from Purchase Order bean. Fields from Purchase Order
      * and Travel Authorization data transfer objects should NOT be consolidated to
      * a base class due to OpenCSV annotations!
      *
-     * @param dto Purchase Order
+     * @param row Purchase Order
      */
-    Document createPurchaseDocument(PurchaseOrderDto dto) {
+    Document createPurchaseDocument(PurchaseOrderImportRow row) {
         Document purchaseDocument = unconstrainedDataManager.create(Document.class);
 
-        purchaseDocument.setFundCode(dto.getFundCode());
-        purchaseDocument.setBbfy(dto.getBbfy());
-        purchaseDocument.setEbfy(dto.getEbfy());
-        purchaseDocument.setBudgetOrg(dto.getBudgetOrg());
-        purchaseDocument.setCostOrg(dto.getCostOrg());
-        purchaseDocument.setDocumentType(dto.getDocumentType());
-        purchaseDocument.setDocumentNumber(dto.getDocumentNumber());
-        purchaseDocument.setDocumentDate(dto.getDocumentDate());
-        purchaseDocument.setDocumentCreationDate(dto.getDocumentCreationDate());
-        purchaseDocument.setTitle(cleanText(dto.getTitle()));
-        purchaseDocument.setBudgetObjectClass(dto.getBudgetObjectClass());
-        purchaseDocument.setMajorObjectClass(dto.getMajorObjectClass());
-        purchaseDocument.setProject(dto.getProject());
-        purchaseDocument.setAmount(dto.getAmount());
-        purchaseDocument.setLineNumber(dto.getLineNumber());
-        purchaseDocument.setTaxId(dto.getTaxId());
-        purchaseDocument.setTaxIdType(dto.getTaxIdType());
-        purchaseDocument.setAddressCode(dto.getAddressCode());
-        purchaseDocument.setVendorCode(dto.getVendorCode());
-        purchaseDocument.setVendorName(cleanText(dto.getVendorName()));
-        purchaseDocument.setExpendedAmount(dto.getExpendedAmount());
-        purchaseDocument.setClosedAmount(dto.getClosedAmount());
-        purchaseDocument.setClosedDate(dto.getClosedDate());
-        purchaseDocument.setLastModifiedBy(dto.getLastModifiedBy());
-        purchaseDocument.setFjc(dto.getFjc());
-        purchaseDocument.setOrderedAmount(dto.getOrderedAmount());
-        purchaseDocument.setOutstandingAmount(dto.getOutstandingAmount());
-        purchaseDocument.setPrepaidAmount(dto.getPrepaidAmount());
-        purchaseDocument.setRefundedAmount(dto.getRefundedAmount());
+        purchaseDocument.setFundCode(row.getFundCode());
+        purchaseDocument.setBbfy(row.getBbfy());
+        purchaseDocument.setEbfy(row.getEbfy());
+        purchaseDocument.setBudgetOrg(row.getBudgetOrg());
+        purchaseDocument.setCostOrg(row.getCostOrg());
+        purchaseDocument.setDocumentType(row.getDocumentType());
+        purchaseDocument.setDocumentNumber(row.getDocumentNumber());
+        purchaseDocument.setDocumentDate(row.getDocumentDate());
+        purchaseDocument.setDocumentCreationDate(row.getDocumentCreationDate());
+        purchaseDocument.setTitle(cleanText(row.getTitle()));
+        purchaseDocument.setBudgetObjectClass(row.getBudgetObjectClass());
+        purchaseDocument.setMajorObjectClass(row.getMajorObjectClass());
+        purchaseDocument.setProject(row.getProject());
+        purchaseDocument.setAmount(row.getAmount());
+        purchaseDocument.setLineNumber(row.getLineNumber());
+        purchaseDocument.setTaxId(row.getTaxId());
+        purchaseDocument.setTaxIdType(row.getTaxIdType());
+        purchaseDocument.setAddressCode(row.getAddressCode());
+        purchaseDocument.setVendorCode(row.getVendorCode());
+        purchaseDocument.setVendorName(cleanText(row.getVendorName()));
+        purchaseDocument.setExpendedAmount(row.getExpendedAmount());
+        purchaseDocument.setClosedAmount(row.getClosedAmount());
+        purchaseDocument.setClosedDate(row.getClosedDate());
+        purchaseDocument.setLastModifiedBy(row.getLastModifiedBy());
+        purchaseDocument.setFjc(row.getFjc());
+        purchaseDocument.setOrderedAmount(row.getOrderedAmount());
+        purchaseDocument.setOutstandingAmount(row.getOutstandingAmount());
+        purchaseDocument.setPrepaidAmount(row.getPrepaidAmount());
+        purchaseDocument.setRefundedAmount(row.getRefundedAmount());
 
         return purchaseDocument;
     }
 
     /**
-     * Creates Document entity from Travel Authorization DTO. Fields from Purchase Order
+     * Creates Document entity from Travel Authorization bean. Fields from Purchase Order
      * and Travel Authorization data transfer objects should NOT be consolidated to
      * a base class due to OpenCSV annotations!
      *
-     * @param dto Travel Authorization
+     * @param row Travel Authorization
      */
-    Document createTravelDocument(TravelAuthorizationDto dto) {
+    Document createTravelDocument(TravelAuthorizationImportRow row) {
         Document travelDocument = unconstrainedDataManager.create(Document.class);
 
-        travelDocument.setFundCode(dto.getFundCode());
-        travelDocument.setBbfy(dto.getBbfy());
-        travelDocument.setEbfy(dto.getEbfy());
-        travelDocument.setBudgetOrg(dto.getBudgetOrg());
-        travelDocument.setCostOrg(dto.getCostOrg());
-        travelDocument.setDocumentType(dto.getDocumentType());
-        travelDocument.setDocumentNumber(dto.getDocumentNumber());
-        travelDocument.setDocumentDate(dto.getDocumentDate());
-        travelDocument.setDocumentCreationDate(dto.getDocumentCreationDate());
-        travelDocument.setTitle(cleanText(dto.getTitle()));
-        travelDocument.setBudgetObjectClass(dto.getBudgetObjectClass());
-        travelDocument.setMajorObjectClass(dto.getMajorObjectClass());
-        travelDocument.setProject(dto.getProject());
-        travelDocument.setAmount(dto.getAmount());
-        travelDocument.setLineNumber(dto.getLineNumber());
-        travelDocument.setVendorCode(dto.getVendorCode());
-        travelDocument.setVendorName(cleanText(dto.getVendorName()));
-        travelDocument.setTravelStartDate(dto.getTravelStartDate());
-        travelDocument.setTravelEndDate(dto.getTravelEndDate());
-        travelDocument.setExpendedAmount(dto.getExpendedAmount());
-        travelDocument.setClosedAmount(dto.getClosedAmount());
-        travelDocument.setClosedDate(dto.getClosedDate());
-        travelDocument.setLastModifiedBy(dto.getLastModifiedBy());
-        travelDocument.setFjc(dto.getFjc());
-        travelDocument.setOrderedAmount(dto.getOrderedAmount());
-        travelDocument.setOutstandingAmount(dto.getOutstandingAmount());
-        travelDocument.setPrepaidAmount(dto.getPrepaidAmount());
-        travelDocument.setRefundedAmount(dto.getRefundedAmount());
+        travelDocument.setFundCode(row.getFundCode());
+        travelDocument.setBbfy(row.getBbfy());
+        travelDocument.setEbfy(row.getEbfy());
+        travelDocument.setBudgetOrg(row.getBudgetOrg());
+        travelDocument.setCostOrg(row.getCostOrg());
+        travelDocument.setDocumentType(row.getDocumentType());
+        travelDocument.setDocumentNumber(row.getDocumentNumber());
+        travelDocument.setDocumentDate(row.getDocumentDate());
+        travelDocument.setDocumentCreationDate(row.getDocumentCreationDate());
+        travelDocument.setTitle(cleanText(row.getTitle()));
+        travelDocument.setBudgetObjectClass(row.getBudgetObjectClass());
+        travelDocument.setMajorObjectClass(row.getMajorObjectClass());
+        travelDocument.setProject(row.getProject());
+        travelDocument.setAmount(row.getAmount());
+        travelDocument.setLineNumber(row.getLineNumber());
+        travelDocument.setVendorCode(row.getVendorCode());
+        travelDocument.setVendorName(cleanText(row.getVendorName()));
+        travelDocument.setTravelStartDate(row.getTravelStartDate());
+        travelDocument.setTravelEndDate(row.getTravelEndDate());
+        travelDocument.setExpendedAmount(row.getExpendedAmount());
+        travelDocument.setClosedAmount(row.getClosedAmount());
+        travelDocument.setClosedDate(row.getClosedDate());
+        travelDocument.setLastModifiedBy(row.getLastModifiedBy());
+        travelDocument.setFjc(row.getFjc());
+        travelDocument.setOrderedAmount(row.getOrderedAmount());
+        travelDocument.setOutstandingAmount(row.getOutstandingAmount());
+        travelDocument.setPrepaidAmount(row.getPrepaidAmount());
+        travelDocument.setRefundedAmount(row.getRefundedAmount());
 
         return travelDocument;
     }

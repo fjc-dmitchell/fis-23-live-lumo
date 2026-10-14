@@ -1,17 +1,16 @@
-package gov.fjc.fis.entity.dto;
+package gov.fjc.fis.job.jifms;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
 import com.opencsv.bean.processor.ConvertEmptyOrBlankStringsToNull;
 import com.opencsv.bean.processor.PreAssignmentProcessor;
-import io.jmix.core.metamodel.annotation.JmixEntity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@JmixEntity(name = "fis_TravelAuthorizationDto")
-public class TravelAuthorizationDto {
+public class PurchaseOrderImportRow implements Serializable {
 
     @CsvBindByPosition(position = 1)
     private String bbfy;
@@ -22,53 +21,48 @@ public class TravelAuthorizationDto {
     @CsvBindByPosition(position = 9)
     private String title;
 
-    @CsvBindByPosition(position = 19)
+    @CsvBindByPosition(position = 10)
     private String budgetObjectClass;
 
-    @CsvBindByPosition(position = 10)
+    @CsvBindByPosition(position = 20)
     private String project;
 
-    @CsvBindByPosition(position = 12)
+    @CsvBindByPosition(position = 11)
     private BigDecimal amount;
 
-    @CsvBindByPosition(position = 15)
-    private String vendorCode;
+    @CsvBindByPosition(position = 17)
+    private String addressCode;
 
     @CsvBindByPosition(position = 16)
-    private String vendorName;
-
-    @CsvBindByPosition(position = 17)
-    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
-    private LocalDate travelStartDate;
+    private String vendorCode;
 
     @CsvBindByPosition(position = 18)
-    @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
-    private LocalDate travelEndDate;
+    private String vendorName;
 
-    @CsvBindByPosition(position = 21)
+    @CsvBindByPosition(position = 19)
     private BigDecimal expendedAmount;
 
-    @CsvBindByPosition(position = 13)
+    @CsvBindByPosition(position = 12)
     private BigDecimal closedAmount;
 
     @CsvBindByPosition(position = 22)
     @CsvDate(value = "yyyy/MM/dd HH:mm:ss")
     private LocalDate closedDate;
 
-    @CsvBindByPosition(position = 11)
+    @CsvBindByPosition(position = 21)
     @PreAssignmentProcessor(processor = ConvertEmptyOrBlankStringsToNull.class)
     private String fjc;
 
-    @CsvBindByPosition(position = 23)
+    @CsvBindByPosition(position = 24)
     private BigDecimal orderedAmount;
 
-    @CsvBindByPosition(position = 24)
+    @CsvBindByPosition(position = 25)
     private BigDecimal outstandingAmount;
 
-    @CsvBindByPosition(position = 25)
+    @CsvBindByPosition(position = 26)
     private BigDecimal prepaidAmount;
 
-    @CsvBindByPosition(position = 26)
+    @CsvBindByPosition(position = 27)
     private BigDecimal refundedAmount;
 
     @CsvBindByPosition(position = 0)
@@ -94,11 +88,17 @@ public class TravelAuthorizationDto {
     @CsvBindByPosition(position = 5)
     private String documentType;
 
-    @CsvBindByPosition(position = 20)
+    @CsvBindByPosition(position = 23)
     private String lastModifiedBy;
 
-    @CsvBindByPosition(position = 14)
+    @CsvBindByPosition(position = 13)
     private Integer lineNumber;
+
+    @CsvBindByPosition(position = 14)
+    private String taxId;
+
+    @CsvBindByPosition(position = 15)
+    private String taxIdType;
 
     public void setDocumentDate(LocalDate documentDate) {
         this.documentDate = documentDate;
@@ -106,38 +106,6 @@ public class TravelAuthorizationDto {
 
     public LocalDate getDocumentDate() {
         return documentDate;
-    }
-
-    public void setTravelEndDate(LocalDate travelEndDate) {
-        this.travelEndDate = travelEndDate;
-    }
-
-    public LocalDate getTravelEndDate() {
-        return travelEndDate;
-    }
-
-    public void setTravelStartDate(LocalDate travelStartDate) {
-        this.travelStartDate = travelStartDate;
-    }
-
-    public LocalDate getTravelStartDate() {
-        return travelStartDate;
-    }
-
-    public void setClosedDate(LocalDate closedDate) {
-        this.closedDate = closedDate;
-    }
-
-    public LocalDate getClosedDate() {
-        return closedDate;
-    }
-
-    public void setDocumentCreationDate(LocalDateTime documentCreationDate) {
-        this.documentCreationDate = documentCreationDate;
-    }
-
-    public LocalDateTime getDocumentCreationDate() {
-        return documentCreationDate;
     }
 
     public String getBbfy() {
@@ -188,6 +156,14 @@ public class TravelAuthorizationDto {
         this.amount = amount;
     }
 
+    public String getAddressCode() {
+        return addressCode;
+    }
+
+    public void setAddressCode(String addressCode) {
+        this.addressCode = addressCode;
+    }
+
     public String getVendorCode() {
         return vendorCode;
     }
@@ -218,6 +194,14 @@ public class TravelAuthorizationDto {
 
     public void setClosedAmount(BigDecimal closedAmount) {
         this.closedAmount = closedAmount;
+    }
+
+    public LocalDate getClosedDate() {
+        return closedDate;
+    }
+
+    public void setClosedDate(LocalDate closedDate) {
+        this.closedDate = closedDate;
     }
 
     public String getFjc() {
@@ -284,6 +268,14 @@ public class TravelAuthorizationDto {
         this.costOrg = costOrg;
     }
 
+    public LocalDateTime getDocumentCreationDate() {
+        return documentCreationDate;
+    }
+
+    public void setDocumentCreationDate(LocalDateTime documentCreationDate) {
+        this.documentCreationDate = documentCreationDate;
+    }
+
     public String getDocumentNumber() {
         return documentNumber;
     }
@@ -316,23 +308,38 @@ public class TravelAuthorizationDto {
         this.lineNumber = lineNumber;
     }
 
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
+
+    public String getTaxIdType() {
+        return taxIdType;
+    }
+
+    public void setTaxIdType(String taxIdType) {
+        this.taxIdType = taxIdType;
+    }
+
     public String getMajorObjectClass() {
         return budgetObjectClass.length() > 2 ? budgetObjectClass.substring(0, 2) : null;
     }
 
     @Override
     public String toString() {
-        return "TravelAuthorization{" +
+        return "PurchaseOrderImportRow{" +
                 "bbfy='" + bbfy + '\'' +
                 ", ebfy='" + ebfy + '\'' +
                 ", title='" + title + '\'' +
-                ", boc='" + budgetObjectClass + '\'' +
+                ", budgetObjectClass='" + budgetObjectClass + '\'' +
                 ", project='" + project + '\'' +
                 ", amount=" + amount +
+                ", addressCode='" + addressCode + '\'' +
                 ", vendorCode='" + vendorCode + '\'' +
                 ", vendorName='" + vendorName + '\'' +
-                ", travelStartDate=" + travelStartDate +
-                ", travelEndDate=" + travelEndDate +
                 ", expendedAmount=" + expendedAmount +
                 ", closedAmount=" + closedAmount +
                 ", closedDate=" + closedDate +
@@ -350,6 +357,8 @@ public class TravelAuthorizationDto {
                 ", documentType='" + documentType + '\'' +
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
                 ", lineNumber=" + lineNumber +
+                ", taxId='" + taxId + '\'' +
+                ", taxIdType='" + taxIdType + '\'' +
                 '}';
     }
 }

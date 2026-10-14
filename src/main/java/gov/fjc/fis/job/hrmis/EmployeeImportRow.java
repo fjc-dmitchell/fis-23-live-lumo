@@ -1,15 +1,13 @@
-package gov.fjc.fis.entity.dto;
+package gov.fjc.fis.job.hrmis;
 
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvDate;
-import io.jmix.core.metamodel.annotation.InstanceName;
-import io.jmix.core.metamodel.annotation.JmixEntity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@JmixEntity(name = "fis_EmployeeDto")
-public class EmployeeDto {
+public class EmployeeImportRow implements Serializable {
 
     @CsvBindByPosition(position = 0)
     private String positionNbr;
@@ -17,7 +15,6 @@ public class EmployeeDto {
     @CsvBindByPosition(position = 1)
     private String emplid;
 
-    @InstanceName
     @CsvBindByPosition(position = 2)
     private String name;
 
@@ -257,9 +254,9 @@ public class EmployeeDto {
 
     @Override
     public String toString() {
-        return "EmployeeDto{" +
+        return "EmployeeImportRow{" +
                 "positionNbr='" + positionNbr + '\'' +
-                ", emplid=" + emplid +
+                ", emplid='" + emplid + '\'' +
                 ", name='" + name + '\'' +
                 ", deptId='" + deptId + '\'' +
                 ", jobcode='" + jobcode + '\'' +

@@ -3,7 +3,6 @@ package gov.fjc.fis.job.hrmis;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.enums.CSVReaderNullFieldIndicator;
-import gov.fjc.fis.entity.dto.EmployeeDto;
 import gov.fjc.fis.entity.personnel.Employee;
 import gov.fjc.fis.service.AdministrationService;
 import io.jmix.core.SaveContext;
@@ -92,54 +91,54 @@ public class LoadEmployeesJob implements Job {
 
     private void loadEmployees(Path employeeFilePath) {
         try (Reader reader = Files.newBufferedReader(employeeFilePath)) {
-            CsvToBean<EmployeeDto> csvToBean = new CsvToBeanBuilder<EmployeeDto>(reader)
-                    .withType(EmployeeDto.class)
+            CsvToBean<EmployeeImportRow> csvToBean = new CsvToBeanBuilder<EmployeeImportRow>(reader)
+                    .withType(EmployeeImportRow.class)
                     .withSeparator('\t')
                     .withIgnoreLeadingWhiteSpace(true)
                     .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
                     .build();
 
-            List<EmployeeDto> employees = csvToBean.parse();
+            List<EmployeeImportRow> employeeImportRows = csvToBean.parse();
 
             SaveContext saveContext = new SaveContext();
 
-            for (var employeeDto : employees) {
-                Employee employee = createEmployee(employeeDto);
+            for (var employeeImportRow : employeeImportRows) {
+                Employee employee = createEmployee(employeeImportRow);
                 saveContext.saving(employee);
             }
 
             unconstrainedDataManager.save(saveContext);
-            log.info("Imported employees: {}", employees.size());
+            log.info("Imported employees: {}", employeeImportRows.size());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    Employee createEmployee(EmployeeDto employeeDto) {
+    Employee createEmployee(EmployeeImportRow employeeImportRow) {
         Employee employee = unconstrainedDataManager.create(Employee.class);
-        employee.setPositionNbr(employeeDto.getPositionNbr());
-        employee.setEmplid(employeeDto.getEmplid());
-        employee.setName(employeeDto.getName());
-        employee.setDeptId(employeeDto.getDeptId());
-        employee.setJobcode(employeeDto.getJobcode());
-        employee.setFullPartTime(employeeDto.getFullPartTime());
-        employee.setRegTemp(employeeDto.getRegTemp());
-        employee.setPaygroup(employeeDto.getPaygroup());
-        employee.setGrade(employeeDto.getGrade());
-        employee.setStep(employeeDto.getStep());
-        employee.setEmplType(employeeDto.getEmplType());
-        employee.setStdHours(employeeDto.getStdHours());
-        employee.setJobtitle(employeeDto.getJobtitle());
-        employee.setHourlyRt(employeeDto.getHourlyRt());
-        employee.setGvtBiweeklyRt(employeeDto.getGvtBiweeklyRt());
-        employee.setAnnualRt(employeeDto.getAnnualRt());
-        employee.setGvtApptExpirDt(employeeDto.getGvtApptExpirDt());
-        employee.setJlBudCatgCd(employeeDto.getJlBudCatgCd());
-        employee.setJlCostOrgCd(employeeDto.getJlCostOrgCd());
-        employee.setGvtComprate(employeeDto.getGvtComprate());
-        employee.setGvtLocalityAdj(employeeDto.getGvtLocalityAdj());
-        employee.setGvtWorkSched(employeeDto.getGvtWorkSched());
+        employee.setPositionNbr(employeeImportRow.getPositionNbr());
+        employee.setEmplid(employeeImportRow.getEmplid());
+        employee.setName(employeeImportRow.getName());
+        employee.setDeptId(employeeImportRow.getDeptId());
+        employee.setJobcode(employeeImportRow.getJobcode());
+        employee.setFullPartTime(employeeImportRow.getFullPartTime());
+        employee.setRegTemp(employeeImportRow.getRegTemp());
+        employee.setPaygroup(employeeImportRow.getPaygroup());
+        employee.setGrade(employeeImportRow.getGrade());
+        employee.setStep(employeeImportRow.getStep());
+        employee.setEmplType(employeeImportRow.getEmplType());
+        employee.setStdHours(employeeImportRow.getStdHours());
+        employee.setJobtitle(employeeImportRow.getJobtitle());
+        employee.setHourlyRt(employeeImportRow.getHourlyRt());
+        employee.setGvtBiweeklyRt(employeeImportRow.getGvtBiweeklyRt());
+        employee.setAnnualRt(employeeImportRow.getAnnualRt());
+        employee.setGvtApptExpirDt(employeeImportRow.getGvtApptExpirDt());
+        employee.setJlBudCatgCd(employeeImportRow.getJlBudCatgCd());
+        employee.setJlCostOrgCd(employeeImportRow.getJlCostOrgCd());
+        employee.setGvtComprate(employeeImportRow.getGvtComprate());
+        employee.setGvtLocalityAdj(employeeImportRow.getGvtLocalityAdj());
+        employee.setGvtWorkSched(employeeImportRow.getGvtWorkSched());
         return employee;
     }
 }
