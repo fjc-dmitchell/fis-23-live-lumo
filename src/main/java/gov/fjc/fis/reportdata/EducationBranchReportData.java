@@ -33,7 +33,7 @@ public class EducationBranchReportData {
         budgetFiscalYear = branch.getDivision().getAppropriation().getBudgetFiscalYear();
         divisionTitle = branch.getDivision().getTitle();
         branchTitle = branch.getTitle();
-        divisionAndBranch = branch == null ? divisionTitle : divisionTitle.concat("-").concat(branch.getTitle());
+        divisionAndBranch = divisionTitle.concat("-").concat(branch.getTitle());
         reportDateTime = getDateTime();
     }
 

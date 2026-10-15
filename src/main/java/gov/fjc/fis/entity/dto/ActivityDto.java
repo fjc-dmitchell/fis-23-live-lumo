@@ -611,7 +611,7 @@ public class ActivityDto {
                 line2 += ", " + safeCity;
             }
 
-            if (!safeCity.isBlank() || !safeState.isBlank()) {
+            if (!safeState.isBlank()) {
                 line2 += ", " + safeState;
             }
 
@@ -624,12 +624,7 @@ public class ActivityDto {
             }
         }
 
-        if (line2.isBlank()) {
-            return myTitle.trim();
-        } else {
-//            return myTitle.concat('\n' + line2);
-            return myTitle.concat(line2);
-        }
+        return myTitle.trim().concat(line2);
     }
 
     public String getProgramDirector() {

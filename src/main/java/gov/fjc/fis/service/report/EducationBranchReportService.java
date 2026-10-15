@@ -22,20 +22,17 @@ public class EducationBranchReportService {
     private final AppropriationService appropriationService;
     private final ActivityService activityService;
     private final ActivityProjectionService activityProjectionService;
-    private final ActivityReimbursementService activityReimbursementService;
     private final ObligationService obligationService;
 
     public EducationBranchReportService(DataManager dataManager,
                                         AppropriationService appropriationService,
                                         ActivityService activityService,
                                         ActivityProjectionService activityProjectionService,
-                                        ActivityReimbursementService activityReimbursementService,
                                         ObligationService obligationService) {
         this.dataManager = dataManager;
         this.appropriationService = appropriationService;
         this.activityService = activityService;
         this.activityProjectionService = activityProjectionService;
-        this.activityReimbursementService = activityReimbursementService;
         this.obligationService = obligationService;
     }
 
@@ -87,18 +84,25 @@ public class EducationBranchReportService {
         // start totals
         Map<Integer, List<ObligationDto>> obligationsByActivity = obligations.stream()
                 .collect(Collectors.groupingBy(ObligationDto::getActivityId));
+        Map<Integer, List<ActivityProjectionDto>> projectionsByActivity = projections.stream()
+                .collect(Collectors.groupingBy(ActivityProjectionDto::getActivityId));
 
         for (var activity : activities) {
             var activityObligations = obligationsByActivity.getOrDefault(activity.getId(), List.of());
+            var activityProjections = projectionsByActivity.getOrDefault(activity.getId(), List.of());
+            var projected = activityProjections.stream().toList();
             var byStatus = activityObligations.stream()
                     .collect(Collectors.partitioningBy(ObligationDto::getStatus));
             var obligated = byStatus.get(true);
             var disbursed = byStatus.get(false);
 
+            activity.setPriorTwoYearProjections(sumField(projected, ActivityProjectionDto::getPriorTwoYearAmount));
             activity.setPriorTwoYearObligations(sumField(obligated, ObligationDto::getPriorTwoYearObligated));
             activity.setPriorTwoYearDisbursements(sumField(disbursed, ObligationDto::getPriorTwoYearDisbursed));
+            activity.setCurrentOneYearProjections(sumField(projected, ActivityProjectionDto::getCurrentOneYearAmount));
             activity.setCurrentOneYearObligations(sumField(obligated, ObligationDto::getCurrentOneYearObligated));
             activity.setCurrentOneYearDisbursements(sumField(disbursed, ObligationDto::getCurrentOneYearDisbursed));
+            activity.setCurrentTwoYearProjections(sumField(projected, ActivityProjectionDto::getCurrentTwoYearAmount));
             activity.setCurrentTwoYearObligations(sumField(obligated, ObligationDto::getCurrentTwoYearObligated));
             activity.setCurrentTwoYearDisbursements(sumField(disbursed, ObligationDto::getCurrentTwoYearDisbursed));
 
@@ -141,7 +145,7 @@ public class EducationBranchReportService {
                 groupDto = dataManager.create(GroupDto.class);
                 groupDto.setId(activityDto.getGroupId());
                 groupDto.setGroupCode(activityDto.getGroupCode());
-                if (activityDto.getGroupCode()==null || activityDto.getGroupCode().isEmpty()) {
+                if (activityDto.getGroupCode() == null || activityDto.getGroupCode().isEmpty()) {
                     groupDto.setTitle("Uncategorized");
                 } else {
                     groupDto.setTitle(activityDto.getGroupTitle());
@@ -293,7 +297,7 @@ public class EducationBranchReportService {
 
             var total = activityDto.getTotalProjected().add(activityDto.getTotalObligated()).add(activityDto.getTotalDisbursed());
 
-            if(total.compareTo(BigDecimal.ZERO) > 0) {
+            if (total.compareTo(BigDecimal.ZERO) > 0) {
                 groupActivities.add(activityDto);
             }
         }
@@ -309,7 +313,7 @@ public class EducationBranchReportService {
         return reportData;
     }
 
-    private static BigDecimal sumField(List<ObligationDto> list, Function<ObligationDto, BigDecimal> extractor) {
+    private static <T> BigDecimal sumField(List<T> list, Function<T, BigDecimal> extractor) {
         return list.stream().map(extractor).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
