@@ -1,5 +1,6 @@
 package gov.fjc.fis.service.report;
 
+import gov.fjc.fis.app.BigDecimalAggregator;
 import gov.fjc.fis.entity.Appropriation;
 import gov.fjc.fis.entity.Fund;
 import gov.fjc.fis.entity.dto.ObjectCategoryDto;
@@ -181,8 +182,8 @@ public class StatusOfFundsReportService {
         var oneYearAppropriation = appropriation.getOneYearAmount();
         var twoYearAppropriation = appropriation.getTwoYearAmount();
 
-        var oneYearAlloc = sumField(categoryDtos, ObjectCategoryDto::getTotalOneYearAllocations);
-        var twoYearAlloc = sumField(categoryDtos, ObjectCategoryDto::getTotalTwoYearAllocations);
+        var oneYearAlloc = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearAllocations);
+        var twoYearAlloc = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearAllocations);
 
         // build "discrepancy" row
         var unallocated = categoryService.createCategoryDto();
@@ -210,16 +211,16 @@ public class StatusOfFundsReportService {
         var twoYearAppropriation = appropriation.getTwoYearAmount();
         var totalAppropriation = oneYearAppropriation.add(twoYearAppropriation);
 
-        var oneYearProj = sumField(categoryDtos, ObjectCategoryDto::getTotalOneYearProjections);
-        var twoYearProj = sumField(categoryDtos, ObjectCategoryDto::getTotalTwoYearProjections);
+        var oneYearProj = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearProjections);
+        var twoYearProj = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearProjections);
         var totalProj = oneYearProj.add(twoYearProj);
 
-        var oneYearOblig = sumField(categoryDtos, ObjectCategoryDto::getTotalOneYearObligations);
-        var twoYearOblig = sumField(categoryDtos, ObjectCategoryDto::getTotalTwoYearObligations);
+        var oneYearOblig = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearObligations);
+        var twoYearOblig = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearObligations);
         var totalOblig = oneYearOblig.add(twoYearOblig);
 
-        var oneYearReim = sumField(categoryDtos, ObjectCategoryDto::getTotalOneYearReimbursements);
-        var twoYearReim = sumField(categoryDtos, ObjectCategoryDto::getTotalTwoYearReimbursements);
+        var oneYearReim = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearReimbursements);
+        var twoYearReim = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearReimbursements);
         var totalReim = oneYearReim.add(twoYearReim);
 
         // build "unspent funds" row
@@ -235,7 +236,10 @@ public class StatusOfFundsReportService {
         return categoryDtos;
     }
 
-    private BigDecimal sumField(List<ObjectCategoryDto> dtos, Function<ObjectCategoryDto, BigDecimal> getter) {
-        return dtos.stream().map(getter).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+//    private BigDecimal sumField(List<ObjectCategoryDto> dtos, Function<ObjectCategoryDto, BigDecimal> getter) {
+//        return dtos.stream().map(getter).reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
+//    private static <T> BigDecimal sumField(List<T> list, Function<T, BigDecimal> extractor) {
+//        return list.stream().map(extractor).reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
 }
