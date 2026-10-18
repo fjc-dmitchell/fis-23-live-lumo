@@ -78,4 +78,7 @@ public interface TechnologyDirectorResourcesRole extends UiMinimalRole, ReportRe
 
     @EntityPolicy(entityClass = ObjectClassDto.class, actions = EntityPolicyAction.ALL)
     void objectClassDto();
+
+    @EntityPolicy(entityClass = UserMessage.class, actions = EntityPolicyAction.READ)
+    void userMessage();
 }

@@ -230,4 +230,6 @@ public interface EducationAdministratorResourcesRole extends UiMinimalRole, Repo
     @EntityPolicy(entityClass = AmountsDto.class, actions = EntityPolicyAction.ALL)
     void amountsDto();
 
+    @EntityPolicy(entityClass = UserMessage.class, actions = EntityPolicyAction.READ)
+    void userMessage();
 }
