@@ -1,6 +1,5 @@
 package gov.fjc.fis.entity;
 
-import gov.fjc.fis.FisUtilities;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -17,7 +16,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.convertOffsetDateTimeToLocalDateTime;
+import static gov.fjc.fis.app.FisUtilities.convertOffsetDateTimeToLocalDateTime;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -103,7 +103,7 @@ public class DivisionAllocationAudit {
     @DependsOnProperties({"createdBy", "createdDate"})
     @JmixProperty
     public String getCreatedByString() {
-        return FisUtilities.getCreatedModifiedString(createdBy, createdDate);
+        return getCreatedModifiedString(createdBy, createdDate);
     }
 
     public BigDecimal getNewTwoYearAmount() {
