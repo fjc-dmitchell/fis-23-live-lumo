@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static gov.fjc.fis.FisUtilities.nonZero;
+import static gov.fjc.fis.app.BigDecimalUtils.anyNonZero;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -523,7 +523,7 @@ public class DocumentAudit {
         if(Objects.equals(processStatus, "U")) {
             value = documentAmount.subtract(requireNonNullElse(obligationAmount, BigDecimal.ZERO));
         }
-        return nonZero(value) ? value : null;
+        return anyNonZero(value) ? value : null;
     }
 
     public String getObligationVendorCode() {

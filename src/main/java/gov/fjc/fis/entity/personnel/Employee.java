@@ -13,10 +13,9 @@ import org.springframework.data.annotation.CreatedDate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Date;
 
-import static gov.fjc.fis.FisUtilities.add;
-import static gov.fjc.fis.FisUtilities.getLoadedByString;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
+import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
 
 @JmixEntity
 @Table(name = "FIS_EMPLOYEE", uniqueConstraints = {
@@ -143,7 +142,7 @@ public class Employee {
     @DependsOnProperties({"gvtComprate", "gvtLocalityAdj"})
     @JmixProperty
     public BigDecimal getTotalPay() {
-        return add(gvtComprate, gvtLocalityAdj);
+        return sumNullSafe(gvtComprate, gvtLocalityAdj);
     }
 
     public void setEmplid(String emplid) {

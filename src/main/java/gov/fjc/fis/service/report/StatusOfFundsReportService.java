@@ -1,6 +1,5 @@
 package gov.fjc.fis.service.report;
 
-import gov.fjc.fis.app.BigDecimalAggregator;
 import gov.fjc.fis.entity.Appropriation;
 import gov.fjc.fis.entity.Fund;
 import gov.fjc.fis.entity.dto.ObjectCategoryDto;
@@ -11,11 +10,11 @@ import io.jmix.core.entity.KeyValueEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static gov.fjc.fis.app.BigDecimalUtils.*;
 
 @Component("fis_StatusOfFundsReportService")
 public class StatusOfFundsReportService {
@@ -127,8 +126,8 @@ public class StatusOfFundsReportService {
                                  ObjectCategoryDto categoryDto, boolean isMandatoryDivision, int scale) {
         if (matches == null) return;
         for (var kv : matches) {
-            BigDecimal oneYear = scale(kv.getValue("oneyearamount"), scale);
-            BigDecimal twoYear = scale(kv.getValue("twoyearamount"), scale);
+            BigDecimal oneYear = roundToScale(kv.getValue("oneyearamount"), scale);
+            BigDecimal twoYear = roundToScale(kv.getValue("twoyearamount"), scale);
             divisionDto.setOneYearAllocations(oneYear);
             divisionDto.setTwoYearAllocations(twoYear);
             if (isMandatoryDivision) {
@@ -151,7 +150,7 @@ public class StatusOfFundsReportService {
             BiConsumer<ObjectCategoryDto, BigDecimal> setCatMandatory) {
         if (matches == null) return;
         for (var kv : matches) {
-            final BigDecimal amount = scale(kv.getValue("amount"), scale);
+            final BigDecimal amount = roundToScale(kv.getValue("amount"), scale);
             if (kv.getValue("fund").equals(oneYearFund)) {
                 setDivOneYear.accept(divisionDto, amount);
                 if (isMandatoryDivision) setCatMandatory.accept(categoryDto, amount);
@@ -161,10 +160,6 @@ public class StatusOfFundsReportService {
                 if (!isMandatoryDivision) addCatTwoYear.accept(categoryDto, amount);
             }
         }
-    }
-
-    private BigDecimal scale(Object value, int scale) {
-        return ((BigDecimal) value).setScale(scale, RoundingMode.HALF_UP);
     }
 
     /**
@@ -182,8 +177,8 @@ public class StatusOfFundsReportService {
         var oneYearAppropriation = appropriation.getOneYearAmount();
         var twoYearAppropriation = appropriation.getTwoYearAmount();
 
-        var oneYearAlloc = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearAllocations);
-        var twoYearAlloc = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearAllocations);
+        var oneYearAlloc = sum(categoryDtos, ObjectCategoryDto::getTotalOneYearAllocations);
+        var twoYearAlloc = sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearAllocations);
 
         // build "discrepancy" row
         var unallocated = categoryService.createCategoryDto();
@@ -211,16 +206,16 @@ public class StatusOfFundsReportService {
         var twoYearAppropriation = appropriation.getTwoYearAmount();
         var totalAppropriation = oneYearAppropriation.add(twoYearAppropriation);
 
-        var oneYearProj = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearProjections);
-        var twoYearProj = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearProjections);
+        var oneYearProj = sum(categoryDtos, ObjectCategoryDto::getTotalOneYearProjections);
+        var twoYearProj = sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearProjections);
         var totalProj = oneYearProj.add(twoYearProj);
 
-        var oneYearOblig = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearObligations);
-        var twoYearOblig = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearObligations);
+        var oneYearOblig = sum(categoryDtos, ObjectCategoryDto::getTotalOneYearObligations);
+        var twoYearOblig = sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearObligations);
         var totalOblig = oneYearOblig.add(twoYearOblig);
 
-        var oneYearReim = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalOneYearReimbursements);
-        var twoYearReim = BigDecimalAggregator.sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearReimbursements);
+        var oneYearReim = sum(categoryDtos, ObjectCategoryDto::getTotalOneYearReimbursements);
+        var twoYearReim = sum(categoryDtos, ObjectCategoryDto::getTotalTwoYearReimbursements);
         var totalReim = oneYearReim.add(twoYearReim);
 
         // build "unspent funds" row
@@ -235,11 +230,4 @@ public class StatusOfFundsReportService {
 
         return categoryDtos;
     }
-
-//    private BigDecimal sumField(List<ObjectCategoryDto> dtos, Function<ObjectCategoryDto, BigDecimal> getter) {
-//        return dtos.stream().map(getter).reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
-//    private static <T> BigDecimal sumField(List<T> list, Function<T, BigDecimal> extractor) {
-//        return list.stream().map(extractor).reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
 }

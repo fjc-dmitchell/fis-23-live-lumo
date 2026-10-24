@@ -15,7 +15,8 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
+import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -145,7 +146,7 @@ public class Division {
     @DependsOnProperties({"oneYearAmount", "twoYearAmount"})
     @JmixProperty
     public BigDecimal getTotalAmount() {
-        return add(oneYearAmount, twoYearAmount);
+        return sumNullSafe(oneYearAmount, twoYearAmount);
     }
 
     @DependsOnProperties({"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate"})

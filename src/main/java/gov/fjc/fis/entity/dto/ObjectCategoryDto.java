@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static gov.fjc.fis.FisUtilities.getTotalNullAllowed;
-import static gov.fjc.fis.FisUtilities.nonZero;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
+import static gov.fjc.fis.app.BigDecimalUtils.anyNonZero;
 
 @JmixEntity(name = "fis_ObjectCategoryDto")
 public class ObjectCategoryDto {
@@ -285,9 +285,8 @@ public class ObjectCategoryDto {
     }
 
     public Boolean getShowOnReport() {
-//        return showOnReport;
         return showOnReport ||
-                nonZero(priorYearProjected, priorYearReimbursed, priorYearObligated, priorYearDisbursed,
+                anyNonZero(priorYearProjected, priorYearReimbursed, priorYearObligated, priorYearDisbursed,
                         oneYearProjected, oneYearReimbursed, oneYearObligated, oneYearDisbursed,
                         twoYearProjected, twoYearReimbursed, twoYearObligated, twoYearDisbursed,
                         totalOneYearAllocations, totalTwoYearAllocations,
@@ -299,15 +298,6 @@ public class ObjectCategoryDto {
 
     public void setShowOnReport(Boolean showOnReport) {
         this.showOnReport = showOnReport;
-//        this.showOnReport = showOnReport ||
-//                nonZero(priorYearProjected, priorYearReimbursed, priorYearObligated, priorYearDisbursed,
-//                        oneYearProjected, oneYearReimbursed, oneYearObligated, oneYearDisbursed,
-//                        twoYearProjected, twoYearReimbursed, twoYearObligated, twoYearDisbursed,
-//                        totalOneYearAllocations, totalTwoYearAllocations,
-//                        totalOneYearObligations, totalTwoYearObligations,
-//                        totalOneYearProjections, totalTwoYearProjections,
-//                        totalOneYearReimbursements, totalTwoYearReimbursements, mandatoryAllocated,
-//                        mandatoryDisbursed, mandatoryObligated, mandatoryProjected, mandatoryReimbursed);
     }
 
     public BigDecimal getTotalTwoYearReimbursements() {
@@ -487,57 +477,46 @@ public class ObjectCategoryDto {
 
     @DependsOnProperties({"totalOneYearAllocations"})
     public void addOneYearAllocation(BigDecimal amount) {
-        totalOneYearAllocations = getTotalNullAllowed(totalOneYearAllocations, amount);
+        totalOneYearAllocations = sumNullSafe(totalOneYearAllocations, amount);
     }
 
     @DependsOnProperties({"totalOneYearProjections"})
     public void addOneYearProjection(BigDecimal amount) {
-        totalOneYearProjections = getTotalNullAllowed(totalOneYearProjections, amount);
+        totalOneYearProjections = sumNullSafe(totalOneYearProjections, amount);
     }
 
     @DependsOnProperties({"totalOneYearObligations"})
     public void addOneYearObligation(BigDecimal amount) {
-        totalOneYearObligations = getTotalNullAllowed(totalOneYearObligations, amount);
+        totalOneYearObligations = sumNullSafe(totalOneYearObligations, amount);
     }
 
     public void addOneYearReimbursement(BigDecimal amount) {
-        totalOneYearReimbursements = getTotalNullAllowed(totalOneYearReimbursements, amount);
+        totalOneYearReimbursements = sumNullSafe(totalOneYearReimbursements, amount);
     }
 
     @DependsOnProperties({"totalTwoYearAllocations"})
     public void addTwoYearAllocation(BigDecimal amount) {
-        totalTwoYearAllocations = getTotalNullAllowed(totalTwoYearAllocations, amount);
+        totalTwoYearAllocations = sumNullSafe(totalTwoYearAllocations, amount);
     }
 
     public void addTwoYearProjection(BigDecimal amount) {
-        totalTwoYearProjections = getTotalNullAllowed(totalTwoYearProjections, amount);
+        totalTwoYearProjections = sumNullSafe(totalTwoYearProjections, amount);
     }
 
     public void addTwoYearObligation(BigDecimal amount) {
-        totalTwoYearObligations = getTotalNullAllowed(totalTwoYearObligations, amount);
+        totalTwoYearObligations = sumNullSafe(totalTwoYearObligations, amount);
     }
 
     public void addTwoYearReimbursement(BigDecimal amount) {
-        totalTwoYearReimbursements = getTotalNullAllowed(totalTwoYearReimbursements, amount);
+        totalTwoYearReimbursements = sumNullSafe(totalTwoYearReimbursements, amount);
     }
-
-//    public boolean showOnReport() {
-//        return showOnReport ||
-//                nonZero(priorYearProjected, priorYearReimbursed, priorYearObligated, priorYearDisbursed,
-//                        oneYearProjected, oneYearReimbursed, oneYearObligated, oneYearDisbursed,
-//                        twoYearProjected, twoYearReimbursed, twoYearObligated, twoYearDisbursed,
-//                        totalOneYearAllocations, totalTwoYearAllocations,
-//                        totalOneYearObligations, totalTwoYearObligations,
-//                        totalOneYearProjections, totalTwoYearProjections,
-//                        totalOneYearReimbursements, totalTwoYearReimbursements);
-//    }
 
     public BigDecimal getOneYearProjected() {
         return oneYearProjected;
     }
 
     public void addCurrentYearProjected(BigDecimal amount) {
-        this.oneYearProjected = getTotalNullAllowed(this.oneYearProjected, amount);
+        this.oneYearProjected = sumNullSafe(this.oneYearProjected, amount);
     }
 
     public BigDecimal getOneYearReimbursed() {
@@ -545,7 +524,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentYearReimbursed(BigDecimal amoount) {
-        this.oneYearReimbursed = getTotalNullAllowed(this.oneYearReimbursed, amoount);
+        this.oneYearReimbursed = sumNullSafe(this.oneYearReimbursed, amoount);
     }
 
     public BigDecimal getOneYearObligated() {
@@ -553,7 +532,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentYearObligated(BigDecimal amount) {
-        this.oneYearObligated = getTotalNullAllowed(this.oneYearObligated, amount);
+        this.oneYearObligated = sumNullSafe(this.oneYearObligated, amount);
     }
 
     public BigDecimal getOneYearDisbursed() {
@@ -561,7 +540,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentYearDisbursed(BigDecimal amount) {
-        this.oneYearDisbursed = getTotalNullAllowed(this.oneYearDisbursed, amount);
+        this.oneYearDisbursed = sumNullSafe(this.oneYearDisbursed, amount);
     }
 
     public BigDecimal getPriorYearProjected() {
@@ -569,7 +548,7 @@ public class ObjectCategoryDto {
     }
 
     public void addPriorYearProjected(BigDecimal amount) {
-        this.priorYearProjected = getTotalNullAllowed(this.priorYearProjected, amount);
+        this.priorYearProjected = sumNullSafe(this.priorYearProjected, amount);
     }
 
     public BigDecimal getPriorYearReimbursed() {
@@ -577,7 +556,7 @@ public class ObjectCategoryDto {
     }
 
     public void addPriorYearReimbursed(BigDecimal amount) {
-        this.priorYearReimbursed = getTotalNullAllowed(this.priorYearReimbursed, amount);
+        this.priorYearReimbursed = sumNullSafe(this.priorYearReimbursed, amount);
     }
 
     public BigDecimal getPriorYearObligated() {
@@ -585,7 +564,7 @@ public class ObjectCategoryDto {
     }
 
     public void addPriorYearObligated(BigDecimal amount) {
-        this.priorYearObligated = getTotalNullAllowed(this.priorYearObligated, amount);
+        this.priorYearObligated = sumNullSafe(this.priorYearObligated, amount);
     }
 
     public BigDecimal getPriorYearDisbursed() {
@@ -593,7 +572,7 @@ public class ObjectCategoryDto {
     }
 
     public void addPriorYearDisbursed(BigDecimal amount) {
-        this.priorYearDisbursed = getTotalNullAllowed(this.priorYearDisbursed, amount);
+        this.priorYearDisbursed = sumNullSafe(this.priorYearDisbursed, amount);
     }
 
     public BigDecimal getTwoYearProjected() {
@@ -601,7 +580,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentTwoYearProjected(BigDecimal amount) {
-        this.twoYearProjected = getTotalNullAllowed(this.twoYearProjected, amount);
+        this.twoYearProjected = sumNullSafe(this.twoYearProjected, amount);
     }
 
     public BigDecimal getTwoYearReimbursed() {
@@ -609,7 +588,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentTwoYearReimbursed(BigDecimal nextYearReimbursed) {
-        this.twoYearReimbursed = getTotalNullAllowed(this.twoYearReimbursed, nextYearReimbursed);
+        this.twoYearReimbursed = sumNullSafe(this.twoYearReimbursed, nextYearReimbursed);
     }
 
     public BigDecimal getTwoYearObligated() {
@@ -617,7 +596,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentTwoYearObligated(BigDecimal amount) {
-        this.twoYearObligated = getTotalNullAllowed(this.twoYearObligated, amount);
+        this.twoYearObligated = sumNullSafe(this.twoYearObligated, amount);
     }
 
     public BigDecimal getTwoYearDisbursed() {
@@ -625,7 +604,7 @@ public class ObjectCategoryDto {
     }
 
     public void addCurrentTwoYearDisbursed(BigDecimal amount) {
-        this.twoYearDisbursed = getTotalNullAllowed(this.twoYearDisbursed, amount);
+        this.twoYearDisbursed = sumNullSafe(this.twoYearDisbursed, amount);
     }
 
     public void calculateTotals() {
@@ -652,35 +631,35 @@ public class ObjectCategoryDto {
     }
 
     public void addDiscretionaryProjected(BigDecimal amount) {
-        discretionaryProjected = getTotalNullAllowed(discretionaryProjected, amount);
+        discretionaryProjected = sumNullSafe(discretionaryProjected, amount);
     }
 
     public void addDiscretionaryObligated(BigDecimal amount) {
-        discretionaryObligated = getTotalNullAllowed(discretionaryObligated, amount);
+        discretionaryObligated = sumNullSafe(discretionaryObligated, amount);
     }
 
     public void addDiscretionaryDisbursed(BigDecimal amount) {
-        discretionaryDisbursed = getTotalNullAllowed(discretionaryDisbursed, amount);
+        discretionaryDisbursed = sumNullSafe(discretionaryDisbursed, amount);
     }
 
     public void addDiscretionaryReimbursed(BigDecimal amount) {
-        discretionaryReimbursed = getTotalNullAllowed(discretionaryReimbursed, amount);
+        discretionaryReimbursed = sumNullSafe(discretionaryReimbursed, amount);
     }
 
     public void addMandatoryProjected(BigDecimal amount) {
-        mandatoryProjected = getTotalNullAllowed(mandatoryProjected, amount);
+        mandatoryProjected = sumNullSafe(mandatoryProjected, amount);
     }
 
     public void addMandatoryObligated(BigDecimal amount) {
-        mandatoryObligated = getTotalNullAllowed(mandatoryObligated, amount);
+        mandatoryObligated = sumNullSafe(mandatoryObligated, amount);
     }
 
     public void addMandatoryDisbursed(BigDecimal amount) {
-        mandatoryDisbursed = getTotalNullAllowed(mandatoryDisbursed, amount);
+        mandatoryDisbursed = sumNullSafe(mandatoryDisbursed, amount);
     }
 
     public void addMandatoryReimbursed(BigDecimal amount) {
-        mandatoryReimbursed = getTotalNullAllowed(mandatoryReimbursed, amount);
+        mandatoryReimbursed = sumNullSafe(mandatoryReimbursed, amount);
     }
 
     public BigDecimal getDiscretionaryProjected() {

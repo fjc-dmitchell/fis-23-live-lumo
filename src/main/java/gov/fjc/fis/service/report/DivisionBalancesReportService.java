@@ -6,14 +6,13 @@ import gov.fjc.fis.entity.dto.DivisionDto;
 import gov.fjc.fis.service.*;
 import io.jmix.core.DataManager;
 import io.jmix.core.entity.KeyValueEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.add;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 
 @Component("fis_DivisionBalancesReportService")
 public class DivisionBalancesReportService {
@@ -72,10 +71,10 @@ public class DivisionBalancesReportService {
             dto.setOneYearObligations(findKvEntityAmount(oneYearObligations, division, oneYearFund));
             dto.setTwoYearObligations(findKvEntityAmount(twoYearObligations, division, twoYearFund));
 
-            dto.setOneYearBalance(add(dto.getOneYearAllocations(), dto.getOneYearReimbursements())
-                    .subtract(add(dto.getOneYearProjections(), dto.getOneYearObligations())));
-            dto.setTwoYearBalance(add(dto.getTwoYearAllocations(), dto.getTwoYearReimbursements())
-                    .subtract(add(dto.getTwoYearProjections(), dto.getTwoYearObligations())));
+            dto.setOneYearBalance(sumNullSafe(dto.getOneYearAllocations(), dto.getOneYearReimbursements())
+                    .subtract(sumNullSafe(dto.getOneYearProjections(), dto.getOneYearObligations())));
+            dto.setTwoYearBalance(sumNullSafe(dto.getTwoYearAllocations(), dto.getTwoYearReimbursements())
+                    .subtract(sumNullSafe(dto.getTwoYearProjections(), dto.getTwoYearObligations())));
 
             divisionDtos.add(dto);
         }

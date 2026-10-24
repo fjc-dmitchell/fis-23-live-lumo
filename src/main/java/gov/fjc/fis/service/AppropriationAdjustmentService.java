@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getTotalNullAllowed;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 
 @Component("fis_AppropriationAdjustmentService")
 public class AppropriationAdjustmentService {
@@ -84,7 +84,7 @@ public class AppropriationAdjustmentService {
         dto.setTitle("Activity Reimbursements");
         dto.setOneYearAmount(sumReimbursements(appropriation, oneYearFund));
         dto.setTwoYearAmount(sumReimbursements(appropriation, twoYearFund));
-        dto.setTotalAmount(getTotalNullAllowed(dto.getOneYearAmount(), dto.getTwoYearAmount()));
+        dto.setTotalAmount(sumNullSafe(dto.getOneYearAmount(), dto.getTwoYearAmount()));
         adjustments.add(dto);
 
 //        dto = dataManager.create(AmountsDto.class);

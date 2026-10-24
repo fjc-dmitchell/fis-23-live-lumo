@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.BigDecimalUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -17,7 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -77,7 +78,7 @@ public class DivisionAllocation {
     @DependsOnProperties({"oneYearAmount", "twoYearAmount"})
     @JmixProperty
     public BigDecimal getTotalAmount() {
-        return add(oneYearAmount, twoYearAmount);
+        return BigDecimalUtils.sumNullSafe(oneYearAmount, twoYearAmount);
     }
 
     @DependsOnProperties({"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate"})

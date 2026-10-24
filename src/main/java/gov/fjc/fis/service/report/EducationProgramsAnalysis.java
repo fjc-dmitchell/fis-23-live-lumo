@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static gov.fjc.fis.FisUtilities.nonZero;
+import static gov.fjc.fis.app.BigDecimalUtils.anyNonZero;
 
 @Component("fis_EducationProgramsAnalysis")
 public class EducationProgramsAnalysis {
@@ -220,7 +220,7 @@ public class EducationProgramsAnalysis {
                 } else {
                     // if not generic OR expenses exist, include in sheet
                     if (!activity.getActivityNumber().equals(activity.getGroupCode().concat("00"))
-                            || nonZero(activity.getTravelObligated(), activity.getNonTravelObligated(),
+                            || anyNonZero(activity.getTravelObligated(), activity.getNonTravelObligated(),
                             activity.getTravelProjected(), activity.getNonTravelProjected())) {
                         activityDtos.add(activity);
                     }

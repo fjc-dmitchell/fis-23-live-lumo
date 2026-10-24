@@ -6,20 +6,20 @@ import java.util.regex.Pattern;
 
 public final class AsciiSanitizer {
 
+    private AsciiSanitizer() {
+    }
+
     private static final Map<Character, String> PUNCTUATION_MAP = Map.ofEntries(
             Map.entry('\u2018', "'"), Map.entry('\u2019', "'"),    // ‘ ’
             Map.entry('\u201C', "\""), Map.entry('\u201D', "\""),  // “ ”
             Map.entry('\u2013', "-"), Map.entry('\u2014', "-"),    // – —
-            Map.entry('\u2026', "..."),                             // …
-            Map.entry('\u00A0', " "),                               // NBSP
-            Map.entry('\u2022', "-"),                               // •
-            Map.entry('\u2212', "-")                                // − (unicode minus sign)
+            Map.entry('\u2026', "..."),                                  // …
+            Map.entry('\u00A0', " "),                                    // NBSP
+            Map.entry('\u2022', "-"),                                    // •
+            Map.entry('\u2212', "-")                                     // − (unicode minus sign)
     );
 
     private static final Pattern DISALLOWED = Pattern.compile("[^\\x20-\\x7E\\t\\n\\r]");
-
-    private AsciiSanitizer() {
-    }
 
     public static String sanitize(String input) {
         if (input == null) return null;

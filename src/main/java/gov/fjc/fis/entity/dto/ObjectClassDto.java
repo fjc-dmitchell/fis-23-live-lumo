@@ -2,15 +2,12 @@ package gov.fjc.fis.entity.dto;
 
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.JmixId;
-import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.annotation.JmixProperty;
-import jakarta.persistence.Entity;
 
 import java.math.BigDecimal;
 
-import static gov.fjc.fis.FisUtilities.getTotalNullAllowed;
-import static gov.fjc.fis.FisUtilities.nonZero;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
+import static gov.fjc.fis.app.BigDecimalUtils.anyNonZero;
 
 @JmixEntity(name = "fis_ObjectClassDto")
 public class ObjectClassDto {
@@ -178,51 +175,51 @@ public class ObjectClassDto {
     }
 
     public void addPriorTwoYearProjected(BigDecimal priorTwoYearProjected) {
-        this.priorTwoYearProjected = getTotalNullAllowed(this.priorTwoYearProjected, priorTwoYearProjected);
+        this.priorTwoYearProjected = sumNullSafe(this.priorTwoYearProjected, priorTwoYearProjected);
     }
 
     public void addPriorTwoYearReimbursed(BigDecimal priorTwoYearReimbursed) {
-        this.priorTwoYearReimbursed = getTotalNullAllowed(this.priorTwoYearReimbursed, priorTwoYearReimbursed);
+        this.priorTwoYearReimbursed = sumNullSafe(this.priorTwoYearReimbursed, priorTwoYearReimbursed);
     }
 
     public void addPriorTwoYearObligated(BigDecimal priorTwoYearObligated) {
-        this.priorTwoYearObligated = getTotalNullAllowed(this.priorTwoYearObligated, priorTwoYearObligated);
+        this.priorTwoYearObligated = sumNullSafe(this.priorTwoYearObligated, priorTwoYearObligated);
     }
 
     public void addPriorTwoYearDisbursed(BigDecimal priorTwoYearDisbursed) {
-        this.priorTwoYearDisbursed = getTotalNullAllowed(this.priorTwoYearDisbursed, priorTwoYearDisbursed);
+        this.priorTwoYearDisbursed = sumNullSafe(this.priorTwoYearDisbursed, priorTwoYearDisbursed);
     }
 
     public void addCurrentOneYearProjected(BigDecimal currentOneYearProjected) {
-        this.currentOneYearProjected = getTotalNullAllowed(this.currentOneYearProjected, currentOneYearProjected);
+        this.currentOneYearProjected = sumNullSafe(this.currentOneYearProjected, currentOneYearProjected);
     }
 
     public void addCurrentOneYearReimbursed(BigDecimal currentOneYearReimbursed) {
-        this.currentOneYearReimbursed = getTotalNullAllowed(this.currentOneYearReimbursed, currentOneYearReimbursed);
+        this.currentOneYearReimbursed = sumNullSafe(this.currentOneYearReimbursed, currentOneYearReimbursed);
     }
 
     public void addCurrentOneYearObligated(BigDecimal currentOneYearObligated) {
-        this.currentOneYearObligated = getTotalNullAllowed(this.currentOneYearObligated, currentOneYearObligated);
+        this.currentOneYearObligated = sumNullSafe(this.currentOneYearObligated, currentOneYearObligated);
     }
 
     public void addCurrentOneYearDisbursed(BigDecimal currentOneYearDisbursed) {
-        this.currentOneYearDisbursed = getTotalNullAllowed(this.currentOneYearDisbursed, currentOneYearDisbursed);
+        this.currentOneYearDisbursed = sumNullSafe(this.currentOneYearDisbursed, currentOneYearDisbursed);
     }
 
     public void addCurrentTwoYearProjected(BigDecimal currenteTwoYearProjected) {
-        this.currentTwoYearProjected = getTotalNullAllowed(this.currentTwoYearProjected, currenteTwoYearProjected);
+        this.currentTwoYearProjected = sumNullSafe(this.currentTwoYearProjected, currenteTwoYearProjected);
     }
 
     public void addCurrentTwoYearReimbursed(BigDecimal currenteTwoYearReimbursed) {
-        this.currentTwoYearReimbursed = getTotalNullAllowed(this.currentTwoYearReimbursed, currenteTwoYearReimbursed);
+        this.currentTwoYearReimbursed = sumNullSafe(this.currentTwoYearReimbursed, currenteTwoYearReimbursed);
     }
 
     public void addCurrentTwoYearObligated(BigDecimal currenteTwoYearObligated) {
-        this.currentTwoYearObligated = getTotalNullAllowed(this.currentTwoYearObligated, currenteTwoYearObligated);
+        this.currentTwoYearObligated = sumNullSafe(this.currentTwoYearObligated, currenteTwoYearObligated);
     }
 
     public void addCurrentTwoYearDisbursed(BigDecimal currenteTwoYearDisbursed) {
-        this.currentTwoYearDisbursed = getTotalNullAllowed(this.currentTwoYearDisbursed, currenteTwoYearDisbursed);
+        this.currentTwoYearDisbursed = sumNullSafe(this.currentTwoYearDisbursed, currenteTwoYearDisbursed);
     }
 
     public BigDecimal getDisbursed() {
@@ -255,7 +252,7 @@ public class ObjectClassDto {
 
     public boolean showOnReport() {
         return showOnReport ||
-                nonZero(priorTwoYearProjected, priorTwoYearReimbursed, priorTwoYearObligated, priorTwoYearDisbursed,
+                anyNonZero(priorTwoYearProjected, priorTwoYearReimbursed, priorTwoYearObligated, priorTwoYearDisbursed,
                         currentOneYearProjected, currentOneYearReimbursed, currentOneYearObligated, currentOneYearDisbursed,
                         currentTwoYearProjected, currentTwoYearReimbursed, currentTwoYearObligated, currentTwoYearDisbursed);
     }

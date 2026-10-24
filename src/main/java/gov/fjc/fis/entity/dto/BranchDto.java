@@ -5,7 +5,7 @@ import io.jmix.core.metamodel.annotation.JmixEntity;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getTotalNullAllowed;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 
 @JmixEntity(name = "fis_BranchDto")
 public class BranchDto {
@@ -57,7 +57,7 @@ public class BranchDto {
     }
 
     public void addTotalAmount(BigDecimal amount) {
-        totalAmount = getTotalNullAllowed(totalAmount, amount);
+        totalAmount = sumNullSafe(totalAmount, amount);
     }
 
     public Integer getActivitiesCount() {

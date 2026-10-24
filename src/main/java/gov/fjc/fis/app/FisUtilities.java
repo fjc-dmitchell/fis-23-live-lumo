@@ -1,11 +1,10 @@
-package gov.fjc.fis;
+package gov.fjc.fis.app;
 
 import gov.fjc.fis.entity.OutputType;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.reports.entity.ReportOutputType;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -15,12 +14,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
-import static java.util.Objects.requireNonNullElse;
 
 public final class FisUtilities {
 
     private FisUtilities() {
-        // don't allow this class to be instantiated
     }
 
     public static String getCreateDateTimeString(OffsetDateTime createdDate) {
@@ -133,42 +130,6 @@ public final class FisUtilities {
         return value == null ? null : value.toUpperCase(Locale.ROOT);
     }
 
-    /**
-     * Computes total even if nulls passed. Required because user can leave amounts empty in user interface.
-     *
-     * @param firstAmount
-     * @param secondAmount
-     * @return BigDecimal
-     */
-    public static BigDecimal getTotalNullAllowed(BigDecimal firstAmount, BigDecimal secondAmount) {
-        return requireNonNullElse(firstAmount, BigDecimal.ZERO).add(requireNonNullElse(secondAmount, BigDecimal.ZERO));
-    }
-
-    // same as above but variable number of arguments. for now, for testing only 2025-01-31
-//    public static BigDecimal add(BigDecimal... numbers) {
-//        BigDecimal sum = BigDecimal.ZERO;
-//        for (BigDecimal num : numbers) {
-//            if (num != null) {
-//                sum = sum.add(num);
-//            }
-//        }
-//        return sum;
-//    }
-    // AI suggests the following, but neads to be tested!
-
-    /**
-     * Returns the sum of the provided BigDecimal values.
-     * Null values are ignored.
-     *
-     * @param numbers an array of BigDecimal values to sum; may contain nulls
-     * @return the total of all non-null values; BigDecimal.ZERO if none provided
-     */
-    public static BigDecimal add(BigDecimal... numbers) {
-        return Arrays.stream(numbers)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
     public static String getDateTimeReportString(LocalDateTime dateTime) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy h:mm a");
         return dtf.format(dateTime);
@@ -200,25 +161,6 @@ public final class FisUtilities {
             }
         }
         return city;
-    }
-
-//    public static boolean nonZero(BigDecimal... params) {
-//        for (BigDecimal p : params) {
-//            if (p != null && !p.equals(BigDecimal.ZERO)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
-    /**
-     * Determine presence of non-zero, non-null BigDecimal parameter
-     *
-     * @param decimals one or more BigDecimal parameters, null values allowed but ignored
-     * @return boolean representing presence of a negative or positive BigDecimal value
-     */
-    public static boolean nonZero(BigDecimal... decimals) {
-        return Arrays.stream(decimals).filter(Objects::nonNull).anyMatch(bd -> bd.signum() != 0);
     }
 
     /**

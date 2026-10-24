@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.add;
-import static gov.fjc.fis.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity
@@ -93,7 +93,7 @@ public class Appropriation {
     @DependsOnProperties({"oneYearAmount", "twoYearAmount", "oneYearAdjustment", "twoYearAdjustment", "reimbursedAmount"})
     @JmixProperty
     public BigDecimal getAuthority() {
-        return add(oneYearAmount, twoYearAmount, oneYearAdjustment, twoYearAdjustment, reimbursedAmount);
+        return sumNullSafe(oneYearAmount, twoYearAmount, oneYearAdjustment, twoYearAdjustment, reimbursedAmount);
     }
 
     public BigDecimal getReimbursedAmount() {
@@ -151,13 +151,13 @@ public class Appropriation {
     @DependsOnProperties({"oneYearAmount", "twoYearAmount"})
     @JmixProperty
     public BigDecimal getTotalAmount() {
-        return add(oneYearAmount, twoYearAmount);
+        return sumNullSafe(oneYearAmount, twoYearAmount);
     }
 
     @DependsOnProperties({"oneYearAdjustment", "twoYearAdjustment"})
     @JmixProperty
     public BigDecimal getTotalAdjustment() {
-        return add(oneYearAdjustment, twoYearAdjustment);
+        return sumNullSafe(oneYearAdjustment, twoYearAdjustment);
     }
 
     public BigDecimal getOneYearAmount() {
