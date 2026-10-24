@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.refreshField;
+import static gov.fjc.fis.app.FisUtilities.refreshField;
 
 @Route(value = "education-branch-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_EducationBranchReportView")

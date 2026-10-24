@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.getLoadedByString;
+import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
 
 @JmixEntity
 @Table(name = "FIS_DOCUMENT", indexes = {

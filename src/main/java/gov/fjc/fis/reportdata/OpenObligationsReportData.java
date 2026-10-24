@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 public class OpenObligationsReportData {
 

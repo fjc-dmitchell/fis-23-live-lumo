@@ -17,7 +17,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity

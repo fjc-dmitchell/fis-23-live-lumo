@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.getCreatedModifiedString;
-import static gov.fjc.fis.FisUtilities.safeTrim;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.FisUtilities.safeTrim;
 
 @JmixEntity
 @Table(name = "FIS_JITF_TRANSFER", indexes = {

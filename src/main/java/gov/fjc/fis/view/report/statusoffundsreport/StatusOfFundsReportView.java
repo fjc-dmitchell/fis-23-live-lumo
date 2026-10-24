@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getReportOutputType;
+import static gov.fjc.fis.app.FisUtilities.getReportOutputType;
 
 @Route(value = "status-of-funds-report-view", layout = MainView.class)
 @ViewController("fis_StatusOfFundsReportView")

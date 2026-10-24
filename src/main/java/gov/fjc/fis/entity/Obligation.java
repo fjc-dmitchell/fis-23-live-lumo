@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 @JmixEntity

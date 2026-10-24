@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
 @JmixEntity
 @Table(name = "FIS_PAY_PERIOD", uniqueConstraints = {

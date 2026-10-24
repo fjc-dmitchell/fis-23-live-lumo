@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 public class StatusOfFundsReportData {
     private final LocalDateTime reportDateTime;

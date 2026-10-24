@@ -30,7 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
-import static gov.fjc.fis.FisUtilities.refreshField;
+import static gov.fjc.fis.app.FisUtilities.refreshField;
 
 @Route(value = "obligations/:id", layout = MainView.class)
 @ViewController(id = "fis_Obligation.detail")

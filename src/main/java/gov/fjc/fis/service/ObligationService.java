@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getCurrentDateMinusDays;
+import static gov.fjc.fis.app.FisUtilities.getCurrentDateMinusDays;
 
 @Component("fis_ObligationService")
 public class ObligationService {

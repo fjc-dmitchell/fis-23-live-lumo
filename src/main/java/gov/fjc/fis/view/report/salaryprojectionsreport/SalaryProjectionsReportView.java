@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getReportOutputType;
+import static gov.fjc.fis.app.FisUtilities.getReportOutputType;
 
 @Route(value = "salary-projections-report-view", layout = MainView.class)
 @ViewController(id = "fis_SalaryProjectionsReportView")

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 public class BudgetRequestReportData {
     private final String budgetFiscalYear;

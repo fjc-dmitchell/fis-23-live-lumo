@@ -28,8 +28,8 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.getDateTime;
-import static gov.fjc.fis.FisUtilities.getDateTimeFilenameString;
+import static gov.fjc.fis.app.FisUtilities.getDateTime;
+import static gov.fjc.fis.app.FisUtilities.getDateTimeFilenameString;
 
 @Component("fis_ReconciliationReportService")
 public class ReconciliationReportService {

@@ -14,7 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
 @JmixEntity
 @Table(name = "FIS_DEPARTMENT", indexes = {

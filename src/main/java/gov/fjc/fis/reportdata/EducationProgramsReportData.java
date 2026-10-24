@@ -7,9 +7,8 @@ import gov.fjc.fis.entity.dto.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 public class EducationProgramsReportData {
 

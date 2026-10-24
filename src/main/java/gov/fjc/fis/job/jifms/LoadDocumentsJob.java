@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static gov.fjc.fis.FisUtilities.cleanText;
+import static gov.fjc.fis.app.FisUtilities.cleanText;
 
 /**
  * Job to load Document files (purchase and travel) into FIS and trigger processing job.

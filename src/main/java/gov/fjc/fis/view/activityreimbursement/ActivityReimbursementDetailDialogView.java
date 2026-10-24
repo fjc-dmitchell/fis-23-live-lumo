@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 @Route(value = "activity-reimbursement-dialog/:id", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_ActivityReimbursement_dialog.detail")

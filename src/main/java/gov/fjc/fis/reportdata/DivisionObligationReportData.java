@@ -8,7 +8,7 @@ import gov.fjc.fis.entity.dto.ActivityDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gov.fjc.fis.FisUtilities.*;
+import static gov.fjc.fis.app.FisUtilities.*;
 
 public class DivisionObligationReportData {
     private final String budgetFiscalYear;
