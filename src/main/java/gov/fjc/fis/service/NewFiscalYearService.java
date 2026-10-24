@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -19,9 +21,15 @@ import java.util.stream.Collectors;
  * Activity criteria requested by Mark Hannan and Mary Greiner in April 1999.
  * Unlike FIS 1.0, no empty division allocations or activity projections are created
  * to ensure the new audit function includes the initial creation.
+ * <p>
+ * The whole rollover runs in a single transaction. Prior-year collections such as
+ * categories, branches, groups, and activities are lazily loaded within that transaction.
+ * <p>
+ * Parent entities (appropriation, category, division) are saved individually without reload
+ * because only their IDs are needed by children. Leaf entities are saved in batches.
  *
  * @author Doug Mitchell
- * @version 2.3
+ * @version 2.4
  * @since 2.1
  */
 @Component("fis_NewFiscalYearService")
@@ -30,70 +38,76 @@ public class NewFiscalYearService {
     private static final Logger log = LoggerFactory.getLogger(NewFiscalYearService.class);
 
     private final DataManager dataManager;
-    private final GroupService groupService;
-    private final BranchService branchService;
     private final DivisionService divisionService;
-    private final FundService fundService;
+
+    private final Fund oneYearFund;
+    private final Fund twoYearFund;
+
+    /**
+     * Training projects are only carried forward when their activity number ends with this suffix.
+     */
+    private static final String GENERIC_TRAINING_SUFFIX = "00";
 
     public NewFiscalYearService(DataManager dataManager,
-                                FundService fundService,
                                 DivisionService divisionService,
-                                BranchService branchService,
-                                GroupService groupService) {
+                                FundService fundService) {
         this.dataManager = dataManager;
-        this.fundService = fundService;
         this.divisionService = divisionService;
-        this.branchService = branchService;
-        this.groupService = groupService;
+        this.oneYearFund = fundService.getAppropriationOneYearFund();
+        this.twoYearFund = fundService.getAppropriationTwoYearFund();
     }
 
     /**
      * Creates new Appropriation and associated entities. If unsuccessful, rollback entire
      * transaction and throw exception to user interface.
      *
-     * @param nextFiscalYear String representing the budget fiscal year to create
+     * @param requestedFiscalYear String representing the budget fiscal year to create
+     * @throws IllegalArgumentException if the requested year is not the next year in sequence
      */
     @Transactional
-    public void createAppropriation(String nextFiscalYear) {
-        log.info("Begin transaction for New Fiscal Year: {}", nextFiscalYear);
-        String expectedNextFiscalYear = getNextFiscalYear();
-        if (!expectedNextFiscalYear.equals(nextFiscalYear)) {
-            throw new IllegalArgumentException(
-                    "The requested fiscal year is not the next fiscal year in sequence: " + nextFiscalYear
-                            + " (expected: " + expectedNextFiscalYear + ")");
-        }
+    public void createAppropriation(String requestedFiscalYear) {
+        log.info("Begin transaction for New Fiscal Year: {}", requestedFiscalYear);
 
         Appropriation oldAppropriation = fetchMaxAppropriation();
+        String expectedFiscalYear = getNextFiscalYear(oldAppropriation);
+        if (!expectedFiscalYear.equals(requestedFiscalYear)) {
+            throw new IllegalArgumentException(
+                    "The requested fiscal year is not the next fiscal year in sequence: " + requestedFiscalYear
+                            + " (expected: " + expectedFiscalYear + ")");
+        }
 
-        Appropriation newAppropriation = dataManager.create(Appropriation.class);
-        newAppropriation.setBudgetFiscalYear(nextFiscalYear);
-        newAppropriation.setStatus(true);
-        newAppropriation.setOneYearAmount(BigDecimal.ZERO);
-        newAppropriation.setTwoYearAmount(BigDecimal.ZERO);
-        newAppropriation.setOneYearAdjustment(BigDecimal.ZERO);
-        newAppropriation.setTwoYearAdjustment(BigDecimal.ZERO);
-        newAppropriation.setReimbursedAmount(BigDecimal.ZERO);
-        newAppropriation = dataManager.save(newAppropriation);
-        log.info("\tAppropriation saved: {}", newAppropriation.getBudgetFiscalYear());
+        Appropriation newAppropriation = buildAppropriation(requestedFiscalYear);
+        dataManager.saveWithoutReload(newAppropriation);
+        log.info("Appropriation saved: {}", requestedFiscalYear);
 
-        createCategories(oldAppropriation, newAppropriation);
+        createObjectCategories(oldAppropriation, newAppropriation);
         createDivisions(oldAppropriation, newAppropriation);
-//        createPayPeriods(oldAppropriation, newAppropriation);
-        log.info("End transaction for New Fiscal Year: {}", nextFiscalYear);
+        log.info("End transaction for New Fiscal Year: {}", requestedFiscalYear);
     }
 
     /**
-     * Increment the most recent fiscal year by one
+     * Increment the fiscal year of the given appropriation by one.
+     *
+     * @param appropriation the most recent appropriation
+     * @return String containing the fiscal year following the appropriation's year
+     * @throws IllegalStateException if the appropriation's fiscal year is not numeric
+     */
+    private String getNextFiscalYear(Appropriation appropriation) {
+        String budgetFiscalYear = appropriation.getBudgetFiscalYear();
+        try {
+            return String.valueOf(Integer.parseInt(budgetFiscalYear) + 1);
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("Cannot parse fiscal year: " + budgetFiscalYear, e);
+        }
+    }
+
+    /**
+     * Increment the most recent fiscal year by one.
      *
      * @return String containing the next available fiscal year
      */
     public String getNextFiscalYear() {
-        String maxBudgetFiscalYear = fetchMaxAppropriation().getBudgetFiscalYear();
-        try {
-            return String.valueOf(Integer.parseInt(maxBudgetFiscalYear) + 1);
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("Cannot parse fiscal year: " + maxBudgetFiscalYear, e);
-        }
+        return getNextFiscalYear(fetchMaxAppropriation());
     }
 
     /**
@@ -112,19 +126,27 @@ public class NewFiscalYearService {
     }
 
     /**
-     * Creates budget object class categories for new fiscal year based on prior year.
+     * Saves all entities in a single batch without reloading them.
      *
-     * @param oldAppropriation
-     * @param newAppropriation
+     * @param entities new entities to persist
      */
-    private void createCategories(Appropriation oldAppropriation, Appropriation newAppropriation) {
+    private void saveAll(Collection<?> entities) {
+        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
+        entities.forEach(saveContext::saving);
+        dataManager.save(saveContext);
+    }
+
+    /**
+     * Creates object categories for new fiscal year based on prior year.
+     *
+     * @param oldAppropriation prior year appropriation whose categories are copied
+     * @param newAppropriation new appropriation that will own the copied categories
+     */
+    private void createObjectCategories(Appropriation oldAppropriation, Appropriation newAppropriation) {
         for (ObjectCategory oldCategory : oldAppropriation.getCategories()) {
-            ObjectCategory newCategory = dataManager.create(ObjectCategory.class);
-            newCategory.setAppropriation(newAppropriation);
-            newCategory.setMajorObjectClass(oldCategory.getMajorObjectClass());
-            newCategory.setTitle(oldCategory.getTitle());
+            ObjectCategory newCategory = copyObjectCategory(oldCategory, newAppropriation);
             dataManager.saveWithoutReload(newCategory);
-            log.info("\t\tCategory saved: {}", newCategory.getTitleAndCode());
+            log.info("Category saved: {}", newCategory.getTitleAndCode());
 
             createObjectClasses(oldCategory, newCategory);
         }
@@ -133,89 +155,70 @@ public class NewFiscalYearService {
     /**
      * Creates object classes for new category based on old category.
      *
-     * @param oldCategory
-     * @param newCategory
+     * @param oldCategory prior year category whose object classes are copied
+     * @param newCategory new category that will own the copied object classes
      */
     private void createObjectClasses(ObjectCategory oldCategory, ObjectCategory newCategory) {
-        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-        for (ObjectClass oldObjectClass : oldCategory.getBudgetObjectClasses()) {
-            ObjectClass newObjectClass = dataManager.create(ObjectClass.class);
-            newObjectClass.setObjectCategory(newCategory);
-            newObjectClass.setBudgetObjectClass(oldObjectClass.getBudgetObjectClass());
-            newObjectClass.setTitle(oldObjectClass.getTitle());
-            saveContext.saving(newObjectClass);
-            log.info("\t\t\t\tObject class created: {}", newObjectClass.getTitleAndCode());
-        }
-        dataManager.save(saveContext);
-        log.info("\t\t\tObject classes saved for category: {}", newCategory.getTitleAndCode());
+        List<ObjectClass> newObjectClasses = oldCategory.getBudgetObjectClasses().stream()
+                .map(oldObjectClass -> copyObjectClass(oldObjectClass, newCategory))
+                .toList();
+        saveAll(newObjectClasses);
+        log.info("Saved {} object classes for category: {}",
+                newObjectClasses.size(), newCategory.getTitleAndCode());
     }
 
     /**
      * Creates non-foundation divisions for new fiscal year based on prior year.
      *
-     * @param oldAppropriation
-     * @param newAppropriation
+     * @param oldAppropriation prior year appropriation whose divisions are copied
+     * @param newAppropriation new appropriation that will own the copied divisions
      */
     private void createDivisions(Appropriation oldAppropriation, Appropriation newAppropriation) {
         for (Division oldDivision : divisionService.fetchNonFoundationDivisions(oldAppropriation)) {
-            Division newDivision = dataManager.create(Division.class);
-            newDivision.setAppropriation(newAppropriation);
-            newDivision.setFund(oldDivision.getFund());
-            newDivision.setDivisionCode(oldDivision.getDivisionCode());
-            newDivision.setTitle(oldDivision.getTitle());
-            newDivision.setShortTitle(oldDivision.getShortTitle());
-            newDivision.setBudgetOrg(oldDivision.getBudgetOrg());
-            newDivision.setOneYearAmount(BigDecimal.ZERO);
-            newDivision.setTwoYearAmount(BigDecimal.ZERO);
+            Division newDivision = copyDivision(oldDivision, newAppropriation);
             dataManager.saveWithoutReload(newDivision);
-            log.info("\t\tDivision saved: {}", newDivision.getTitleAndCode());
+            log.info("Division saved: {}", newDivision.getTitleAndCode());
 
-            createBranches(oldDivision, newDivision);
-            createGroups(oldDivision, newDivision);
-            createActivities(oldDivision, newDivision);
+            Map<String, Branch> newBranchesByCode = createBranches(oldDivision, newDivision);
+            Map<String, Group> newGroupsByCode = createGroups(oldDivision, newDivision);
+            createActivities(oldDivision, newDivision, newBranchesByCode, newGroupsByCode);
         }
     }
 
     /**
-     * Creates branches for new division based on old division
+     * Creates branches for new division based on old division.
      *
-     * @param oldDivision
-     * @param newDivision
+     * @param oldDivision prior year division whose branches are copied
+     * @param newDivision new division that will own the copied branches
+     * @return the new branches keyed by branch code
      */
-    private void createBranches(Division oldDivision, Division newDivision) {
-        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-        for (Branch oldBranch : oldDivision.getBranches()) {
-            Branch newBranch = dataManager.create(Branch.class);
-            newBranch.setDivision(newDivision);
-            newBranch.setBranchCode(oldBranch.getBranchCode());
-            newBranch.setTitle(oldBranch.getTitle());
-            newBranch.setSortCode(oldBranch.getSortCode());
-            saveContext.saving(newBranch);
-            log.info("\t\t\t\tBranch created: {}", newBranch.getTitleAndCode());
-        }
-        dataManager.save(saveContext);
-        log.info("\t\t\tBranches saved for division: {}", newDivision.getTitleAndCode());
+    private Map<String, Branch> createBranches(Division oldDivision, Division newDivision) {
+        List<Branch> newBranches = oldDivision.getBranches().stream()
+                .map(oldBranch -> copyBranch(oldBranch, newDivision))
+                .toList();
+        saveAll(newBranches);
+        log.info("Saved {} branches for division: {}", newBranches.size(), newDivision.getTitleAndCode());
+
+        return newBranches.stream()
+                .collect(Collectors.toMap(Branch::getBranchCode, Function.identity()));
     }
 
     /**
-     * Creates groups for new division based on old division
+     * Creates groups for new division based on old division.
      *
-     * @param oldDivision
-     * @param newDivision
+     * @param oldDivision prior year division whose groups are copied
+     * @param newDivision new division that will own the copied groups
+     * @return the new groups keyed by group code
      */
-    private void createGroups(Division oldDivision, Division newDivision) {
-        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-        for (Group oldGroup : oldDivision.getGroups()) {
-            Group newGroup = dataManager.create(Group.class);
-            newGroup.setDivision(newDivision);
-            newGroup.setGroupCode(oldGroup.getGroupCode());
-            newGroup.setTitle(oldGroup.getTitle());
-            newGroup.setSortCode(oldGroup.getSortCode());
-            saveContext.saving(newGroup);
-            log.info("\t\t\t\tGroup created: {}", newGroup.getTitleAndCode());
-        }
-        dataManager.save(saveContext);
-        log.info("\t\t\tGroups saved for division: {}", newDivision.getTitleAndCode());
+    private Map<String, Group> createGroups(Division oldDivision, Division newDivision) {
+        List<Group> newGroups = oldDivision.getGroups().stream()
+                .map(oldGroup -> copyGroup(oldGroup, newDivision))
+                .toList();
+        saveAll(newGroups);
+        log.info("Saved {} groups for division: {}", newGroups.size(), newDivision.getTitleAndCode());
+
+        return newGroups.stream()
+                .collect(Collectors.toMap(Group::getGroupCode, Function.identity()));
     }
 
     /**
@@ -224,140 +227,158 @@ public class NewFiscalYearService {
      * For generic training activities, city and state are included. No activities
      * set to two year fund. Based on criteria provided by Mark and Mary in 1999.
      *
-     * @param oldDivision
-     * @param newDivision
+     * @param oldDivision       prior year division whose activities are copied
+     * @param newDivision       new division that will own the copied activities
+     * @param newBranchesByCode branches of the new division keyed by branch code
+     * @param newGroupsByCode   groups of the new division keyed by group code
      */
-    private void createActivities(Division oldDivision, Division newDivision) {
-        Fund oneYearFund = fundService.getAppropriationOneYearFund();
-        Fund twoYearFund = fundService.getAppropriationTwoYearFund();
-        List<Branch> newBranches = branchService.fetchBranches(newDivision);
-        List<Group> newGroups = groupService.fetchGroups(newDivision);
-
-        Map<String, Branch> newBranchesByCode = newBranches.stream()
-                .collect(Collectors.toMap(Branch::getBranchCode, b -> b));
-        Map<String, Group> newGroupsByCode = newGroups.stream()
-                .collect(Collectors.toMap(Group::getGroupCode, g -> g));
-
-        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-        for (Activity oldActivity : oldDivision.getActivities()) {
-            if (!shouldCopyActivity(oldActivity)) {
-                continue;
-            }
-            Activity newActivity = dataManager.create(Activity.class);
-            newActivity.setDivision(newDivision);
-            newActivity.setFund(oldActivity.getFund().equals(twoYearFund) ? oneYearFund : oldActivity.getFund());
-            newActivity.setActivityNumber(oldActivity.getActivityNumber());
-            newActivity.setTitle(oldActivity.getTitle());
-            newActivity.setSortCode(oldActivity.getSortCode());
-            newActivity.setGenericProjection(oldActivity.getGenericProjection());
-            newActivity.setTrainingProject(oldActivity.getTrainingProject());
-
-            if (oldActivity.getTrainingProject()) {
-                newActivity.setShortTitle(oldActivity.getShortTitle());
-                newActivity.setCity(oldActivity.getCity());
-                newActivity.setState(oldActivity.getState());
-                newActivity.setProgramDirector(oldActivity.getProgramDirector());
-            }
-
-            if (oldActivity.getBranch() != null) {
-                newActivity.setBranch(newBranchesByCode.get(oldActivity.getBranch().getBranchCode()));
-            }
-
-            if (oldActivity.getGroup() != null) {
-                newActivity.setGroup(newGroupsByCode.get(oldActivity.getGroup().getGroupCode()));
-            }
-
-            saveContext.saving(newActivity);
-            log.info("\t\t\t\tActivity created: {}", newActivity.getTitleAndCode());
-        }
-        dataManager.save(saveContext);
-        log.info("\t\t\tActivities saved for division: {}", newDivision.getTitleAndCode());
+    private void createActivities(Division oldDivision,
+                                  Division newDivision,
+                                  Map<String, Branch> newBranchesByCode,
+                                  Map<String, Group> newGroupsByCode) {
+        List<Activity> newActivities =
+                oldDivision.getActivities().stream()
+                        .filter(this::shouldCopyActivity)
+                        .map(oldActivity ->
+                                copyActivity(
+                                        oldActivity,
+                                        newDivision,
+                                        resolveFund(oldActivity.getFund()),
+                                        newBranchesByCode,
+                                        newGroupsByCode))
+                        .toList();
+        saveAll(newActivities);
+        log.info("Saved {} activities for division: {}", newActivities.size(), newDivision.getTitleAndCode());
     }
 
     /**
-     * only copy non-training projects OR training projects ending in 00
+     * Only copy non-training projects OR training projects ending in {@value #GENERIC_TRAINING_SUFFIX}.
      *
-     * @param activity
+     * @param activity prior year activity
      * @return true if activity should be copied
      */
     private boolean shouldCopyActivity(Activity activity) {
-        return !activity.getTrainingProject()
-                || activity.getActivityNumber().endsWith("00");
+        return !isTrainingProject(activity) || isGenericTrainingActivityForGroup(activity);
     }
 
-//    private void createPayPeriods(Appropriation oldAppropriation, Appropriation newAppropriation) {
-//        int oldYear = Integer.parseInt(oldAppropriation.getBudgetFiscalYear());
-//        updatePriorYearPeriods(oldYear, newAppropriation);
-//        LocalDate newStartDate = findNextStartDate(oldYear);
-//        createNewYearPeriods(newAppropriation, newStartDate);
-//    }
-//
-//    private LocalDate findNextStartDate(int oldYear) {
-//        LocalDate lastStartDate = dataManager.loadValue(
-//                        "SELECT p.startDate FROM fis_PayPeriod p"
-//                                + " WHERE p.payYear = :oldYear"
-//                                + " AND p.payPeriod IN (26, 27)"
-//                                + " ORDER BY p.startDate DESC",
-//                        LocalDate.class)
-//                .parameter("oldYear", oldYear)
-//                .maxResults(1)
-//                .optional()
-//                .orElseThrow(() -> new IllegalStateException(
-//                        "No pay period 26 or 27 found for year " + oldYear));
-//
-//        if (lastStartDate.getDayOfWeek() != DayOfWeek.MONDAY) {
-//            throw new IllegalStateException(
-//                    "Pay period for year " + oldYear + " does not start on a Monday: " + lastStartDate);
-//        }
-//
-//        return lastStartDate.plusWeeks(2);
-//    }
-//
-//    private void updatePriorYearPeriods(int priorYear, Appropriation newAppropriation) {
-//        List<PayPeriod> payPeriods = dataManager.load(PayPeriod.class)
-//                .query("SELECT p FROM fis_PayPeriod p"
-//                        + " WHERE p.payYear = :priorYear"
-//                        + " AND EXTRACT(MONTH FROM p.startDate) IN (10, 11, 12)")
-//                .parameter("priorYear", priorYear)
-//                .list();
-//
-//        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-//        for (PayPeriod payPeriod : payPeriods) {
-//            payPeriod.setAppropriation(newAppropriation);
-//            saveContext.saving(payPeriod);
-//            log.info("\t\t\tPay period updated: {}", payPeriod.getStartDate());
-//        }
-//        dataManager.save(saveContext);
-//        log.info("\t\tPay period updates saved for prior year: {}", priorYear);
-//    }
-//
-//    private void createNewYearPeriods(Appropriation appropriation, LocalDate startDate) {
-//        int fiscalYear = Integer.parseInt(appropriation.getBudgetFiscalYear());
-//
-//        LocalDate periodStart = startDate;
-//        LocalDate periodEnd = periodStart.plusDays(13);
-//
-//        SaveContext saveContext = new SaveContext().setDiscardSaved(true);
-//        int periodNumber = 1;
-//
-//        while (periodEnd.getYear() == fiscalYear) {
-//            PayPeriod payPeriod = dataManager.create(PayPeriod.class);
-//            payPeriod.setPayYear(fiscalYear);
-//            payPeriod.setPayPeriod(periodNumber++);
-//            payPeriod.setStartDate(periodStart);
-//
-//            if (periodEnd.getMonthValue() < 10) {
-//                payPeriod.setAppropriation(appropriation);
-//            }
-//
-//            saveContext.saving(payPeriod);
-//            log.info("\t\t\tPay period created: {}", periodStart);
-//
-//            periodStart = periodStart.plusWeeks(2);
-//            periodEnd = periodEnd.plusWeeks(2);
-//        }
-//
-//        dataManager.save(saveContext);
-//        log.info("\t\tPay periods saved for year: {}", fiscalYear);
-//    }
+    private boolean isGenericTrainingActivityForGroup(Activity activity) {
+        String activityNumber = activity.getActivityNumber();
+        Group group = activity.getGroup();
+
+        if (activityNumber == null || group == null || group.getGroupCode() == null) {
+            return false;
+        }
+
+        return activityNumber.endsWith(GENERIC_TRAINING_SUFFIX)
+                && activityNumber.startsWith(group.getGroupCode());
+    }
+
+    private boolean isTrainingProject(Activity activity) {
+        return Boolean.TRUE.equals(activity.getTrainingProject());
+    }
+
+    /**
+     * ensure no new activities are assigned two-year-fund
+     *
+     * @param oldFund the old fund assigned to the activity, incl. JITF or FJC Foundation
+     * @return the new funds, never the two-year-fund
+     */
+    private Fund resolveFund(Fund oldFund) {
+        return twoYearFund.equals(oldFund) ? oneYearFund : oldFund;
+    }
+
+    // --------------------------------------------------------------------------------
+    // Create FIS entities for new fiscal year
+    // --------------------------------------------------------------------------------
+
+    private Appropriation buildAppropriation(String fiscalYear) {
+        Appropriation appropriation = dataManager.create(Appropriation.class);
+        appropriation.setBudgetFiscalYear(fiscalYear);
+        appropriation.setStatus(true);
+        appropriation.setOneYearAmount(BigDecimal.ZERO);
+        appropriation.setTwoYearAmount(BigDecimal.ZERO);
+        appropriation.setOneYearAdjustment(BigDecimal.ZERO);
+        appropriation.setTwoYearAdjustment(BigDecimal.ZERO);
+        appropriation.setReimbursedAmount(BigDecimal.ZERO);
+        return appropriation;
+    }
+
+    private ObjectCategory copyObjectCategory(ObjectCategory oldCategory, Appropriation newAppropriation) {
+        ObjectCategory newCategory = dataManager.create(ObjectCategory.class);
+        newCategory.setAppropriation(newAppropriation);
+        newCategory.setMajorObjectClass(oldCategory.getMajorObjectClass());
+        newCategory.setTitle(oldCategory.getTitle());
+        return newCategory;
+    }
+
+    private ObjectClass copyObjectClass(ObjectClass oldObjectClass, ObjectCategory newCategory) {
+        ObjectClass newObjectClass = dataManager.create(ObjectClass.class);
+        newObjectClass.setObjectCategory(newCategory);
+        newObjectClass.setBudgetObjectClass(oldObjectClass.getBudgetObjectClass());
+        newObjectClass.setTitle(oldObjectClass.getTitle());
+        return newObjectClass;
+    }
+
+    private Division copyDivision(Division oldDivision, Appropriation newAppropriation) {
+        Division newDivision = dataManager.create(Division.class);
+        newDivision.setAppropriation(newAppropriation);
+        newDivision.setFund(oldDivision.getFund());
+        newDivision.setDivisionCode(oldDivision.getDivisionCode());
+        newDivision.setTitle(oldDivision.getTitle());
+        newDivision.setShortTitle(oldDivision.getShortTitle());
+        newDivision.setBudgetOrg(oldDivision.getBudgetOrg());
+        newDivision.setOneYearAmount(BigDecimal.ZERO);
+        newDivision.setTwoYearAmount(BigDecimal.ZERO);
+        return newDivision;
+    }
+
+    private Branch copyBranch(Branch oldBranch, Division newDivision) {
+        Branch newBranch = dataManager.create(Branch.class);
+        newBranch.setDivision(newDivision);
+        newBranch.setBranchCode(oldBranch.getBranchCode());
+        newBranch.setTitle(oldBranch.getTitle());
+        newBranch.setSortCode(oldBranch.getSortCode());
+        return newBranch;
+    }
+
+    private Group copyGroup(Group oldGroup, Division newDivision) {
+        Group newGroup = dataManager.create(Group.class);
+        newGroup.setDivision(newDivision);
+        newGroup.setGroupCode(oldGroup.getGroupCode());
+        newGroup.setTitle(oldGroup.getTitle());
+        newGroup.setSortCode(oldGroup.getSortCode());
+        return newGroup;
+    }
+
+    private Activity copyActivity(Activity oldActivity,
+                                  Division newDivision,
+                                  Fund newFund,
+                                  Map<String, Branch> newBranchesByCode,
+                                  Map<String, Group> newGroupsByCode) {
+        Activity newActivity = dataManager.create(Activity.class);
+        newActivity.setDivision(newDivision);
+        newActivity.setFund(newFund);
+        newActivity.setActivityNumber(oldActivity.getActivityNumber());
+        newActivity.setTitle(oldActivity.getTitle());
+        newActivity.setSortCode(oldActivity.getSortCode());
+        newActivity.setGenericProjection(oldActivity.getGenericProjection());
+        newActivity.setTrainingProject(oldActivity.getTrainingProject());
+
+        if (isTrainingProject(oldActivity)) {
+            newActivity.setShortTitle(oldActivity.getShortTitle());
+            newActivity.setCity(oldActivity.getCity());
+            newActivity.setState(oldActivity.getState());
+            newActivity.setProgramDirector(oldActivity.getProgramDirector());
+        }
+
+        if (oldActivity.getBranch() != null) {
+            newActivity.setBranch(newBranchesByCode.get(oldActivity.getBranch().getBranchCode()));
+        }
+
+        if (oldActivity.getGroup() != null) {
+            newActivity.setGroup(newGroupsByCode.get(oldActivity.getGroup().getGroupCode()));
+        }
+
+        return newActivity;
+    }
 }
