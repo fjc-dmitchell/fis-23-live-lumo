@@ -242,6 +242,7 @@ public class SalaryProjectionsReportView extends StandardView {
 //                .withOutputType(reportOutputType)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
+                .inBackground(this)
                 .runAndShow();
 
         closeWithDefaultAction();

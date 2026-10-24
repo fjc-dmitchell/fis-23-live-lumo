@@ -161,6 +161,7 @@ public class EducationBranchReportView extends StandardView {
                 .withOutputType(ReportOutputType.PDF)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
+                .inBackground(this)
                 .runAndShow();
 
         closeWithDefaultAction();

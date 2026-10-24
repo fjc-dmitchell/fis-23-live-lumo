@@ -152,6 +152,7 @@ public class EducationProgramsReportView extends StandardView {
                 .withOutputType(ReportOutputType.XLSX)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
+                .inBackground(this)
                 .runAndShow();
 
         closeWithDefaultAction();
