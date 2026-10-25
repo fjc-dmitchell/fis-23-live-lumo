@@ -55,9 +55,9 @@ public class StatusOfFundsReportService {
     /**
      * Returns category data for used by PDF, Excel, and dashboard reports
      *
-     * @param appropriation
-     * @param scale
-     * @param showDefaultCategories
+     * @param appropriation         entity representing fiscal year budget appropriation
+     * @param scale                 number of decimal places to round to
+     * @param showDefaultCategories whether to include default categories
      * @return Category DTOs
      */
     private List<ObjectCategoryDto> prepareCategoryData(Appropriation appropriation,
@@ -165,9 +165,9 @@ public class StatusOfFundsReportService {
     /**
      * returns data used by dashboard reports
      *
-     * @param appropriation
-     * @param scale
-     * @param showDefaultCategories
+     * @param appropriation         entity representing fiscal year budget appropriation
+     * @param scale                 number of decimal places to round to
+     * @param showDefaultCategories whether to include default categories
      * @return Category DTOs
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryData(Appropriation appropriation,
@@ -195,8 +195,8 @@ public class StatusOfFundsReportService {
     /**
      * returns data used by dashboard spending chart, includes unspent funds data
      *
-     * @param appropriation
-     * @param scale
+     * @param appropriation         entity representing fiscal year budget appropriation
+     * @param scale                 number of decimal places to round to
      * @return Category DTOs
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryDataWithUnspent(Appropriation appropriation, int scale) {

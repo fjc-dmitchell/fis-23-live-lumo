@@ -24,6 +24,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static gov.fjc.fis.app.BigDecimalUtils.equalsIgnoreScale;
+
 @DisallowConcurrentExecution
 public class SyncEmployeeToPositionJob implements Job {
 
@@ -58,7 +60,6 @@ public class SyncEmployeeToPositionJob implements Job {
                     Position::getJobtitle, Position::setJobtitle),
             new FieldMapping<>("Regular/Temp", Employee::getRegTemp,
                     Position::getRegTemp, Position::setRegTemp),
-            // refactor paygroup to setId
             new FieldMapping<>("Pay Group", Employee::getPaygroup,
                     Position::getPaygroup, Position::setPaygroup),
             new FieldMapping<>("NTE date", Employee::getGvtApptExpirDt,
@@ -185,9 +186,9 @@ public class SyncEmployeeToPositionJob implements Job {
     }
 
     private boolean valuesEqual(Object oldValue, Object newValue) {
-        // the scale is 2 in Employee, 0 in Position, so use compareTo
+        // the scale is 2 in Employee, 0 in Position
         if (oldValue instanceof BigDecimal oldBd && newValue instanceof BigDecimal newBd) {
-            return oldBd.compareTo(newBd) == 0;
+            return equalsIgnoreScale(oldBd, newBd);
         }
         return Objects.equals(oldValue, newValue);
     }
