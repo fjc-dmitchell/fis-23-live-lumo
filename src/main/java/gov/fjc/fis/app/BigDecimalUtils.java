@@ -22,15 +22,12 @@ public final class BigDecimalUtils {
      * @param source    The collection of elements to aggregate.
      * @param filter    A predicate to filter elements before aggregation.
      * @param extractor A function to extract BigDecimal values from each element.
-     * @param <T>       The type of elements in the collection. Zero for null or empty collections.
+     * @param <T>       The type of elements in the collection. Zero for empty collections.
      * @return The aggregated BigDecimal value.
      */
     public static <T> BigDecimal sumFiltered(Collection<T> source,
                                              Predicate<? super T> filter,
                                              Function<? super T, BigDecimal> extractor) {
-        if (source == null) {
-            return BigDecimal.ZERO;
-        }
         return source.stream()
                 .filter(filter)
                 .map(extractor)
