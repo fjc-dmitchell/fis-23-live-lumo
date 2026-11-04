@@ -1,12 +1,15 @@
 package gov.fjc.fis.view.invoice;
 
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.router.Route;
 import gov.fjc.fis.entity.Invoice;
+import gov.fjc.fis.entity.Obligation;
 import gov.fjc.fis.event.SearchGridSelectedItemsEvent;
 import gov.fjc.fis.service.AppropriationService;
 import gov.fjc.fis.view.main.MainView;
 import gov.fjc.fis.view.search.CustomSearchFragment;
+import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.UiEventPublisher;
 import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.component.grid.DataGrid;
@@ -28,10 +31,14 @@ public class InvoiceListView extends StandardListView<Invoice> {
     @Autowired
     private AppropriationService appropriationService;
 
+    @Autowired
+    private DialogWindows dialogWindows;
     @ViewComponent
     private CustomSearchFragment searchFragment;
     @ViewComponent
     private DataGrid<Invoice> invoicesDataGrid;
+    @ViewComponent
+    private JmixButton editObligationBtn;
     @ViewComponent
     private JmixButton removeBtn;
 
@@ -62,13 +69,32 @@ public class InvoiceListView extends StandardListView<Invoice> {
     @Subscribe("invoicesDataGrid")
     protected void onInvoicesDataGridSelection(final SelectionEvent<DataGrid<Invoice>, Invoice> event) {
         var selectedItems = event.getAllSelectedItems();
-        if (selectedItems.size() == 1) {
-            var selectedItem = selectedItems.stream().findFirst();
-            removeBtn.setEnabled(appropriationService.isAppropriationOpen(selectedItem.get()));
-        } else {
-            removeBtn.setEnabled(false);
+        var singleSelection = selectedItems.size() == 1;
+
+        editObligationBtn.setEnabled(singleSelection);
+
+        removeBtn.setEnabled(
+                singleSelection
+                        && appropriationService.isAppropriationOpen(selectedItems.iterator().next())
+        );
+
+        uiEventPublisher.publishEvent(
+                new SearchGridSelectedItemsEvent(this, invoicesDataGrid, selectedItems.size()
+                )
+        );
+    }
+
+    @Subscribe(id = "editObligationBtn", subject = "clickListener")
+    public void onEditObligationBtnClick(ClickEvent<JmixButton> event) {
+        var invoice = invoicesDataGrid.getSingleSelectedItem();
+        var obligation = invoice != null ? invoice.getObligation() : null;
+
+        if (obligation == null) {
+            return;
         }
 
-        uiEventPublisher.publishEvent(new SearchGridSelectedItemsEvent(this, invoicesDataGrid, selectedItems.size()));
+        dialogWindows.detail(this, Obligation.class)
+                .editEntity(obligation)
+                .open();
     }
 }

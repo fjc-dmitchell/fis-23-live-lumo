@@ -30,6 +30,7 @@
             <button id="editBtn" action="activitiesDataGrid.edit"/>
             <button id="excelExportBtn" action="activitiesDataGrid.excelExport"/>
             <button id="removeBtn" action="activitiesDataGrid.remove"/>
+            <button id="showObligationsBtn" text="Show Obligations" enabled="false"/>
             <!--            <button id="openNewBtn"/>-->
             <gridColumnVisibility dataGrid="activitiesDataGrid" icon="COG"/>
             <!--            <button id="clearSettings" icon="REFRESH"/>-->
@@ -41,7 +42,7 @@
                   minHeight="20em"
                   dataContainer="activitiesDc"
                   columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" minWidth="1800px"
-                  selectionMode="SINGLE">
+                  selectionMode="SINGLE" aggregatable="true">
             <actions>
                 <action id="create" type="list_create"/>
                 <action id="edit" type="list_edit"/>
@@ -57,12 +58,27 @@
                 <column property="title" width="450px"/>
                 <column property="projectedAmount" textAlign="END" width="120px" header="Projected">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total projections for activities shown in grid">
+                        <formatter>
+                            <number format="#,##0"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="reimbursedAmount" textAlign="END" width="120px" header="Reimbursed">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total reimbursements for activities shown in grid">
+                        <formatter>
+                            <number format="#,##0"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="obligatedAmount" textAlign="END" width="120px" header="Obligated">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total obligations for activities shown in grid">
+                        <formatter>
+                            <number format="#,##0"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="branch.branchCode" header="Branch" textAlign="CENTER"/>
                 <column property="group.groupCode" header="Group" textAlign="CENTER"/>

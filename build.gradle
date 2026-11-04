@@ -1,5 +1,5 @@
 plugins {
-    id 'io.jmix' version '3.0.3'
+    id 'io.jmix' version '3.1.0'
     id 'java'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.4.1'
 }
@@ -8,12 +8,12 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'com.vaadin'
 
 jmix {
-    bomVersion = '3.0.3'
+    bomVersion = '3.1.0'
     projectId = 'fis'
 }
 
 group = 'gov.fjc'
-version = '2.3.16-LIVE'
+version = '2.3.19-LIVE-jmix-3.1'
 
 repositories {
     mavenCentral()

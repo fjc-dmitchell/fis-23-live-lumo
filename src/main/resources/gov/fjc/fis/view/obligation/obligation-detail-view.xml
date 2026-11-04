@@ -169,9 +169,10 @@
                                         <columns>
                                             <column property="invoiceNumber" flexGrow="1"/>
                                             <column property="invoiceDate" textAlign="END" width="130px" flexGrow="0"/>
+                                            <column property="paymentDate" header="Paid Date" textAlign="END" width="130px" flexGrow="0"/>
                                             <!--                                <column property="paymentDate" textAlign="END" width="130px" flexGrow="0"-->
                                             header="Pay Date" key="paydate"/>
-                                            <column property="amount" textAlign="END" width="140px" flexGrow="0">
+                                            <column property="amount" textAlign="END" width="120px" flexGrow="0">
                                                 <numberRenderer numberFormat="#,##0.00"/>
                                                 <aggregation type="SUM">
                                                     <formatter>

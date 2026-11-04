@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
       title="Fund Control Notices"
       focusComponent="fundControlNoticesDataGrid">
     <data>
         <collection id="fundControlNoticesDc"
                     class="gov.fjc.fis.entity.FundControlNotice">
-<!--            <fetchPlan extends="_base">-->
-<!--                <property name="obligation" fetchPlan="_base"/>-->
-<!--            </fetchPlan>-->
+            <!--            <fetchPlan extends="_base">-->
+            <!--                <property name="obligation" fetchPlan="_base"/>-->
+            <!--            </fetchPlan>-->
             <loader id="fundControlNoticesDl" readOnly="true"/>
-<!--                <query>-->
-<!--                    <![CDATA[select e from fis_FundControlNotice e]]>-->
-<!--                </query>-->
-<!--            </loader>-->
+            <!--                <query>-->
+            <!--                    <![CDATA[select e from fis_FundControlNotice e]]>-->
+            <!--                </query>-->
+            <!--            </loader>-->
         </collection>
     </data>
     <facets>
@@ -37,6 +36,7 @@
             <button id="editBtn" action="fundControlNoticesDataGrid.edit"/>
             <button id="excelExportBtn" action="fundControlNoticesDataGrid.excelExport"/>
             <button id="removeBtn" action="fundControlNoticesDataGrid.remove"/>
+            <button id="editObligationBtn" text="Edit Obligation" enabled="false"/>
             <gridColumnVisibility dataGrid="fundControlNoticesDataGrid" icon="COG"/>
             <simplePagination id="pagination" dataLoader="fundControlNoticesDl" autoLoad="true"
                               itemsPerPageDefaultValue="250"
@@ -46,7 +46,8 @@
                   minWidth="1290px"
                   minHeight="20em"
                   dataContainer="fundControlNoticesDc"
-                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" selectionMode="SINGLE">
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" selectionMode="SINGLE"
+                  aggregatable="true">
             <actions>
                 <action id="create" type="list_create"/>
                 <action id="edit" type="list_edit"/>
@@ -77,7 +78,14 @@
                 <column property="obligation.documentNumber" header="Document ID" width="130px"/>
                 <column property="obligation.objectClass.budgetObjectClass" header="BOC" width="90px"/>
                 <column property="fcnDate" header="FCN Date" textAlign="END" width="115px"/>
-                <column property="amount" textAlign="END" width="140px"/>
+                <column property="amount" textAlign="END" width="140px">
+                    <numberRenderer numberFormat="#,##0.00"/>
+                    <aggregation type="SUM" cellTitle="Total for FCNs shown in grid">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
+                </column>
                 <column property="travelStartDate" width="130px" textAlign="END" header="Travel Start"/>
                 <column property="travelEndDate" width="130px" textAlign="END" header="Travel End"/>
                 <column property="obligation.vendor" header="Vendor" width="395px"/>

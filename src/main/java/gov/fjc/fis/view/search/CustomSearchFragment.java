@@ -716,6 +716,13 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     }
 
     private void saveSearchParameters() {
+        if (hostEntityName.equals(OBLIGATION)) {
+            Object sessionValue = sessionData.getAttribute("ActivityObligations.activityIds");
+            if (sessionValue instanceof List<?> activityIds && !activityIds.isEmpty()) {
+                sessionData.setAttribute("ActivityObligations.activityIds", new ArrayList<Integer>());
+                return;
+            }
+        }
 
         if (sessionSearchParams == null) {
             sessionSearchParams = new HashMap<>();
@@ -788,7 +795,6 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     }
 
 
-
     @SuppressWarnings("unchecked")
     private static <K, V> Map<K, V> castToMap(Object obj) {
         return (Map<K, V>) obj;
@@ -804,6 +810,21 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
 //        sessionSearchParams = (Map<String, Object>) sessionData.getAttribute(hostEntityName.concat(".searchParams"));
         sessionSearchParams = castToMap(sessionData.getAttribute(hostEntityName.concat(".searchParams")));
         fiscalYears = appropriationService.getBfyFilterField(sessionData);
+
+        // special case for obligations associated with an activity
+        if (hostEntityName.equals(OBLIGATION)) {
+            Object sessionValue = sessionData.getAttribute("ActivityObligations.activityIds");
+            if (sessionValue instanceof List<?> activityIds && !activityIds.isEmpty()) {
+                hostLoader.setParameter("activityIdsFilterField", activityIds);
+                performSearch();
+
+                // not sure about below!
+                loadEntityComboBoxes();
+                searchYears = fiscalYears;
+
+                return;
+            }
+        }
 
         if (sessionSearchParams == null) {
             loadEntityComboBoxes();
@@ -888,6 +909,11 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     private void performSearch() {
         List<Condition> customConditions = new ArrayList<>();
         List<Condition> subFragmentConditions;
+
+        // for obligations associated with activity list
+        if (hostEntityName.equals(OBLIGATION)) {
+            customConditions.add(JpqlCondition.create("e.activity.id IN :activityIdsFilterField", activityJoin).skipNullOrEmpty());
+        }
 
         if (tabIdx != null && tabIdx.equals(2)) {
             customConditions.add(JpqlCondition.create("e.id in :idList", null).skipNullOrEmpty());

@@ -42,6 +42,7 @@
             <button id="editBtn" action="obligationsDataGrid.edit"/>
             <button id="excelExportBtn" action="obligationsDataGrid.excelExport"/>
             <button id="removeBtn" action="obligationsDataGrid.remove"/>
+            <button id="editActivityBtn" text="Edit Activity" enabled="false"/>
             <gridColumnVisibility dataGrid="obligationsDataGrid" icon="COG"/>
             <simplePagination id="pagination" dataLoader="obligationsDl" autoLoad="true" itemsPerPageDefaultValue="250"
                               itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
@@ -50,7 +51,7 @@
                   width="100%"
                   minHeight="20em"
                   dataContainer="obligationsDc"
-                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" aggregatable="true">
             <actions>
                 <action id="create" type="list_create"/>
                 <action id="edit" type="list_edit"/>
@@ -76,6 +77,11 @@
                 <column property="statusString" header="Status"/>
                 <column property="amount" textAlign="END" width="130px">
                     <numberRenderer numberFormat="#,##0.00"/>
+                    <aggregation type="SUM" cellTitle="Total for obligations shown in grid">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="documentDate" width="140px" textAlign="END"/>
                 <column property="processDate" width="140px" textAlign="END"/>

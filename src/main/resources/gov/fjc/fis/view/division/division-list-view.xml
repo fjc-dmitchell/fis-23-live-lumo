@@ -42,7 +42,7 @@
                   minHeight="20em"
                   dataContainer="divisionsDc"
                   columnReorderingAllowed="true"
-                  themeNames="column-borders compact row-stripes">
+                  themeNames="column-borders compact row-stripes" aggregatable="true">
             <actions>
                 <action id="createAction" type="list_create"/>
                 <action id="editAction" type="list_edit"/>
@@ -57,12 +57,27 @@
                 <column property="budgetOrg" width="120px"/>
                 <column property="oneYearAmount" header="One Year" textAlign="END" width="120px">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total one year allocations">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="twoYearAmount" header="Two Year" textAlign="END" width="120px">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total one year allocations">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="totalAmount" header="Total" textAlign="END" width="120px">
                     <numberRenderer numberFormat="#,##0"/>
+                    <aggregation type="SUM" cellTitle="Total allocations">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
                 </column>
                 <column property="sortCode" textAlign="END" width="100px"/>
             </columns>

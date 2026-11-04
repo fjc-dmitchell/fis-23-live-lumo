@@ -30,14 +30,15 @@
                                 property="name"
                                 operation="CONTAINS"
                                 operationEditable="true"
-                                dataLoader="vendorsDl"/>
+                                dataLoader="vendorsDl"
+                                width="35em"/>
                 <propertyFilter id="cityPropertyFilter"
                                 property="city"
                                 operation="CONTAINS"
                                 operationEditable="false"
                                 dataLoader="vendorsDl"/>
                 <propertyFilter property="vendorCode" operation="CONTAINS" dataLoader="vendorsDl"/>
-                <propertyFilter property="active" operation="EQUAL" dataLoader="vendorsDl"/>
+                <propertyFilter property="active" operation="EQUAL" dataLoader="vendorsDl" defaultValue="true"/>
             </hbox>
             <hbox>
                 <button id="clearSearchBtn" text="Clear"

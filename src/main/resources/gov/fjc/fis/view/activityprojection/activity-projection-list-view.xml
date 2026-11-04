@@ -44,21 +44,21 @@
             </properties>
         </fragment>
         <hbox id="buttonsPanel" classNames="buttons-panel">
-<!--            <button id="createBtn" action="activityProjectionsDataGrid.create"/>-->
+            <!--            <button id="createBtn" action="activityProjectionsDataGrid.create"/>-->
             <button id="editBtn" action="activityProjectionsDataGrid.edit"/>
             <button id="excelExportBtn" action="activityProjectionsDataGrid.excelExport"/>
-<!--            <button id="removeBtn" action="activityProjectionsDataGrid.remove"/>-->
+            <!--            <button id="removeBtn" action="activityProjectionsDataGrid.remove"/>-->
             <gridColumnVisibility dataGrid="activityProjectionsDataGrid" icon="COG"/>
             <simplePagination id="pagination" dataLoader="activityProjectionsDl" autoLoad="true"
                               itemsPerPageDefaultValue="250"
                               itemsPerPageVisible="true" itemsPerPageItems="250,500,1000"/>
         </hbox>
-<!--        width="1450px"-->
+        <!--        width="1450px"-->
         <dataGrid id="activityProjectionsDataGrid"
                   width="100%"
                   minHeight="20em"
                   dataContainer="activityProjectionsDc"
-                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes">
+                  columnReorderingAllowed="true" themeNames="column-borders compact row-stripes" aggregatable="true">
             <actions>
                 <action id="create" type="list_create"/>
                 <action id="edit" type="list_edit"/>
@@ -78,7 +78,13 @@
                 <column property="objectClass.budgetObjectClass" header="BOC" width="75px" visible="false"
                         flexGrow="0"/>
                 <column property="objectClass.titleAndCode" header="Object Class" width="350px" flexGrow="0"/>
-                <column property="amount" header="Projection" textAlign="END" flexGrow="0"/>
+                <column property="amount" header="Projection" textAlign="END" flexGrow="0">
+                    <aggregation type="SUM" cellTitle="Total Two Year allocations">
+                        <formatter>
+                            <number format="#,##0.00"/>
+                        </formatter>
+                    </aggregation>
+                </column>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">
