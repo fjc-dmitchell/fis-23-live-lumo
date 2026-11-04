@@ -37,8 +37,14 @@
                                 operation="CONTAINS"
                                 operationEditable="false"
                                 dataLoader="vendorsDl"/>
-                <propertyFilter property="vendorCode" operation="CONTAINS" dataLoader="vendorsDl"/>
-                <propertyFilter property="active" operation="EQUAL" dataLoader="vendorsDl" defaultValue="true"/>
+                <propertyFilter property="vendorCode"
+                                operation="CONTAINS"
+                                dataLoader="vendorsDl"/>
+                <propertyFilter id="activeFilter"
+                                property="active"
+                                operation="EQUAL"
+                                dataLoader="vendorsDl"
+                                defaultValue="true"/>
             </hbox>
             <hbox>
                 <button id="clearSearchBtn" text="Clear"

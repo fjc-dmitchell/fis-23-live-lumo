@@ -16,9 +16,6 @@ import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-
-
 @Route(value = "vendors", layout = MainView.class)
 @ViewController(id = "fis_Vendor.list")
 @ViewDescriptor(path = "vendor-list-view.xml")
@@ -29,6 +26,8 @@ public class VendorListView extends StandardListView<Vendor> {
     private UiComponents uiComponents;
     @ViewComponent
     private HorizontalLayout searchBox;
+    @ViewComponent
+    private PropertyFilter<Boolean> activeFilter;
 
     @Subscribe
     protected void onBeforeShow(final BeforeShowEvent event) {
@@ -53,6 +52,7 @@ public class VendorListView extends StandardListView<Vendor> {
                 ((PropertyFilter<?>) component).apply();
             }
         }
+        activeFilter.setValue(true);
     }
 
     @Supply(to = "vendorsDataGrid.active", subject = "renderer")
