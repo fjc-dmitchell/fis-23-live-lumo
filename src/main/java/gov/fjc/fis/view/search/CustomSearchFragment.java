@@ -294,8 +294,17 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
                 showActivityBtn.setText("Show Generic Activity");
                 break;
             case ACTIVITY_PROJECTION:
+                hostEntityClass = ActivityProjection.class;
+                hostLoader.setFetchPlan("activityProjection-search-fetch-plan");
+                hostEntityQuery += " ORDER BY e.activity.division.appropriation.budgetFiscalYear, e.activity.division.divisionCode, e.activity.activityNumber";
+                fundJoin = "JOIN {E}.activity.fund f";
                 appropriationJoin = "JOIN {E}.activity act JOIN act.division dv JOIN dv.appropriation app";
                 divisionJoin = "JOIN {E}.activity act JOIN act.division dv";
+                categoryJoin = "JOIN {E}.objectClass obj JOIN obj.objectCategory cat";
+                objectClassJoin = "JOIN {E}.objectClass obj";
+                branchJoin = "JOIN {E}.activity.branch bch";
+                groupJoin = "JOIN {E}.activity.group grp";
+                configureSubFragment(ActivityProjectionSearchFragment.class, "activityProjectionsDc", "activityProjectionsDl");
                 break;
             case ACTIVITY_REIMBURSEMENT:
                 appropriationJoin = "JOIN {E}.activity act JOIN act.division dv JOIN dv.appropriation app";

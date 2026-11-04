@@ -86,4 +86,31 @@
             <property name="costOrg" fetchPlan="_base"/>
         </property>
     </fetchPlan>
+    <fetchPlan entity="fis_ActivityProjection" name="activityProjection-search-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_instance_name">
+            <property name="fund" fetchPlan="_base">
+                <property name="titleAndCode"/>
+            </property>
+            <property name="branch" fetchPlan="_base">
+                <property name="titleAndCode"/>
+            </property>
+            <property name="group" fetchPlan="_base">
+                <property name="titleAndCode"/>
+            </property>
+            <property name="costOrg" fetchPlan="_base"/>
+            <property name="title"/>
+            <property name="city"/>
+            <property name="state"/>
+            <property name="startDate"/>
+            <property name="endDate"/>
+            <property name="trainingProject"/>
+            <property name="canceled"/>
+        </property>
+        <property name="objectClass" fetchPlan="_instance_name">
+            <property name="objectCategory" fetchPlan="_base">
+                <property name="titleAndCode"/>
+            </property>
+            <property name="titleAndCode"/>
+        </property>
+    </fetchPlan>
 </fetchPlans>

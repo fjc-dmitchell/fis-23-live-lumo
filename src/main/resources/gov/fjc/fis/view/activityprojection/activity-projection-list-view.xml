@@ -5,25 +5,6 @@
     <data>
         <collection id="activityProjectionsDc"
                     class="gov.fjc.fis.entity.ActivityProjection">
-            <fetchPlan>
-                <property name="activity" fetchPlan="_base">
-                    <property name="fund" fetchPlan="_base">
-                        <property name="titleAndCode"/>
-                    </property>
-                    <property name="branch" fetchPlan="_base">
-                        <property name="titleAndCode"/>
-                    </property>
-                    <property name="group" fetchPlan="_base">
-                        <property name="titleAndCode"/>
-                    </property>
-                </property>
-                <property name="objectClass" fetchPlan="_base">
-                    <property name="titleAndCode"/>
-                    <property name="objectCategory" fetchPlan="_base"/>
-                </property>
-                <property name="amount"/>
-                <property name="createdByString"/>
-            </fetchPlan>
             <loader id="activityProjectionsDl" readOnly="true"/>
         </collection>
     </data>
@@ -66,19 +47,21 @@
                 <action id="remove" type="list_remove"/>
             </actions>
             <columns resizable="true">
-                <column property="activity.fund.fundCode" header="Fund" width="65px" visible="false" flexGrow="0"/>
+                <column property="activity.fund.fundCode" header="Fund" width="90px" flexGrow="0"/>
                 <column property="activity.division.appropriation.budgetFiscalYear" header="BFY" width="70px"
                         flexGrow="0"/>
-                <column property="activity.division.titleAndCode" header="Division" width="350px" flexGrow="0"/>
-                <column property="activity.titleAndCode" header="Activity" width="350px" flexGrow="1"/>
-                <column property="activity.group.titleAndCode" header="Group" width="350px" visible="false"
+                <column property="activity.division.divisionCode" header="Division" textAlign="CENTER" width="90px"
                         flexGrow="0"/>
-                <column property="activity.branch.titleAndCode" header="Branch" width="350px" visible="false"
+                <column property="activity.activityNumber" header="Activity" textAlign="CENTER" width="90px"
                         flexGrow="0"/>
-                <column property="objectClass.budgetObjectClass" header="BOC" width="75px" visible="false"
+                <column property="activity.title" header="Title" width="350px" flexGrow="1"/>
+                <column property="activity.group.groupCode" header="Group" textAlign="CENTER" width="90px"
                         flexGrow="0"/>
-                <column property="objectClass.titleAndCode" header="Object Class" width="350px" flexGrow="0"/>
-                <column property="amount" header="Projection" textAlign="END" flexGrow="0">
+                <column property="activity.branch.branchCode" header="Branch" textAlign="CENTER" width="90px"
+                        flexGrow="0"/>
+                <column property="objectClass.budgetObjectClass" header="BOC" textAlign="CENTER" width="75px"
+                        flexGrow="0"/>
+                <column property="amount" header="Projection" textAlign="END" width="120px" flexGrow="0">
                     <aggregation type="SUM" cellTitle="Total Two Year allocations">
                         <formatter>
                             <number format="#,##0.00"/>
@@ -87,6 +70,7 @@
                 </column>
             </columns>
         </dataGrid>
+
         <hbox id="lookupActions" visible="false">
             <button id="selectBtn" action="selectAction"/>
             <button id="discardBtn" action="discardAction"/>
