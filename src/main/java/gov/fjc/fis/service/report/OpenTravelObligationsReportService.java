@@ -44,8 +44,8 @@ public class OpenTravelObligationsReportService {
 
         var travelAuthorizationId = DocumentType.TRAVEL_AUTHORIZATION.getId();
         var obligations = dataManager.loadValues(
-                        "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, a.activityNumber,"
-                                + " a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
+                        "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, dv.budgetOrg,"
+                                + " a.activityNumber, a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
                                 + " e.lineNumber, COALESCE(a.endDate, e.travelEndDate)"
                                 + " FROM fis_Obligation e"
                                 + " INNER JOIN fis_Activity a ON a=e.activity"
@@ -65,7 +65,7 @@ public class OpenTravelObligationsReportService {
                 .parameter("anyEndDate", eDate == null)
                 .parameter("beginDate", bDate)
                 .parameter("endDate", eDate)
-                .properties("fundCode", "budgetFiscalYear", "divisionCode", "activityNumber", "title",
+                .properties("fundCode", "budgetFiscalYear", "divisionCode", "budgetOrg", "activityNumber", "title",
                         "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "endDate")
                 .list();
 
@@ -74,8 +74,8 @@ public class OpenTravelObligationsReportService {
                     divisionService.fetchMandatoryDivision(priorAppropriation)).filter(Objects::nonNull).toList();
 
             var obbbaObligations = dataManager.loadValues(
-                            "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, a.activityNumber,"
-                                    + " a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
+                            "SELECT f.fundCode, app.budgetFiscalYear, dv.divisionCode, dv.budgetOrg,"
+                                    + " a.activityNumber, a.title, e.documentNumber, e.documentDate, e.vendor, e.amount,"
                                     + " e.lineNumber, COALESCE(a.endDate, e.travelEndDate)"
                                     + " FROM fis_Obligation e"
                                     + " INNER JOIN fis_Activity a ON a=e.activity"
@@ -97,7 +97,7 @@ public class OpenTravelObligationsReportService {
                     .parameter("anyEndDate", eDate == null)
                     .parameter("beginDate", bDate)
                     .parameter("endDate", eDate)
-                    .properties("fundCode", "budgetFiscalYear", "divisionCode", "activityNumber", "title",
+                    .properties("fundCode", "budgetFiscalYear", "divisionCode", "budgetOrg", "activityNumber", "title",
                             "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "endDate")
                     .list();
 
@@ -131,6 +131,7 @@ public class OpenTravelObligationsReportService {
             dto.setFundCode(kvEntity.getValue("fundCode"));
             dto.setBudgetFiscalYear(kvEntity.getValue("budgetFiscalYear"));
             dto.setDivisionCode(kvEntity.getValue("divisionCode"));
+            dto.setBudgetOrg(kvEntity.getValue("budgetOrg"));
             dto.setActivityNumber(kvEntity.getValue("activityNumber"));
             dto.setActivityTitle(kvEntity.getValue("title"));
             dto.setDocumentNumber(kvEntity.getValue("documentNumber"));

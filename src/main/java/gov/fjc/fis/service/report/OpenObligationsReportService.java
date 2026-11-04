@@ -39,7 +39,7 @@ public class OpenObligationsReportService {
         var travelAuthorizationId = DocumentType.TRAVEL_AUTHORIZATION.getId();
         var obligations = dataManager.loadValues(
                         "SELECT e.amount, e.documentNumber, e.vendor, a.activityNumber, a.title, a.city,"
-                                + " a.state, a.endDate, e.lineNumber"
+                                + " a.state, a.endDate, e.lineNumber, a.fund.fundCode, a.division.budgetOrg"
                                 + " FROM fis_Obligation e"
                                 + " INNER JOIN fis_Activity a ON a=e.activity"
                                 + " WHERE ((:anyBranch = true AND a.division = :division)"
@@ -54,7 +54,7 @@ public class OpenObligationsReportService {
                 .parameter("division", division)
                 .parameter("numberOfDays", numberOfDays)
                 .parameter("endDate", endDate)
-                .properties("amount", "docid", "vendor", "actnum", "title", "city", "state", "enddate", "lineno")
+                .properties("amount", "docid", "vendor", "actnum", "title", "city", "state", "enddate", "lineno", "fundCode", "budgetOrg")
                 .list();
 
         obligations.sort(Comparator.comparing((KeyValueEntity o) -> (LocalDate) o.getValue("enddate"),
@@ -82,6 +82,8 @@ public class OpenObligationsReportService {
             dto = dataManager.create(ObligationDto.class);
             dto.setAmount(kvEntity.getValue("amount"));
             dto.setDocumentNumber(kvEntity.getValue("docid"));
+            dto.setFundCode(kvEntity.getValue("fundCode"));
+            dto.setBudgetOrg(kvEntity.getValue("budgetOrg"));
             dto.setVendor(kvEntity.getValue("vendor"));
             dto.setActivityNumber(kvEntity.getValue("actnum"));
             dto.setActivityTitle(kvEntity.getValue("title"));

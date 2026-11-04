@@ -30,6 +30,8 @@ public class ObligationDto {
 
     private String divisionTitle;
 
+    private String budgetOrg;
+
     private Integer activityId;
 
     private String activityNumber;
@@ -99,6 +101,14 @@ public class ObligationDto {
     private BigDecimal priorTwoYearObligated = BigDecimal.ZERO;
 
     private BigDecimal priorTwoYearDisbursed = BigDecimal.ZERO;
+
+    public String getBudgetOrg() {
+        return budgetOrg;
+    }
+
+    public void setBudgetOrg(String budgetOrg) {
+        this.budgetOrg = budgetOrg;
+    }
 
     public DocumentType getDocumentType() {
         return documentType == null ? null : DocumentType.fromId(documentType);
