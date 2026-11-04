@@ -5,7 +5,12 @@
         <instance id="obligationDc"
                   class="gov.fjc.fis.entity.Obligation">
             <fetchPlan extends="_base">
-                <property name="activity" fetchPlan="_base"/>
+                <property name="activity" fetchPlan="_base">
+                    <property name="division" fetchPlan="_instance_name">
+                        <property name="budgetOrg"/>
+                    </property>
+                    <property name="fund" fetchPlan="_base"/>
+                </property>
                 <property name="objectClass" fetchPlan="_base">
                     <property name="titleAndCode"/>
                 </property>
@@ -39,16 +44,16 @@
         </collection>
     </data>
     <facets>
-<!--                <dataLoadCoordinator auto="true"/>-->
+        <!--                <dataLoadCoordinator auto="true"/>-->
     </facets>
     <actions>
         <action id="saveAction" type="detail_saveClose"/>
         <action id="closeAction" type="detail_close"/>
     </actions>
     <layout expand="contentBox">
-<!--    <layout alignItems="STRETCH"-->
-<!--            padding="false" spacing="false"-->
-<!--            expand="contentBox">-->
+        <!--    <layout alignItems="STRETCH"-->
+        <!--            padding="false" spacing="false"-->
+        <!--            expand="contentBox">-->
         <vbox id="contentBox" classNames="overflow-auto" padding="false">
 
             <div classNames="contrast-panel">
@@ -58,10 +63,18 @@
                             <formLayout id="obligationForm" dataContainer="obligationDc">
                                 <responsiveSteps>
                                     <responsiveStep minWidth="0" columns="1"/>
-                                    <responsiveStep minWidth="45em" columns="2"/>
+                                    <responsiveStep minWidth="38em" columns="2"/>
                                 </responsiveSteps>
-                                <textField id="budgetFiscalYearField" width="9em"
-                                           label="Budget Fiscal Year" datatype="string" readOnly="true"/>
+                                <hbox>
+                                    <textField id="budgetFiscalYearField" width="30%"
+                                               label="Fiscal Year" datatype="string" readOnly="true"/>
+                                    <textField id="fundField" width="30%" property="activity.fund.fundCode"
+                                               label="Fund" datatype="string" readOnly="true"
+                                               dataContainer="obligationDc"/>
+                                    <textField id="budgetOrgField" width="30%" property="activity.division.budgetOrg"
+                                               label="Budget Org" datatype="string" readOnly="true"
+                                               dataContainer="obligationDc"/>
+                                </hbox>
                                 <entityComboBox id="divisionField" itemsContainer="divisionsDc"
                                                 metaClass="fis_Division" label="Division"/>
                                 <entityComboBox id="categoryField" itemsContainer="categoriesDc"
@@ -80,11 +93,11 @@
                             <formLayout id="obligationForm2" dataContainer="obligationDc">
                                 <responsiveSteps>
                                     <responsiveStep minWidth="0" columns="1"/>
-                                    <responsiveStep minWidth="45em" columns="2"/>
+                                    <responsiveStep minWidth="38em" columns="2"/>
                                 </responsiveSteps>
                                 <hbox>
                                     <datePicker id="documentDateField" property="documentDate" label="Document Date"
-                                                 dataContainer="obligationDc" width="45%"/>
+                                                dataContainer="obligationDc" width="45%"/>
                                     <datePicker id="processDateField" property="processDate" label="Process Date"
                                                 dataContainer="obligationDc" width="45%"/>
                                 </hbox>
@@ -101,22 +114,22 @@
 
                                 <textField id="einField" property="ein"/>
 
-                                <hbox >
-                                        <textField id="vendorCodeField" property="vendorCode"
-                                                   dataContainer="obligationDc" width="45%"
-                                                   label="Vendor Code"/>
-                                        <textField id="addressCodeField" property="addressCode"
-                                                   dataContainer="obligationDc" width="45%"
-                                                   label="Address Code"/>
-                                    </hbox>
-                                    <hbox  >
-                                        <datePicker id="travelStartDateField" property="travelStartDate"
-                                                    dataContainer="obligationDc" width="45%"
-                                                    label="Travel Start Date"/>
-                                        <datePicker id="travelEndDateField" property="travelEndDate"
-                                                    dataContainer="obligationDc" width="45%"
-                                                    label="Travel End Date"/>
-                                    </hbox>
+                                <hbox>
+                                    <textField id="vendorCodeField" property="vendorCode"
+                                               dataContainer="obligationDc" width="45%"
+                                               label="Vendor Code"/>
+                                    <textField id="addressCodeField" property="addressCode"
+                                               dataContainer="obligationDc" width="45%"
+                                               label="Address Code"/>
+                                </hbox>
+                                <hbox>
+                                    <datePicker id="travelStartDateField" property="travelStartDate"
+                                                dataContainer="obligationDc" width="45%"
+                                                label="Travel Start Date"/>
+                                    <datePicker id="travelEndDateField" property="travelEndDate"
+                                                dataContainer="obligationDc" width="45%"
+                                                label="Travel End Date"/>
+                                </hbox>
 
                                 <textArea id="memoField" property="memo" colspan="2"/>
 
@@ -169,7 +182,8 @@
                                         <columns>
                                             <column property="invoiceNumber" flexGrow="1"/>
                                             <column property="invoiceDate" textAlign="END" width="130px" flexGrow="0"/>
-                                            <column property="paymentDate" header="Paid Date" textAlign="END" width="130px" flexGrow="0"/>
+                                            <column property="paymentDate" header="Paid Date" textAlign="END"
+                                                    width="130px" flexGrow="0"/>
                                             <!--                                <column property="paymentDate" textAlign="END" width="130px" flexGrow="0"-->
                                             header="Pay Date" key="paydate"/>
                                             <column property="amount" textAlign="END" width="120px" flexGrow="0">
@@ -238,7 +252,7 @@
             </vbox>
 
         </vbox>
-            <p id="createdByString"/>
+        <p id="createdByString"/>
         <hbox id="detailActions"
               classNames="px-m py-s bg-contrast-5">
             <button id="saveAndCloseBtn" action="saveAction"/>

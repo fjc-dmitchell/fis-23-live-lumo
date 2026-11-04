@@ -10,6 +10,12 @@
                     <property name="fund" fetchPlan="_base"/>
                     <property name="branch" fetchPlan="_base"/>
                     <property name="group" fetchPlan="_base"/>
+                    <property name="costOrg" fetchPlan="_base">
+                        <property name="budgetOrg"/>
+                    </property>
+                    <property name="division" fetchPlan="_base">
+                        <property name="budgetOrg"/>
+                    </property>
                 </property>
                 <property fetchPlan="_base" name="objectClass">
                     <property fetchPlan="_base" name="objectCategory"/>
@@ -64,7 +70,8 @@
                 <column property="aoSyncDate" header="Sync Date" visible="false"/>
                 <column property="activity.division.appropriation.budgetFiscalYear" header="BFY" width="70px"/>
                 <column property="activity.division.divisionCode" header="Division" width="90px" textAlign="CENTER"/>
-                <column property="activity.costOrg.divisionCode" header="Cost Org" width="95px" textAlign="CENTER" visible="false"/>
+                <column property="activity.division.budgetOrg" header="Budget Org" width="95px" textAlign="CENTER" visible="false"/>
+                <column property="activity.costOrg.budgetOrg" header="Cost Org" width="95px" textAlign="CENTER" visible="false"/>
                 <column property="objectClass.budgetObjectClass" header="BOC"/>
                 <column property="documentNumber" header="Document ID" width="130px"/>
                 <column property="activity.activityNumber" header="Activity"/>
