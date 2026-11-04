@@ -18,8 +18,6 @@ import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Optional;
-
 @Route(value = "obligations", layout = MainView.class)
 @ViewController("fis_Obligation.list")
 @ViewDescriptor("obligation-list-view.xml")
@@ -123,9 +121,11 @@ public class ObligationListView extends StandardListView<Obligation> {
 //                                .open());
 //    }
 
-    @Install(to = "obligationsDataGrid.costOrg", subject = "partNameGenerator")
-    protected String obligationsDataGridCostOrgPartNameGenerator(final Obligation obligation) {
-        var costOrg = obligation.getCostOrg();
-        return costOrg == null ? null : costOrg.getBudgetOrg();
-    }
+// Doug removed 11/4/2026. We need to trust the activity cost org. Perhaps add a check
+// in the JIFMS processing?
+//    @Install(to = "obligationsDataGrid.costOrg", subject = "partNameGenerator")
+//    protected String obligationsDataGridCostOrgPartNameGenerator(final Obligation obligation) {
+//        var costOrg = obligation.getCostOrg();
+//        return costOrg == null ? null : costOrg.getBudgetOrg();
+//    }
 }

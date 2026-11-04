@@ -102,8 +102,8 @@
                 <column property="activity.endDate" width="140px" textAlign="END" header="Program End"
                         visible="false"/>
                 <column property="bpoString" header="BPO"/>
-                <column property="budgetOrg" visible="false"/>
-                <column property="costOrg" visible="false"/>
+<!--                <column property="budgetOrg" visible="false"/>-->
+<!--                <column property="costOrg" visible="false"/>-->
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">
