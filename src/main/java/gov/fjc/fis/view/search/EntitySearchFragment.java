@@ -13,6 +13,7 @@ import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,8 @@ public abstract class EntitySearchFragment extends Fragment<VerticalLayout> {
     @ViewComponent
     private VerticalLayout root;
 
-//    private final List<Condition> propertyFilterConditions = new ArrayList<>();
     protected final List<PropertyFilter<?>> propertyFilters = new ArrayList<>();
+    protected final Map<PropertyFilter<?>, PropertyFilter.Operation> defaultOperations = new HashMap<>();
 
     @Subscribe
     protected void onReady(final ReadyEvent event) {
@@ -30,17 +31,11 @@ public abstract class EntitySearchFragment extends Fragment<VerticalLayout> {
             if (component instanceof PropertyFilter<?> propertyFilter) {
 //                addFilterCondition(propertyFilter);
                 propertyFilters.add(propertyFilter);
+                defaultOperations.put(propertyFilter, propertyFilter.getOperation());
             }
         }
         additionalFragmentActions();
     }
-
-//    private void addFilterCondition(PropertyFilter<?> filter) {
-////        filter.setAutoApply(false);
-////        filter.setLabelPosition(SupportsLabelPosition.LabelPosition.TOP);
-//        propertyFilters.add(filter);
-////        propertyFilterConditions.add(filter.getQueryCondition());
-//    }
 
     protected void additionalFragmentActions() {
         // subclass may need to perform additional actions
@@ -60,21 +55,13 @@ public abstract class EntitySearchFragment extends Fragment<VerticalLayout> {
     public void clearPropertyFilters() {
         for (PropertyFilter<?> filter : propertyFilters) {
             filter.clear();
+            filter.setOperation(defaultOperations.get(filter));
         }
     }
 
-    // new - used to set query params
     public List<PropertyFilter<?>> getPropertyFilters() {
         return propertyFilters;
     }
-
-//    public void setPropertFilters(QueryParameters queryParameters) {
-//            Map<String, List<String>> parametersMap = queryParameters.getParameters();
-//
-//            for(PropertyFilter<?> filter : propertyFilters) {
-//               filter.getParent();
-//            }
-//    }
 
     public abstract void setPropertyFilters(Map<String, Object> filters);
 
