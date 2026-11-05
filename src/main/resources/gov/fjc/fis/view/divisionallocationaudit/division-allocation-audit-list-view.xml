@@ -9,7 +9,7 @@
         </collection>
     </data>
     <facets>
-<!--        <settings auto="true"/>-->
+        <settings auto="true"/>
         <dataLoadCoordinator auto="true"/>
         <urlQueryParameters>
             <pagination component="pagination"/>
