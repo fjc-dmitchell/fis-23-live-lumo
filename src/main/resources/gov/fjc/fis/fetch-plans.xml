@@ -113,4 +113,19 @@
             <property name="titleAndCode"/>
         </property>
     </fetchPlan>
+    <fetchPlan entity="fis_ActivityProjectionAudit" name="activityProjectionAudit-search-fetch-plan" extends="_base">
+        <property name="activity" fetchPlan="_instance_name">
+            <property name="fund" fetchPlan="_base"/>
+            <property name="branch" fetchPlan="_base"/>
+            <property name="group" fetchPlan="_base"/>
+            <property name="costOrg" fetchPlan="_base"/>
+            <property name="title"/>
+            <property name="startDate"/>
+            <property name="endDate"/>
+            <property name="trainingProject"/>
+            <property name="canceled"/>
+        </property>
+        <property name="auditDate"/>
+        <property name="changeAmount"/>
+    </fetchPlan>
 </fetchPlans>

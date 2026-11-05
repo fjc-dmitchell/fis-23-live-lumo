@@ -192,10 +192,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
      * host view constants
      */
     private static final String DIVISION = "fis_Division";
+    private static final String DIVISION_ALLOCATION_AUDIT = "fis_DivisionAllocationAudit";
     private static final String BRANCH = "fis_Branch";
     private static final String GROUP = "fis_Group";
     private static final String ACTIVITY = "fis_Activity";
     private static final String ACTIVITY_PROJECTION = "fis_ActivityProjection";
+    private static final String ACTIVITY_PROJECTION_AUDIT = "fis_ActivityProjectionAudit";
     private static final String ACTIVITY_REIMBURSEMENT = "fis_ActivityReimbursement";
     private static final String OBLIGATION = "fis_Obligation";
     private static final String INVOICE = "fis_Invoice";
@@ -306,6 +308,19 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
                 groupJoin = "JOIN {E}.activity.group grp";
                 configureSubFragment(ActivityProjectionSearchFragment.class, "activityProjectionsDc", "activityProjectionsDl");
                 break;
+            case ACTIVITY_PROJECTION_AUDIT:
+                hostEntityClass = ActivityProjectionAudit.class;
+                hostLoader.setFetchPlan("activityProjectionAudit-search-fetch-plan");
+                hostEntityQuery += " ORDER BY e.activity.division.appropriation.budgetFiscalYear, e.activity.division.divisionCode, e.activity.activityNumber, e.objectClass.budgetObjectClass, e.createdDate DESC";
+                fundJoin = "JOIN {E}.activity.fund f";
+                appropriationJoin = "JOIN {E}.activity act JOIN act.division dv JOIN dv.appropriation app";
+                divisionJoin = "JOIN {E}.activity act JOIN act.division dv";
+                categoryJoin = "JOIN {E}.objectClass obj JOIN obj.objectCategory cat";
+                objectClassJoin = "JOIN {E}.objectClass obj";
+                branchJoin = "JOIN {E}.activity.branch bch";
+                groupJoin = "JOIN {E}.activity.group grp";
+                configureSubFragment(ActivityProjectionAuditSearchFragment.class, "activityProjectionAuditsDc", "activityProjectionAuditsDl");
+                break;
             case ACTIVITY_REIMBURSEMENT:
                 appropriationJoin = "JOIN {E}.activity act JOIN act.division dv JOIN dv.appropriation app";
                 divisionJoin = "JOIN {E}.activity act JOIN act.division dv";
@@ -358,6 +373,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
                 hostEntityQuery = "SELECT dv FROM fis_Division dv";
 //                hostEntityQuery = "SELECT e FROM  e ORDER BY e.appropriation.budgetFiscalYear, e.divisionCode";
                 fundJoin = "JOIN dv.fund f";
+                break;
+            case DIVISION_ALLOCATION_AUDIT:
+                hostEntityClass = DivisionAllocationAudit.class;
+                appropriationJoin = "JOIN {E}.division dv JOIN dv.appropriation app";
+                divisionJoin = "JOIN {E}.division d";
+                hostEntityQuery += " ORDER BY e.division.appropriation.budgetFiscalYear, e.division.divisionCode";
                 break;
             case BRANCH:
                 hostEntityQuery += " ORDER BY e.division.appropriation.budgetFiscalYear, e.division.divisionCode, e.branchCode";

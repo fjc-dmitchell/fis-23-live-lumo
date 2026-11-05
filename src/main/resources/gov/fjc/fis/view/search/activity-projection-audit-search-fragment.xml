@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<fragment xmlns="http://jmix.io/schema/flowui/fragment">
+    <data>
+        <collection id="activityProjectionAuditsDc" class="gov.fjc.fis.entity.ActivityProjectionAudit" provided="true">
+            <loader id="activityProjectionAuditsDl" readOnly="true" provided="true"/>
+        </collection>
+    </data>
+    <content>
+        <vbox id="root" padding="false" spacing="false">
+            <hbox alignItems="CENTER">
+                <propertyFilter id="actnumSearch" property="activity.activityNumber" operation="STARTS_WITH"
+                                dataLoader="activityProjectionAuditsDl" label="Activity Number" width="17em"
+                                parameterName="act"
+                                autoApply="false"/>
+                <propertyFilter id="titleSearch" property="activity.title" operation="CONTAINS"
+                                dataLoader="activityProjectionAuditsDl"
+                                label="Title" width="25em" parameterName="title" autoApply="false"/>
+                <propertyFilter id="trainingSearch" property="activity.trainingProject" operation="EQUAL"
+                                dataLoader="activityProjectionAuditsDl" label="Training Project" width="15em"
+                                parameterName="training" autoApply="false"/>
+                <propertyFilter id="canceledProgramSearch" property="activity.canceled" operation="EQUAL"
+                                dataLoader="activityProjectionAuditsDl" label="Canceled Program" width="15em"
+                                parameterName="canceled" autoApply="false"/>
+            </hbox>
+            <hbox alignItems="CENTER">
+                <span text="Branch"/>
+                <hbox id="branchBox" spacing="false"/>
+                <span text="Group"/>
+                <hbox id="groupBox" spacing="false"/>
+            </hbox>
+            <hbox>
+                <propertyFilter id="newAmountSearch" property="newAmount" operation="GREATER_OR_EQUAL"
+                                operationEditable="true" dataLoader="activityProjectionAuditsDl" label="New projection"
+                                autoApply="false"/>
+                <propertyFilter id="oldAmountSearch" property="oldAmount" operation="GREATER_OR_EQUAL"
+                                operationEditable="true" dataLoader="activityProjectionAuditsDl" label="Old projection"
+                                autoApply="false"/>
+                <propertyFilter id="programStartSearch" property="activity.startDate" operation="GREATER_OR_EQUAL"
+                                dataLoader="activityProjectionAuditsDl" label="Program Start Date"
+                                operationEditable="true"
+                                autoApply="false"/>
+                <propertyFilter id="programEndSearch" property="activity.endDate" operation="LESS_OR_EQUAL"
+                                dataLoader="activityProjectionAuditsDl" label="Program End Date"
+                                operationEditable="true"
+                                autoApply="false"/>
+            </hbox>
+            <hbox id="objectClassBox" alignItems="CENTER">
+                <span text="Object Category"/>
+                <hbox id="mocBox" spacing="false"/>
+                <span text="Object Class"/>
+                <hbox id="bocBox" spacing="false"/>
+            </hbox>
+        </vbox>
+    </content>
+</fragment>
