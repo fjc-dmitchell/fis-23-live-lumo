@@ -9,25 +9,26 @@ import gov.fjc.fis.service.AppropriationService;
 import gov.fjc.fis.service.DivisionService;
 import io.jmix.core.DataManager;
 import io.jmix.core.entity.KeyValueEntity;
-import jakarta.persistence.TemporalType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component("fis_OpenTravelObligationsReportService")
 public class OpenTravelObligationsReportService {
-    @Autowired
-    private AppropriationService appropriationService;
-    @Autowired
-    private DivisionService divisionService;
-    @Autowired
-    private DataManager dataManager;
+
+    private final DataManager dataManager;
+    private final AppropriationService appropriationService;
+    private final DivisionService divisionService;
+
+    public OpenTravelObligationsReportService(DataManager dataManager, AppropriationService appropriationService, DivisionService divisionService) {
+        this.dataManager = dataManager;
+        this.appropriationService = appropriationService;
+        this.divisionService = divisionService;
+    }
 
     public List<KeyValueEntity> getOpenTravelObligations(Appropriation appropriation, Set<Division> divisions,
                                                          LocalDate bDate, LocalDate eDate,

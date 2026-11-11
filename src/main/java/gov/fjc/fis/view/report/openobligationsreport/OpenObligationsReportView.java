@@ -28,6 +28,7 @@ import java.util.List;
 @Route(value = "open-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenObligationsReportView")
 @ViewDescriptor(path = "open-obligations-report-view.xml")
+@DialogMode(closeOnEsc = true)
 public class OpenObligationsReportView extends StandardView {
     @Autowired
     private SessionData sessionData;
@@ -53,6 +54,8 @@ public class OpenObligationsReportView extends StandardView {
     private DivisionService divisionService;
     @Autowired
     private BranchService branchService;
+    @Autowired
+    private OpenObligationsReportService openObligationsReportService;
 
     /**
      * screen components
@@ -71,8 +74,7 @@ public class OpenObligationsReportView extends StandardView {
     Appropriation appropriation;
     Division division;
     Branch branch;
-    @Autowired
-    private OpenObligationsReportService openObligationsReportService;
+
 
     @Subscribe
     protected void onBeforeShow(final BeforeShowEvent event) {

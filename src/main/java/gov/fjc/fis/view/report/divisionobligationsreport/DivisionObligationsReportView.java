@@ -27,6 +27,7 @@ import java.util.List;
 @Route(value = "division-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_DivisionObligationsReportView")
 @ViewDescriptor(path = "division-obligations-report-view.xml")
+@DialogMode(closeOnEsc = true)
 public class DivisionObligationsReportView extends StandardView {
     @Autowired
     private SessionData sessionData;

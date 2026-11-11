@@ -29,6 +29,7 @@ import static gov.fjc.fis.app.FisUtilities.refreshField;
 @Route(value = "education-branch-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_EducationBranchReportView")
 @ViewDescriptor(path = "education-branch-report-view.xml")
+@DialogMode(closeOnEsc = true)
 public class EducationBranchReportView extends StandardView {
     @Autowired
     private SessionData sessionData;

@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 @Route(value = "open-travel-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenTravelObligationsReportView")
 @ViewDescriptor(path = "open-travel-obligations-report-view.xml")
+@DialogMode(closeOnEsc = true)
 public class OpenTravelObligationsReportView extends StandardView {
     @Autowired
     private SessionData sessionData;
