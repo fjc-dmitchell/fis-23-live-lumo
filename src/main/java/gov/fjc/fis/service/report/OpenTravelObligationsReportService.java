@@ -7,15 +7,17 @@ import gov.fjc.fis.entity.dto.ObligationDto;
 import gov.fjc.fis.reportdata.OpenTravelObligationsReportData;
 import gov.fjc.fis.service.AppropriationService;
 import gov.fjc.fis.service.DivisionService;
+import gov.fjc.fis.service.ObligationService;
 import io.jmix.core.DataManager;
 import io.jmix.core.entity.KeyValueEntity;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static gov.fjc.fis.app.BigDecimalUtils.sum;
 
 @Component("fis_OpenTravelObligationsReportService")
 public class OpenTravelObligationsReportService {
@@ -23,11 +25,14 @@ public class OpenTravelObligationsReportService {
     private final DataManager dataManager;
     private final AppropriationService appropriationService;
     private final DivisionService divisionService;
+    private final ObligationService obligationService;
 
-    public OpenTravelObligationsReportService(DataManager dataManager, AppropriationService appropriationService, DivisionService divisionService) {
+    public OpenTravelObligationsReportService(DataManager dataManager, AppropriationService appropriationService,
+                                              DivisionService divisionService, ObligationService obligationService) {
         this.dataManager = dataManager;
         this.appropriationService = appropriationService;
         this.divisionService = divisionService;
+        this.obligationService = obligationService;
     }
 
     public List<KeyValueEntity> getOpenTravelObligations(Appropriation appropriation, Set<Division> divisions,
@@ -67,7 +72,7 @@ public class OpenTravelObligationsReportService {
                 .parameter("beginDate", bDate)
                 .parameter("endDate", eDate)
                 .properties("fundCode", "budgetFiscalYear", "divisionCode", "budgetOrg", "activityNumber", "title",
-                        "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "endDate")
+                        "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "travelEndDate")
                 .list();
 
         if (obbba) {
@@ -99,13 +104,14 @@ public class OpenTravelObligationsReportService {
                     .parameter("beginDate", bDate)
                     .parameter("endDate", eDate)
                     .properties("fundCode", "budgetFiscalYear", "divisionCode", "budgetOrg", "activityNumber", "title",
-                            "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "endDate")
+                            "documentNumber", "documentDate", "vendor", "amount", "lineNumber", "travelEndDate")
+
                     .list();
 
             obligations.addAll(obbbaObligations);
         }
 
-        obligations.sort(Comparator.comparing((KeyValueEntity o) -> (Date) o.getValue("endDate"),
+        obligations.sort(Comparator.comparing((KeyValueEntity o) -> (Date) o.getValue("travelEndDate"),
                         Comparator.nullsFirst(Comparator.naturalOrder()))
                 .thenComparing(o -> o.getValue("activityNumber"))
                 .thenComparing(o -> o.getValue("documentNumber"))
@@ -123,26 +129,10 @@ public class OpenTravelObligationsReportService {
         var reportData = new OpenTravelObligationsReportData(appropriation, divisions, fromDate, toDate);
 
         var obligations = getOpenTravelObligations(appropriation, divisions, fromDate, toDate, obbba);
-        var totalObligated = BigDecimal.ZERO;
 
-        List<ObligationDto> obligationDtos = new ArrayList<>();
-        ObligationDto dto;
-        for (var kvEntity : obligations) {
-            dto = dataManager.create(ObligationDto.class);
-            dto.setFundCode(kvEntity.getValue("fundCode"));
-            dto.setBudgetFiscalYear(kvEntity.getValue("budgetFiscalYear"));
-            dto.setDivisionCode(kvEntity.getValue("divisionCode"));
-            dto.setBudgetOrg(kvEntity.getValue("budgetOrg"));
-            dto.setActivityNumber(kvEntity.getValue("activityNumber"));
-            dto.setActivityTitle(kvEntity.getValue("title"));
-            dto.setDocumentNumber(kvEntity.getValue("documentNumber"));
-            dto.setDocumentDate(kvEntity.getValue("documentDate"));
-            dto.setVendor(kvEntity.getValue("vendor"));
-            dto.setAmount(kvEntity.getValue("amount"));
-            dto.setTravelEndDate(((java.sql.Date) kvEntity.getValue("endDate")).toLocalDate());
-            obligationDtos.add(dto);
-            totalObligated = totalObligated.add(dto.getAmount());
-        }
+        List<ObligationDto> obligationDtos = obligationService.convertToDto(obligations);
+
+        var totalObligated = sum(obligationDtos, ObligationDto::getAmount);
 
         reportData.setObligations(obligationDtos);
         reportData.setTotalObligated(totalObligated);

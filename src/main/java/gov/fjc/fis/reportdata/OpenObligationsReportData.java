@@ -7,8 +7,10 @@ import gov.fjc.fis.entity.dto.ObligationDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
@@ -25,11 +27,16 @@ public class OpenObligationsReportData {
     private BigDecimal totalObligated;
     private float averageDays;
 
-    public OpenObligationsReportData(Appropriation appropriation, Division division, Branch branch) {
+    public OpenObligationsReportData(Appropriation appropriation, Set<Division> divisions, Branch branch) {
         budgetFiscalYear = appropriation == null ? "" : appropriation.getBudgetFiscalYear();
-        String divisionTitle = division == null ? "" : division.getTitle();
-        String branchTitle = branch == null ? null : ": ".concat(branch.getTitle());
-        divisionAndBranch = branch == null ? divisionTitle : divisionTitle.concat("-").concat(branch.getTitle());
+        String divisionTitles = formatListWithDelimiter(divisions.stream()
+                .sorted(Comparator.comparing(Division::getDivisionCode))
+                .map(Division::getShortTitle).toList(), ", ");
+
+        divisionAndBranch = (divisions.size() == 1 && branch != null)
+                ? divisionTitles + "-" + branch.getTitle()
+                : divisionTitles;
+
         reportDateTime = getDateTime();
     }
 

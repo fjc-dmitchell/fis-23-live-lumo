@@ -9,10 +9,10 @@ import io.jmix.core.entity.KeyValueEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static gov.fjc.fis.app.FisUtilities.getCurrentDateMinusDays;
 
@@ -467,7 +467,7 @@ public class ObligationService {
 
     public Integer fetchNextObligationLineNumber(Appropriation appropriation, String documentNumber) {
 
-        if(appropriation == null || documentNumber == null) {
+        if (appropriation == null || documentNumber == null) {
             return 0;
         }
         return dataManager.loadValue(
@@ -708,5 +708,46 @@ public class ObligationService {
                 .parameter("vendorCode", vendor.getVendorCode())
                 .parameter("addressCode", vendor.getAddressCode())
                 .list();
+    }
+
+    // needs to be merged with fields from getObligationDtos
+    public List<ObligationDto> convertToDto(List<KeyValueEntity> kvEntities) {
+        List<ObligationDto> obligationDtos = new ArrayList<>();
+        ObligationDto dto;
+        for (var kvEntity : kvEntities) {
+            dto = dataManager.create(ObligationDto.class);
+            dto.setAmount(kvEntity.getValue("amount"));
+            dto.setDocumentNumber(kvEntity.getValue("documentNumber"));
+            dto.setDocumentDate(kvEntity.getValue("documentDate"));
+            dto.setFundCode(kvEntity.getValue("fundCode"));
+            dto.setBudgetFiscalYear(kvEntity.getValue("budgetFiscalYear"));
+            dto.setBudgetOrg(kvEntity.getValue("budgetOrg"));
+            dto.setVendor(kvEntity.getValue("vendor"));
+            dto.setActivityNumber(kvEntity.getValue("activityNumber"));
+            dto.setDivisionCode(kvEntity.getValue("divisionCode"));
+            dto.setActivityTitle(kvEntity.getValue("title"));
+
+            Object rawEndDate = kvEntity.getValue("endDate");
+            LocalDate endDate = rawEndDate instanceof java.sql.Date sqlDate
+                    ? sqlDate.toLocalDate()
+                    : (LocalDate) rawEndDate;
+            dto.setActivityEndDate(endDate);
+
+            Object rawTravelEndDate = kvEntity.getValue("travelEndDate");
+            LocalDate travelEndDate = rawTravelEndDate instanceof java.sql.Date sqlDate
+                    ? sqlDate.toLocalDate()
+                    : (LocalDate) rawTravelEndDate;
+            dto.setTravelEndDate(travelEndDate);
+
+            dto.setLineNumber(kvEntity.getValue("lineNumber"));
+            String city = kvEntity.getValue("city");
+            String state = kvEntity.getValue("state");
+            dto.setLocation(Stream.of(city, state)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining(", "))
+            );
+            obligationDtos.add(dto);
+        }
+        return obligationDtos;
     }
 }

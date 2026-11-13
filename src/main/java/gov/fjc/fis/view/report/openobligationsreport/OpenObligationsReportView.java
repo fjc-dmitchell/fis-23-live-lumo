@@ -13,7 +13,9 @@ import gov.fjc.fis.service.DivisionService;
 import gov.fjc.fis.service.report.OpenObligationsReportService;
 import io.jmix.core.LoadContext;
 import io.jmix.core.session.SessionData;
+import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.combobox.EntityComboBox;
+import io.jmix.flowui.component.multiselectcomboboxpicker.JmixMultiSelectComboBoxPicker;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.model.CollectionLoader;
@@ -24,6 +26,9 @@ import io.jmix.reportsflowui.runner.UiReportRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
+
+import static gov.fjc.fis.app.FrameworkUtils.refreshField;
 
 @Route(value = "open-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenObligationsReportView")
@@ -63,7 +68,9 @@ public class OpenObligationsReportView extends StandardView {
     @ViewComponent
     private EntityComboBox<Appropriation> bfySelectorField;
     @ViewComponent
-    private EntityComboBox<Division> divisionSelectorField;
+    private JmixCheckbox obbbaField;
+    @ViewComponent
+    private JmixMultiSelectComboBoxPicker<Division> divisionSelectorField;
     @ViewComponent
     private EntityComboBox<Branch> branchSelectorField;
     @ViewComponent
@@ -72,7 +79,7 @@ public class OpenObligationsReportView extends StandardView {
     private JmixButton executeBtn;
 
     Appropriation appropriation;
-    Division division;
+    Set<Division> divisions;
     Branch branch;
 
 
@@ -83,6 +90,7 @@ public class OpenObligationsReportView extends StandardView {
         appropriation = bfySelectorField.getValue();
         divisionsDl.load();
         divisionSelectorField.setValue(divisionService.getEducationDivision(appropriation));
+        divisions = divisionSelectorField.getValue();
         numberOfDaysField.setValue("15"); // ask Nanticha whether this should be dropdown
     }
 
@@ -98,6 +106,7 @@ public class OpenObligationsReportView extends StandardView {
 
     @Install(to = "branchesDl", target = Target.DATA_LOADER)
     protected List<Branch> branchesDlLoadDelegate(final LoadContext<Branch> loadContext) {
+        var division = divisions.isEmpty() ? null : divisions.iterator().next();
         return branchService.fetchBranches(division);
     }
 
@@ -111,33 +120,47 @@ public class OpenObligationsReportView extends StandardView {
         return branch.getTitleAndCode();
     }
 
+    @Subscribe("obbbaField")
+    public void onObbbaFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, Boolean> event) {
+        updateBranchSelector();
+    }
+
     @Subscribe("bfySelectorField")
     protected void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
         appropriation = event.getValue();
-        divisionsDl.load();
-        if (divisionSelectorField.getValue() != null) {
-            divisionSelectorField.setValue(
-                    divisionsDl.getContainer().getItems().stream()
-                            .filter(div -> div.getDivisionCode().equals(divisionSelectorField.getValue().getDivisionCode()))
-                            .findFirst()
-                            .orElse(null)
-            );
+        var obbbaEnabled = appropriationService.isOneBigBeautifulBillAct(appropriation);
+        obbbaField.setVisible(obbbaEnabled);
+        obbbaField.setValue(false);
+        branchSelectorField.setHelperText(
+                obbbaEnabled ? "enabled when selecting a single division without OBBBA" : "enabled when selecting a single division");
+
+        refreshField(divisionsDl, divisionSelectorField, Division::getDivisionCode);
+    }
+
+
+    @Subscribe("divisionSelectorField")
+    public void onDivisionSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Division>, Division> event) {
+        divisions = event.getSource().getSelectedItems();
+        enableExecuteBtn();
+        updateBranchSelector();
+    }
+
+    private void updateBranchSelector() {
+        boolean hasSingleDivision = divisions.size() == 1;
+        boolean isObbbaEnabled = isObbbaApplicable();
+
+        branchSelectorField.setEnabled(hasSingleDivision && !isObbbaEnabled);
+        if (hasSingleDivision && !obbbaField.getValue()) {
+            refreshField(branchesDl, branchSelectorField, Branch::getBranchCode);
+        } else {
+            branchSelectorField.clear();
+            branchesDl.load();
         }
     }
 
-    @Subscribe("divisionSelectorField")
-    protected void onDivisionSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Division>, Division> event) {
-        division = event.getValue();
-        enableExecuteBtn();
-        branchesDl.load();
-        if (branchSelectorField.getValue() != null) {
-            branchSelectorField.setValue(
-                    branchesDl.getContainer().getItems().stream()
-                            .filter(bch -> bch.getBranchCode().equals(branchSelectorField.getValue().getBranchCode()))
-                            .findFirst()
-                            .orElse(null)
-            );
-        }
+    private boolean isObbbaApplicable() {
+        return appropriationService.isOneBigBeautifulBillAct(appropriation)
+                && Boolean.TRUE.equals(obbbaField.getValue());
     }
 
     @Subscribe("branchSelectorField")
@@ -146,7 +169,7 @@ public class OpenObligationsReportView extends StandardView {
     }
 
     private void enableExecuteBtn() {
-        executeBtn.setEnabled(division != null);
+        executeBtn.setEnabled(!divisions.isEmpty());
     }
 
     @Subscribe(id = "cancelBtn", subject = "clickListener")
@@ -156,8 +179,10 @@ public class OpenObligationsReportView extends StandardView {
 
     @Subscribe(id = "executeBtn", subject = "clickListener")
     protected void onExecuteBtnClick(final ClickEvent<JmixButton> event) {
-        var division = divisionSelectorField.getValue();
+        var appropriation = bfySelectorField.getValue();
+        var divisions = divisionSelectorField.getValue();
         var branch = branchSelectorField.getValue();
+        var obbba = obbbaField.getValue();
 
         int numberOfDays;
         try {
@@ -166,7 +191,8 @@ public class OpenObligationsReportView extends StandardView {
             numberOfDays = 0;
         }
 
-        var reportData = openObligationsReportService.generateReportData(division, branch, numberOfDays);
+        var reportData = openObligationsReportService
+                .generateReportData(appropriation, divisions, branch, numberOfDays, obbba);
 
         var fluentUiReportRunner = uiReportRunner.byReportCode("open-obligations");
         fluentUiReportRunner.addParam("reportData", reportData)

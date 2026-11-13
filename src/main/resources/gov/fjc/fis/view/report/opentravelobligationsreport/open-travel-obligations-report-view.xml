@@ -8,9 +8,9 @@
         <collection id="divisionsDc" class="gov.fjc.fis.entity.Division">
             <loader id="divisionsDl" readOnly="true"/>
         </collection>
-        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">
-            <loader id="branchesDl" readOnly="true"/>
-        </collection>
+<!--        <collection id="branchesDc" class="gov.fjc.fis.entity.Branch">-->
+<!--            <loader id="branchesDl" readOnly="true"/>-->
+<!--        </collection>-->
     </data>
     <layout>
         <vbox classNames="jmix-main-view-navigation bordered-panel" width="100%" spacing="false">
@@ -23,15 +23,14 @@
             <multiSelectComboBoxPicker id="divisionSelectorField" itemsContainer="divisionsDc" title="Division"
                                        metaClass="fis_Division" label="Division" width="35em" required="true"
                                        autoExpand="VERTICAL" css="font-family: sans-serif;">
-                         position="BOTTOM"/>
                 <actions>
-                    <action id="entity_clear" type="entity_clear" icon="vaadin:close-small"/>
+                    <action id="entity_clear" type="entity_clear" icon="CLOSE_SMALL"/>
                 </actions>
             </multiSelectComboBoxPicker>
 <!--            <entityComboBox id="branchSelectorField" itemsContainer="branchesDc" title="Branch"-->
 <!--                            metaClass="fis_Branch" label="Branch" width="35em" visible="false">-->
 <!--                <actions>-->
-<!--                    <action id="entity_clear" type="entity_clear" icon="vaadin:close-small"/>-->
+<!--                    <action id="entity_clear" type="entity_clear" icon="CLOSE_SMALL"/>-->
 <!--                </actions>-->
 <!--            </entityComboBox>-->
             <hbox>

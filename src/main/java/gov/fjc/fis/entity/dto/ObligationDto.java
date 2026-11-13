@@ -66,6 +66,8 @@ public class ObligationDto {
 
     private LocalDate travelEndDate;
 
+    private Integer lineNumber;
+
     private String location;
 
     private Integer objectClassId;
@@ -101,6 +103,14 @@ public class ObligationDto {
     private BigDecimal priorTwoYearObligated = BigDecimal.ZERO;
 
     private BigDecimal priorTwoYearDisbursed = BigDecimal.ZERO;
+
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(Integer lineNumber) {
+        this.lineNumber = lineNumber;
+    }
 
     public String getBudgetOrg() {
         return budgetOrg;
