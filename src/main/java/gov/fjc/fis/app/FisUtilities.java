@@ -1,8 +1,6 @@
 package gov.fjc.fis.app;
 
 import gov.fjc.fis.entity.OutputType;
-import io.jmix.flowui.component.combobox.EntityComboBox;
-import io.jmix.flowui.model.CollectionLoader;
 import io.jmix.reports.entity.ReportOutputType;
 
 import java.text.ParseException;
@@ -11,7 +9,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
 
@@ -231,25 +228,5 @@ public final class FisUtilities {
         return text;
     }
 
-    /**
-     * updates values in dependent field
-     *
-     * @param loader
-     * @param field
-     * @param keyExtractor
-     * @param <T>
-     */
-    public static <T> void refreshField(CollectionLoader<T> loader,
-                                        EntityComboBox<T> field,
-                                        Function<T, ?> keyExtractor) {
-        loader.load();
-        field.setValue(
-                Optional.ofNullable(field.getValue())
-                        .map(keyExtractor)
-                        .flatMap(key -> loader.getContainer().getItems().stream()
-                                .filter(item -> keyExtractor.apply(item).equals(key))
-                                .findFirst())
-                        .orElse(null)
-        );
-    }
+
 }

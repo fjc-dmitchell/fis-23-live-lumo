@@ -71,7 +71,7 @@ public class OpenTravelObligationsReportService {
                 .list();
 
         if (obbba) {
-            List<Division> obbaDivisions = Stream.of(divisionService.fetchMandatoryDivision(appropriation),
+            List<Division> obbbaDivisions = Stream.of(divisionService.fetchMandatoryDivision(appropriation),
                     divisionService.fetchMandatoryDivision(priorAppropriation)).filter(Objects::nonNull).toList();
 
             var obbbaObligations = dataManager.loadValues(
@@ -84,7 +84,7 @@ public class OpenTravelObligationsReportService {
                                     + " INNER JOIN fis_Fund f ON f=a.fund"
                                     + " INNER JOIN fis_Appropriation app ON app=dv.appropriation"
                                     + " WHERE app IN :appropriations"
-                                    + " AND a.division IN :obbaDivisions"
+                                    + " AND a.division IN :obbbaDivisions"
                                     + " AND dv.divisionCode IN :divisionCodes"
                                     + " AND e.status=true"
                                     + " AND e.documentType = :ta"
@@ -92,7 +92,7 @@ public class OpenTravelObligationsReportService {
                                     + " AND (:anyEndDate=true OR a.endDate <=:endDate)")
                     .parameter("ta", travelAuthorizationId)
                     .parameter("appropriations", appropriations)
-                    .parameter("obbaDivisions", obbaDivisions)
+                    .parameter("obbbaDivisions", obbbaDivisions)
                     .parameter("divisionCodes", divisionCodes)
                     .parameter("anyBeginDate", bDate == null)
                     .parameter("anyEndDate", eDate == null)
