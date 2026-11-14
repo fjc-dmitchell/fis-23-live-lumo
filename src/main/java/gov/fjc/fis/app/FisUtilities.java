@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
 
@@ -166,15 +165,19 @@ public final class FisUtilities {
      * @param days number of days to subtract from today
      * @return java.util.Date
      */
-    public static Date getCurrentDateMinusDays(int days) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.DATE, -days);
+//    public static Date getCurrentDateMinusDays(int days) {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 0);
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.MILLISECOND, 0);
+//        calendar.add(Calendar.DATE, -days);
+//
+//        return calendar.getTime();
+//    }
 
-        return calendar.getTime();
+    public static LocalDate getCurrentDateMinusDays(int days) {
+        return LocalDate.now().minusDays(days);
     }
 
     public static LocalDateTime convertOffsetDateTimeToLocalDateTime(OffsetDateTime offsetDateTime) {
@@ -182,13 +185,13 @@ public final class FisUtilities {
         return zoned.toLocalDateTime();
     }
 
-    public static int getNumberOfDaysFromToday(Date date) {
-        if (date == null) {
-            return 0;
-        }
-        long diffInMillies = Math.abs(getCurrentDateMinusDays(0).getTime() - date.getTime());
-        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-    }
+//    public static int getNumberOfDaysFromToday(Date date) {
+//        if (date == null) {
+//            return 0;
+//        }
+//        long diffInMillies = Math.abs(getCurrentDateMinusDays(0).getTime() - date.getTime());
+//        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+//    }
 
     public static String formatListWithDelimiter(List<String> items, String delimiter) {
         if (items == null || items.isEmpty()) {

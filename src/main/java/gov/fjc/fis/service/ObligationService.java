@@ -14,8 +14,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static gov.fjc.fis.app.FisUtilities.getCurrentDateMinusDays;
-
 @Component("fis_ObligationService")
 public class ObligationService {
 
@@ -250,39 +248,39 @@ public class ObligationService {
      * @param numberOfDays
      * @return List of KeyValueEntity containing obligation properties
      */
-    public List<KeyValueEntity> getOpenObligations(Appropriation appropriation, Division division, Branch branch, int numberOfDays) {
-        Date endDate = getCurrentDateMinusDays(numberOfDays);
-        List<KeyValueEntity> obligations = dataManager.loadValues(
-                        "SELECT o.amount, o.documentNumber, o.vendor, a.activityNumber, a.title, a.city,"
-                                + " a.state, CASE WHEN (o.documentType = 'TA') THEN o.travelEndDate ELSE a.endDate END,"
-                                + " o.lineNumber"
-                                + " FROM fis_Obligation o"
-                                + " INNER JOIN fis_Activity a ON a=o.activity"
-                                + " INNER JOIN fis_Division d ON d=a.division"
-                                + " INNER JOIN fis_Appropriation app ON app=d.appropriation"
-                                + " WHERE app = :appropriation"
-                                + " AND o.status=TRUE"
-                                + " AND d = :division"
-                                + " AND ((o.documentType = 'TA' AND :numberOfDays<>0 AND o.travelEndDate <= :endDate)"
-                                + " OR (o.documentType <> 'TA' AND :numberOfDays<>0 AND a.endDate <= :endDate)"
-                                + " OR (:numberOfDays=0))"
-                                + " AND (:branch IS NULL OR a.branch = :branch)")
-                .parameter("appropriation", appropriation)
-                .parameter("division", division)
-                .parameter("numberOfDays", numberOfDays)
-                .parameter("endDate", endDate)
-                .parameter("branch", branch)
-                .properties("amount", "docid", "vendor", "actnum", "title", "city", "state", "enddate", "lineno")
-                .list();
-
-        obligations.sort(Comparator.comparing((KeyValueEntity o) -> (Date) o.getValue("enddate"),
-                        Comparator.nullsFirst(Comparator.naturalOrder()))
-                .thenComparing(o -> o.getValue("actnum"))
-                .thenComparing(o -> o.getValue("docid"))
-                .thenComparingInt(o -> o.getValue("lineno")));
-
-        return obligations;
-    }
+//    public List<KeyValueEntity> getOpenObligations(Appropriation appropriation, Division division, Branch branch, int numberOfDays) {
+//        Date endDate = getCurrentDateMinusDays(numberOfDays);
+//        List<KeyValueEntity> obligations = dataManager.loadValues(
+//                        "SELECT o.amount, o.documentNumber, o.vendor, a.activityNumber, a.title, a.city,"
+//                                + " a.state, CASE WHEN (o.documentType = 'TA') THEN o.travelEndDate ELSE a.endDate END,"
+//                                + " o.lineNumber"
+//                                + " FROM fis_Obligation o"
+//                                + " INNER JOIN fis_Activity a ON a=o.activity"
+//                                + " INNER JOIN fis_Division d ON d=a.division"
+//                                + " INNER JOIN fis_Appropriation app ON app=d.appropriation"
+//                                + " WHERE app = :appropriation"
+//                                + " AND o.status=TRUE"
+//                                + " AND d = :division"
+//                                + " AND ((o.documentType = 'TA' AND :numberOfDays<>0 AND o.travelEndDate <= :endDate)"
+//                                + " OR (o.documentType <> 'TA' AND :numberOfDays<>0 AND a.endDate <= :endDate)"
+//                                + " OR (:numberOfDays=0))"
+//                                + " AND (:branch IS NULL OR a.branch = :branch)")
+//                .parameter("appropriation", appropriation)
+//                .parameter("division", division)
+//                .parameter("numberOfDays", numberOfDays)
+//                .parameter("endDate", endDate)
+//                .parameter("branch", branch)
+//                .properties("amount", "docid", "vendor", "actnum", "title", "city", "state", "enddate", "lineno")
+//                .list();
+//
+//        obligations.sort(Comparator.comparing((KeyValueEntity o) -> (Date) o.getValue("enddate"),
+//                        Comparator.nullsFirst(Comparator.naturalOrder()))
+//                .thenComparing(o -> o.getValue("actnum"))
+//                .thenComparing(o -> o.getValue("docid"))
+//                .thenComparingInt(o -> o.getValue("lineno")));
+//
+//        return obligations;
+//    }
 
     public List<KeyValueEntity> aggregateObligationsByActivity(Division division, Branch branch, ObligationStatus status) {
         if (division == null && branch == null) {
