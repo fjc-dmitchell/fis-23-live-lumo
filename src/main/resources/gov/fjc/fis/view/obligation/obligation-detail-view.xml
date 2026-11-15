@@ -162,7 +162,7 @@
                                         <button action="invoicesDataGrid.removeAction"/>
                                     </hbox>
                                     <dataGrid id="invoicesDataGrid" dataContainer="invoicesDc"
-                                              emptyStateText="No invoices found" aggregatable="true"
+                                              emptyStateText="No invoices found" aggregatable="false"
                                               allRowsVisible="true" minWidth="25rem">
                                         <actions>
                                             <action id="createAction" type="list_create">
@@ -183,7 +183,9 @@
                                             <column property="invoiceNumber" flexGrow="1"/>
                                             <column property="invoiceDate" textAlign="END" width="130px" flexGrow="0"/>
                                             <column property="paymentDate" header="Paid Date" textAlign="END"
-                                                    width="130px" flexGrow="0"/>
+                                                    width="130px" flexGrow="0">
+                                                <aggregation strategyClass="gov.fjc.fis.app.TotalLabelAggregationStrategy"/>
+                                            </column>
                                             <!--                                <column property="paymentDate" textAlign="END" width="130px" flexGrow="0"-->
                                             header="Pay Date" key="paydate"/>
                                             <column property="amount" textAlign="END" width="120px" flexGrow="0">
@@ -208,7 +210,7 @@
                                     </hbox>
                                     <dataGrid id="fundControlNoticesDataGrid" dataContainer="fundControlNoticesDc"
                                               width="100%"
-                                              emptyStateText="No FCNs found" aggregatable="true" allRowsVisible="true">
+                                              emptyStateText="No FCNs found" aggregatable="false" allRowsVisible="true">
                                         <actions>
                                             <action id="createAction" type="list_create">
                                                 <properties>
@@ -227,7 +229,9 @@
                                             <action id="removeAction" type="list_remove"/>
                                         </actions>
                                         <columns>
-                                            <column property="fcnDate" textAlign="END"/>
+                                            <column property="fcnDate" textAlign="END">
+                                                <aggregation strategyClass="gov.fjc.fis.app.TotalLabelAggregationStrategy"/>
+                                            </column>
                                             <column property="amount" textAlign="END">
                                                 <numberRenderer numberFormat="#,##0.00"/>
                                                 <aggregation type="SUM">

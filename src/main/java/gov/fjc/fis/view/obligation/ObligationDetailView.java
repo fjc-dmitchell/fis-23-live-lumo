@@ -1,6 +1,8 @@
 package gov.fjc.fis.view.obligation;
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.grid.FooterRow;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.router.Route;
 import gov.fjc.fis.entity.*;
@@ -17,16 +19,19 @@ import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.datepicker.TypedDatePicker;
+import io.jmix.flowui.component.grid.DataGrid;
 import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.kit.component.ComponentUtils;
 import io.jmix.flowui.model.CollectionContainer;
 import io.jmix.flowui.model.CollectionLoader;
+import io.jmix.flowui.model.CollectionPropertyContainer;
 import io.jmix.flowui.model.InstanceLoader;
 import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -67,6 +72,14 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private CollectionLoader<ObjectCategory> categoriesDl;
     @ViewComponent
     private CollectionLoader<ObjectClass> objectClassesDl;
+    @ViewComponent
+    private DataGrid<Invoice> invoicesDataGrid;
+    @ViewComponent
+    private DataGrid<FundControlNotice> fundControlNoticesDataGrid;
+    @ViewComponent
+    private CollectionPropertyContainer<Invoice> invoicesDc;
+    @ViewComponent
+    private CollectionPropertyContainer<FundControlNotice> fundControlNoticesDc;
 
     @ViewComponent
     private FileAttachmentFragment attachmentFragment;
@@ -88,6 +101,8 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private Division division;
     private ObjectCategory category;
     private Boolean fjcFoundation = false;
+    @ViewComponent
+    private TypedTextField<BigDecimal> amountField;
     @ViewComponent
     private EntityComboBox<Activity> activityField;
     @ViewComponent
@@ -159,6 +174,26 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
 
 //            divisionField.focus();
             createdByString.setText(obligation.getCreatedByString());
+
+            // balance footer
+            if (invoicesDc != null && !invoicesDc.getItems().isEmpty()) {
+                FooterRow footerRow = invoicesDataGrid.appendFooterRow();
+                DataGrid.Column<Invoice> amountColumn = invoicesDataGrid.getColumnByKey("amount");
+                DataGrid.Column<Invoice> invoiceColumn = invoicesDataGrid.getColumnByKey("paymentDate");
+                if (amountColumn != null && amountField.getValue()!=null) {
+                    Map<Grid.Column<Invoice>, Object> results = invoicesDataGrid.getAggregationResults();
+                    BigDecimal totalAmount = (BigDecimal) results.get(amountColumn);
+//                    footerRow.getCell(amountColumn).setText("$1,250.00");
+                    DecimalFormat formatter = new DecimalFormat("#,##0.00");
+                    if(amountField.getTypedValue()!=null) {
+                        BigDecimal balance = amountField.getTypedValue().subtract(totalAmount);
+                        footerRow.getCell(amountColumn).setText(formatter.format(balance));
+                    }
+                }
+                if (invoiceColumn != null) {
+                    footerRow.getCell(invoiceColumn).setText("Balance:");
+                }
+            }
         }
         originalAmount = obligation.getAmount();
         divisionsDl.load();
@@ -229,11 +264,13 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     // NO! refresh is getting all attachments, not just those for this obligation!
     @Subscribe(id = "invoicesDc", target = Target.DATA_CONTAINER)
     public void onInvoicesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<Invoice> event) {
+        invoicesDataGrid.setAggregatable(invoicesDc.getItems().size() > 1);
         attachmentFragment.refresh();
     }
 
     @Subscribe(id = "fundControlNoticesDc", target = Target.DATA_CONTAINER)
     public void onFundControlNoticesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<FundControlNotice> event) {
+        fundControlNoticesDataGrid.setAggregatable(fundControlNoticesDc.getItems().size() > 1);
         attachmentFragment.refresh();
     }
 
