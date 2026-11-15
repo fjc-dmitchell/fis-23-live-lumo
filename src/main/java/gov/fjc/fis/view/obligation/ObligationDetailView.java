@@ -2,7 +2,6 @@ package gov.fjc.fis.view.obligation;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.grid.FooterRow;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.router.Route;
 import gov.fjc.fis.entity.*;
@@ -78,8 +77,6 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private DataGrid<FundControlNotice> fundControlNoticesDataGrid;
     @ViewComponent
     private CollectionPropertyContainer<Invoice> invoicesDc;
-    @ViewComponent
-    private CollectionPropertyContainer<FundControlNotice> fundControlNoticesDc;
 
     @ViewComponent
     private FileAttachmentFragment attachmentFragment;
@@ -119,11 +116,14 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     private DialogWindows dialogWindows;
 
     private BigDecimal originalAmount;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00");
+    DataGrid.Column<Invoice> amountColumn;
+    FooterRow footerRow;
 
     public void setFjcFoundation(Boolean fjcFoundation) {
         this.fjcFoundation = fjcFoundation;
         if (fjcFoundation) {
-            var obligation = getEditedEntity();
+//            var obligation = getEditedEntity();
             divisionsDl.load();
         }
     }
@@ -134,6 +134,14 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
         ComponentUtils.setItemsMap(blanketPurchaseOrderField, getBpoItemsMap());
         divisionField.setRequired(true);
         categoryField.setRequired(true);
+
+        // create invoicesDataGrid balance footer, requested by Somayah 10/2026
+        footerRow = invoicesDataGrid.appendFooterRow();
+        amountColumn = invoicesDataGrid.getColumnByKey("amount");
+        DataGrid.Column<Invoice> invoiceColumn = invoicesDataGrid.getColumnByKey("paymentDate");
+        if (invoiceColumn != null) {
+            footerRow.getCell(invoiceColumn).setText("Balance:");
+        }
     }
 
     @Subscribe
@@ -175,30 +183,24 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
 //            divisionField.focus();
             createdByString.setText(obligation.getCreatedByString());
 
-            // balance footer
-            if (invoicesDc != null && !invoicesDc.getItems().isEmpty()) {
-                FooterRow footerRow = invoicesDataGrid.appendFooterRow();
-                DataGrid.Column<Invoice> amountColumn = invoicesDataGrid.getColumnByKey("amount");
-                DataGrid.Column<Invoice> invoiceColumn = invoicesDataGrid.getColumnByKey("paymentDate");
-                if (amountColumn != null && amountField.getValue()!=null) {
-                    Map<Grid.Column<Invoice>, Object> results = invoicesDataGrid.getAggregationResults();
-                    BigDecimal totalAmount = (BigDecimal) results.get(amountColumn);
-//                    footerRow.getCell(amountColumn).setText("$1,250.00");
-                    DecimalFormat formatter = new DecimalFormat("#,##0.00");
-                    if(amountField.getTypedValue()!=null) {
-                        BigDecimal balance = amountField.getTypedValue().subtract(totalAmount);
-                        footerRow.getCell(amountColumn).setText(formatter.format(balance));
-                    }
-                }
-                if (invoiceColumn != null) {
-                    footerRow.getCell(invoiceColumn).setText("Balance:");
-                }
-            }
         }
         originalAmount = obligation.getAmount();
         divisionsDl.load();
         categoriesDl.load();
         objectClassesDl.load();
+    }
+
+    private void refreshInvoiceBalance() {
+        if (amountField.getValue() != null && amountField.getTypedValue() != null) {
+            BigDecimal invoicesum = invoicesDc.getItems().stream()
+                    .map(Invoice::getAmount)
+                    .filter(Objects::nonNull)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal balance = amountField.getTypedValue().subtract(invoicesum);
+            footerRow.getCell(amountColumn).setText(formatter.format(balance));
+        } else {
+            footerRow.getCell(amountColumn).setText("-");
+        }
     }
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
@@ -264,13 +266,19 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     // NO! refresh is getting all attachments, not just those for this obligation!
     @Subscribe(id = "invoicesDc", target = Target.DATA_CONTAINER)
     public void onInvoicesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<Invoice> event) {
-        invoicesDataGrid.setAggregatable(invoicesDc.getItems().size() > 1);
+        invoicesDataGrid.setAggregatable(event.getSource().getItems().size() >= 2);
+        refreshInvoiceBalance();
         attachmentFragment.refresh();
+    }
+
+    @Subscribe("amountField")
+    public void onAmountFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<TypedTextField<BigDecimal>, BigDecimal> event) {
+        refreshInvoiceBalance();
     }
 
     @Subscribe(id = "fundControlNoticesDc", target = Target.DATA_CONTAINER)
     public void onFundControlNoticesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<FundControlNotice> event) {
-        fundControlNoticesDataGrid.setAggregatable(fundControlNoticesDc.getItems().size() > 1);
+        fundControlNoticesDataGrid.setAggregatable(event.getSource().getItems().size() >= 2);
         attachmentFragment.refresh();
     }
 
