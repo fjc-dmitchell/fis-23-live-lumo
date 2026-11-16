@@ -263,12 +263,11 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
 //        checkObjectClass();
     }
 
-    // NO! refresh is getting all attachments, not just those for this obligation!
     @Subscribe(id = "invoicesDc", target = Target.DATA_CONTAINER)
     public void onInvoicesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<Invoice> event) {
         invoicesDataGrid.setAggregatable(event.getSource().getItems().size() >= 2);
         refreshInvoiceBalance();
-        attachmentFragment.refresh();
+        refreshAttachmentsLater();
     }
 
     @Subscribe("amountField")
@@ -279,7 +278,15 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
     @Subscribe(id = "fundControlNoticesDc", target = Target.DATA_CONTAINER)
     public void onFundControlNoticesDcCollectionChange(final CollectionContainer.CollectionChangeEvent<FundControlNotice> event) {
         fundControlNoticesDataGrid.setAggregatable(event.getSource().getItems().size() >= 2);
-        attachmentFragment.refresh();
+        refreshAttachmentsLater();
+    }
+
+    /**
+     * Refreshes attachments later. Required due to error after upgrade to Jmix 3.1.
+     */
+    private void refreshAttachmentsLater() {
+        getUI().ifPresent(ui ->
+                ui.beforeClientResponse(this, context -> attachmentFragment.refresh()));
     }
 
     protected Map<Boolean, String> getStatusItemsMap() {
