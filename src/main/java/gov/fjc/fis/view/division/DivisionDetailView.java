@@ -52,6 +52,8 @@ public class DivisionDetailView extends StandardDetailView<Division> {
     @ViewComponent
     private EntityComboBox<Fund> fundsComboBox;
     @ViewComponent
+    private TypedTextField<String> budgetOrgField;
+    @ViewComponent
     private JmixButton updateDivisionAllocations;
     @ViewComponent
     private TypedTextField<Object> titleField;
@@ -86,6 +88,7 @@ public class DivisionDetailView extends StandardDetailView<Division> {
 
         if (entityStates.isNew(division)) {
             var appropriation = appropriationService.getBfyEntryAppropriation(sessionData);
+            requireBudgetOrg(appropriation);
 //            var appropriation = (Appropriation) sessionData.getAttribute("bfyEntry");
             division.setAppropriation(appropriation);
             appropriationField.setReadOnly(true);
@@ -94,6 +97,7 @@ public class DivisionDetailView extends StandardDetailView<Division> {
             }
         } else {
             var appropriation = division.getAppropriation();
+            requireBudgetOrg(appropriation);
             if ((!appropriation.getStatus())) {
                 readOnlyViewsSupport.setViewReadOnly(this, true);
                 updateDivisionAllocations.setEnabled(false);
@@ -108,6 +112,15 @@ public class DivisionDetailView extends StandardDetailView<Division> {
             }
             createdByString.setText(division.getCreatedByString());
         }
+    }
+
+    /**
+     * All new divisions must have a budget organization for JIFMS processing.
+     * Using 2014 rule for convenience.
+     * @param appropriation entity representing the budget fiscal year
+     */
+    private void requireBudgetOrg(Appropriation appropriation) {
+        budgetOrgField.setRequired(!appropriationService.isAppropriationBefore2014(appropriation));
     }
 
     @Install(to = "fundsDl", target = Target.DATA_LOADER)

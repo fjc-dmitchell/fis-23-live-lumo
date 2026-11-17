@@ -34,22 +34,25 @@
                     <vbox width="100%" colspan="2" padding="false" spacing="false">
                         <hbox>
                             <entityPicker id="appropriationField" property="appropriation" label="Budget Fiscal Year"
-                                          width="10em"/>
+                                          width="10em" dataContainer="divisionDc"/>
                             <textField id="divisionCodeField" property="divisionCode" label="Division Code"
-                                       datatype="char" width="10em"/>
-                            <textField id="titleField" property="title" label="Title" width="25em"/>
-                            <textField id="sortCodeField" property="sortCode" label="Sort Code" width="6em"/>
+                                       datatype="char" width="10em" dataContainer="divisionDc"/>
+                            <textField id="titleField" property="title" label="Title" width="25em"
+                                       dataContainer="divisionDc"/>
+                            <textField id="sortCodeField" property="sortCode" label="Sort Code" width="6em"
+                                       dataContainer="divisionDc"/>
                         </hbox>
                         <hbox>
                             <textField id="oneYearAmountField" property="oneYearAmount" label="One Year Allocation"
-                                       width="10em"/>
+                                       width="10em" dataContainer="divisionDc"/>
                             <textField id="twoYearAmountField" property="twoYearAmount" label="Two Year Allocation"
-                                       width="10em"/>
+                                       width="10em" dataContainer="divisionDc"/>
                             <textField id="totalAmountField" property="totalAmount" label="Total Allocation"
-                                       width="10em" datatype="decimal"/>
+                                       width="10em" datatype="decimal" dataContainer="divisionDc"/>
                             <entityComboBox id="fundsComboBox" itemsContainer="fundsDc" property="fund"
-                                            label="Default Fund" width="13em"/>
-                            <textField id="budgetOrgField" property="budgetOrg" label="Budget Org." width="7em"/>
+                                            label="Default Fund" width="13em" dataContainer="divisionDc"/>
+                            <textField id="budgetOrgField" property="budgetOrg" label="Budget Org." width="7em"
+                                       datatype="string" dataContainer="divisionDc"/>
 
                         </hbox>
                     </vbox>
