@@ -4,6 +4,25 @@ import java.text.Normalizer;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * FIS utility class for sanitizing text values by converting Unicode characters
+ * to their nearest ASCII equivalents and removing unsupported characters.
+ * <p>
+ * This class is intended for use when importing, persisting, or processing
+ * data that must contain only printable ASCII characters. Common Unicode
+ * punctuation marks are replaced with ASCII equivalents, accented characters
+ * are transliterated to their base characters, and any remaining unsupported
+ * characters are removed.
+ * </p>
+ * <p>
+ * Typical usage includes sanitizing Jmix entity attributes prior to database
+ * persistence, integration processing, report generation, or export to
+ * external systems that require ASCII-only content.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.3
+ */
 public final class AsciiSanitizer {
 
     private AsciiSanitizer() {
@@ -21,6 +40,27 @@ public final class AsciiSanitizer {
 
     private static final Pattern DISALLOWED = Pattern.compile("[^\\x20-\\x7E\\t\\n\\r]");
 
+    /**
+     * Sanitizes the supplied text by:
+     * <ul>
+     *     <li>Normalizing Unicode characters using NFKD normalization.</li>
+     *     <li>Replacing common Unicode punctuation with ASCII equivalents.</li>
+     *     <li>Removing diacritical marks from accented characters.</li>
+     *     <li>Removing any remaining non-printable or non-ASCII characters.</li>
+     * </ul>
+     *
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>{@code "José"} becomes {@code "Jose"}</li>
+     *     <li>{@code "“Hello”"} becomes {@code "\"Hello\""}</li>
+     *     <li>{@code "A–B"} becomes {@code "A-B"}</li>
+     *     <li>{@code "ﬁle"} becomes {@code "file"}</li>
+     * </ul>
+     *
+     * @param input the text to sanitize; may be {@code null}
+     * @return the sanitized ASCII representation of the input, or
+     *         {@code null} if the supplied input is {@code null}
+     */
     public static String sanitize(String input) {
         if (input == null) return null;
 

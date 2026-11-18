@@ -9,7 +9,22 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * FIS utility class for dealing with BigDecimals.
+ * Utility methods for working with {@link BigDecimal} values throughout the
+ * FIS application.
+ * <p>
+ * Provides common operations such as:
+ * <ul>
+ *   <li>Summing collections of {@code BigDecimal} values</li>
+ *   <li>Null-safe arithmetic operations</li>
+ *   <li>Scale-insensitive comparisons</li>
+ *   <li>Rounding values using configurable {@link RoundingMode}s</li>
+ *   <li>Checking for non-zero monetary amounts</li>
+ * </ul>
+ * <p>
+ * All methods are static and this class cannot be instantiated.
+ *
+ * @author Doug Mitchell
+ * @since 2.1
  */
 public final class BigDecimalUtils {
 

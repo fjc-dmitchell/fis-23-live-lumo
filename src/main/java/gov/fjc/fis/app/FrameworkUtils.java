@@ -10,9 +10,35 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * FIS utility methods for working with Jmix and Vaadin components.
+ * FIS utility methods for working with Jmix and Vaadin UI components.
+ * <p>
+ * This class provides reusable helper methods that address common challenges
+ * encountered when developing user interfaces with Jmix Flow UI and Vaadin
+ * components. The utilities are designed to reduce boilerplate code, improve
+ * consistency across views, and simplify interactions between UI components,
+ * data containers, and data loaders.
+ * </p>
+ *
+ * <p>
+ * A primary focus of these utilities is preserving component state during
+ * data reload operations. In Jmix applications, reloading data through
+ * {@link CollectionLoader} instances often results in new entity instances
+ * being created, which can cause selections in Vaadin components to be lost
+ * when matching is based on object identity. The methods in this class help
+ * maintain user selections by re-associating UI component values with the
+ * corresponding reloaded entities using stable business keys.
+ * </p>
+ *
+ * <p>
+ * These utilities are intended for use in Jmix views, dialogs, fragments,
+ * and other UI controllers where component state must be synchronized with
+ * dynamically refreshed data.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.1
  */
-public class FrameworkUtils {
+public final class FrameworkUtils {
 
     private FrameworkUtils() {
     }
