@@ -9,12 +9,41 @@ import org.springframework.stereotype.Component;
 import io.jmix.core.DataManager;
 
 /**
- * listen for changes to projections, create audit record (new in 2.1), and update total on activity
+ * Responds to create, update, and delete events for {@link ActivityProjection}
+ * entities by maintaining projection audit history and recalculating activity
+ * projection totals.
+ *
+ * <p>
+ * When an {@link EntityChangedEvent} is received, this listener performs two
+ * related operations:
+ * </p>
+ *
+ * <ol>
+ *     <li>Creates an {@link ActivityProjectionAudit} record that captures the
+ *     previous and current projection values, the affected activity and object
+ *     class, and the type of change (create, update, or delete).</li>
+ *
+ *     <li>Recalculates the total projected amount for the associated
+ *     {@link Activity} and updates the activity's projected amount field to
+ *     reflect the current sum of all related projections.</li>
+ * </ol>
+ *
+ * <p>
+ * By centralizing these responsibilities in an entity change listener, audit
+ * history and projection totals remain synchronized regardless of whether
+ * changes originate from Jmix UI screens, background processes, data imports,
+ * REST endpoints, or other application services.
+ * </p>
+ *
+ * <p>
+ * This listener executes after an {@link ActivityProjection} entity has been
+ * created, modified, or removed and ensures that both audit data and
+ * aggregate projection values remain consistent throughout the application.
+ * </p>
  *
  * @author Doug Mitchell
  * @version 2.2
  * @since 2.0
- *
  */
 @Component
 public class ActivityProjectionEventListener {
@@ -27,6 +56,27 @@ public class ActivityProjectionEventListener {
         this.activityProjectionService = activityProjectionService;
     }
 
+    /**
+     * Processes changes to an {@link ActivityProjection} entity by creating an
+     * audit record and updating the projected total on the associated activity.
+     *
+     * <p>
+     * For created and updated projections, the current projection is loaded and
+     * compared with the previous persisted values supplied by the event. For
+     * deleted projections, the previous entity references and values contained in
+     * the event are used to construct the audit record.
+     * </p>
+     *
+     * <p>
+     * After the audit entry is saved, the total projected amount for the affected
+     * {@link Activity} is recalculated using
+     * {@link ActivityProjectionService#sumProjections(Activity)} and persisted to
+     * the activity record.
+     * </p>
+     *
+     * @param event the entity change event describing the projection that was
+     *              created, updated, or deleted
+     */
     @EventListener
     void onActivityProjectionChangeBeforeCommit(EntityChangedEvent<ActivityProjection> event) {
         // first, deal with audit record
@@ -58,7 +108,7 @@ public class ActivityProjectionEventListener {
                 audit.setChangeType(AuditChangeType.UPDATED);
             }
         }
-        dataManager.save(audit);
+        dataManager.saveWithoutReload(audit);
 
         // now, let's update the projection field on activity
         Activity activity;
@@ -75,6 +125,6 @@ public class ActivityProjectionEventListener {
         }
 
         activity.setProjectedAmount(activityProjectionService.sumProjections(activity));
-        dataManager.save(activity);
+        dataManager.saveWithoutReload(activity);
     }
 }
