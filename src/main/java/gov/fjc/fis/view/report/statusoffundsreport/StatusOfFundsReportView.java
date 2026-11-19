@@ -25,6 +25,22 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.getReportOutputType;
 
+/**
+ * View controller for configuring and executing the Status of Funds report.
+ * <p>
+ * The view allows the user to select an appropriation and report output type.
+ * It assembles the report data for the selected appropriation and runs the
+ * appropriate PDF or Excel report in the background.
+ * </p>
+ * <p>
+ * The controller selects the report template according to whether the
+ * appropriation is associated with the One Big Beautiful Bill Act and creates
+ * an output file name from the generated report data.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.1
+ */
 @Route(value = "status-of-funds-report-view", layout = MainView.class)
 @ViewController("fis_StatusOfFundsReportView")
 @ViewDescriptor("status-of-funds-report-view.xml")

@@ -10,8 +10,26 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static gov.fjc.fis.app.BigDecimalUtils.sum;
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Holds the data and calculated totals used to generate a Status of Funds report.
+ * <p>
+ * An instance represents a snapshot of an appropriation at the time the report
+ * data is created. It stores the fiscal year, one-year and two-year
+ * appropriation amounts, report generation time, and the object-category data
+ * included in the report.
+ * </p>
+ * <p>
+ * The class also provides aggregate values for allocations, reimbursements,
+ * projections, obligations, and remaining balances. Totals may be calculated
+ * across all object categories or for a specific division.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.0
+ */
 public class StatusOfFundsReportData {
     private final LocalDateTime reportDateTime;
     private final String budgetFiscalYear;
@@ -21,6 +39,19 @@ public class StatusOfFundsReportData {
 
     private List<ObjectCategoryDto> categoryDtos;
 
+    /**
+     * Creates a report-data snapshot for the specified appropriation.
+     * <p>
+     * The budget fiscal year and appropriation amounts are copied from the
+     * appropriation. The report date and time are captured when this object is
+     * created. If an OBBBA division is supplied, its division code is retained
+     * for calculating the OBBBA balance.
+     * </p>
+     *
+     * @param appropriation the appropriation represented by this report data
+     * @param obbbaDivision the division used for OBBBA balance calculations,
+     *                      or {@code null} if the report has no OBBBA division
+     */
     public StatusOfFundsReportData(Appropriation appropriation, Division obbbaDivision) {
         this.budgetFiscalYear = appropriation.getBudgetFiscalYear();
         this.oneYearAppropriation = appropriation.getOneYearAmount();
@@ -51,10 +82,24 @@ public class StatusOfFundsReportData {
         this.categoryDtos = categoryDtos;
     }
 
+    /**
+     * Returns the report generation date and time formatted for display.
+     *
+     * @return the formatted report date and time
+     */
     public String getReportDateTime() {
         return getDateTimeReportString(reportDateTime);
     }
 
+    /**
+     * Returns the base file name for the generated report.
+     * <p>
+     * The file name contains the budget fiscal year and the date and time
+     * captured when this report-data object was created.
+     * </p>
+     *
+     * @return the generated report file name without a file extension
+     */
     public String getFileName() {
         return String.format(
                 "Status of Funds FY%s as of %s",
@@ -63,16 +108,28 @@ public class StatusOfFundsReportData {
         );
     }
 
+    /**
+     * Sums a value extracted from every object category in the report.
+     *
+     * @param extractor function that returns the value to include from an
+     *                  object category
+     * @return the sum of the extracted values
+     */
     private BigDecimal sumFromCategories(Function<ObjectCategoryDto, BigDecimal> extractor) {
-        return categoryDtos.stream()
-                .map(extractor)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum(categoryDtos, extractor);
     }
 
+    /**
+     * Sums a division-specific value extracted from every object category in
+     * the report.
+     *
+     * @param extractor function that returns a value for an object category
+     *                  and division code
+     * @param divCode   the code of the division whose values will be summed
+     * @return the sum of the extracted values for the specified division
+     */
     private BigDecimal sumFromCategories(BiFunction<ObjectCategoryDto, String, BigDecimal> extractor, String divCode) {
-        return categoryDtos.stream()
-                .map(categoryDto -> extractor.apply(categoryDto, divCode))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum(categoryDtos, categoryDto -> extractor.apply(categoryDto, divCode));
     }
 
     public BigDecimal getTotalOneYearAllocations(String divCode) {
@@ -159,6 +216,15 @@ public class StatusOfFundsReportData {
                 .add(getTotalTwoYearReimbursements());
     }
 
+    /**
+     * Calculates the remaining one-year balance.
+     * <p>
+     * The balance is calculated as allocations minus projections and
+     * obligations, plus reimbursements.
+     * </p>
+     *
+     * @return the remaining one-year balance
+     */
     public BigDecimal getTotalOneYearBalance() {
         return getTotalOneYearAllocations()
                 .subtract(getTotalOneYearProjections())
@@ -166,6 +232,15 @@ public class StatusOfFundsReportData {
                 .add(getTotalOneYearReimbursements());
     }
 
+    /**
+     * Calculates the remaining two-year balance.
+     * <p>
+     * The balance is calculated as allocations minus projections and
+     * obligations, plus reimbursements.
+     * </p>
+     *
+     * @return the remaining two-year balance
+     */
     public BigDecimal getTotalTwoYearBalance() {
         return getTotalTwoYearAllocations()
                 .subtract(getTotalTwoYearProjections())
@@ -173,6 +248,18 @@ public class StatusOfFundsReportData {
                 .add(getTotalTwoYearReimbursements());
     }
 
+    /**
+     * Calculates the remaining one-year balance for the OBBBA division.
+     * <p>
+     * The balance is calculated as the division's one-year allocations minus
+     * its one-year projections and obligations, plus its one-year
+     * reimbursements. If no OBBBA division was supplied when this object was
+     * created, this method returns zero.
+     * </p>
+     *
+     * @return the remaining OBBBA balance, or {@link BigDecimal#ZERO} if no
+     * OBBBA division is associated with the report
+     */
     public BigDecimal getObbbaBalance() {
         if (obbbaDivisionCode == null) {
             return BigDecimal.ZERO;

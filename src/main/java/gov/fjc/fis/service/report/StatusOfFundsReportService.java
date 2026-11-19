@@ -16,22 +16,37 @@ import java.util.stream.Collectors;
 
 import static gov.fjc.fis.app.BigDecimalUtils.*;
 
+/**
+ * Spring service responsible for assembling data used by Status of Funds reports.
+ * <p>
+ * This service retrieves allocations, projections, obligations, and
+ * reimbursements for an appropriation and organizes the results by division,
+ * major object class, and fund type. The assembled data is used by PDF,
+ * spreadsheet, and dashboard reports.
+ * </p>
+ * <p>
+ * Financial amounts are rounded to the requested scale before being assigned
+ * to the report DTOs. Data associated with the mandatory division is tracked
+ * separately from the one-year and two-year division totals.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.0
+ */
 @Component("fis_StatusOfFundsReportService")
 public class StatusOfFundsReportService {
 
-    private final ObligationService obligationService;
-    private final ActivityReimbursementService activityReimbursementService;
-    private final ActivityProjectionService activityProjectionService;
-    private final DivisionAllocationService divisionAllocationService;
-    private final DivisionService divisionService;
-    private final ObjectCategoryService categoryService;
     private final FundService fundService;
-
-    private record DivMocKey(String divCode, String moc) {
-    }
+    private final ObjectCategoryService categoryService;
+    private final DivisionService divisionService;
+    private final DivisionAllocationService divisionAllocationService;
+    private final ActivityProjectionService activityProjectionService;
+    private final ActivityReimbursementService activityReimbursementService;
+    private final ObligationService obligationService;
 
     public StatusOfFundsReportService(FundService fundService,
-                                      ObjectCategoryService categoryService, DivisionService divisionService,
+                                      ObjectCategoryService categoryService,
+                                      DivisionService divisionService,
                                       DivisionAllocationService divisionAllocationService,
                                       ActivityProjectionService activityProjectionService,
                                       ActivityReimbursementService activityReimbursementService,
@@ -45,6 +60,29 @@ public class StatusOfFundsReportService {
         this.obligationService = obligationService;
     }
 
+    /**
+     * Composite key used to group financial data by division code and
+     * major object class.
+     *
+     * @param divCode the division code
+     * @param moc     the major object class code
+     */
+    private record DivMocKey(String divCode, String moc) {
+    }
+
+    /**
+     * Generates the data model used to produce the Status of Funds report.
+     * <p>
+     * The resulting model contains the appropriation, its mandatory division,
+     * and the prepared financial data for the standard report categories.
+     * </p>
+     *
+     * @param appropriation the fiscal-year appropriation for which report data
+     *                      will be generated
+     * @param scale         the number of decimal places to which financial
+     *                      amounts are rounded
+     * @return the assembled Status of Funds report data
+     */
     public StatusOfFundsReportData generateReportData(Appropriation appropriation, int scale) {
         var mandatoryDivision = divisionService.fetchMandatoryDivision(appropriation);
         var reportData = new StatusOfFundsReportData(appropriation, mandatoryDivision);
@@ -53,15 +91,32 @@ public class StatusOfFundsReportService {
     }
 
     /**
-     * Returns category data for used by PDF, Excel, and dashboard reports
+     * Prepares financial data grouped by object category and division.
+     * <p>
+     * This method retrieves the divisions and financial values associated with
+     * the specified appropriation. Allocations, projections, obligations, and
+     * reimbursements are indexed by division code and major object class before
+     * being applied to the corresponding DTOs.
+     * </p>
+     * <p>
+     * One-year, two-year, and mandatory-division values are accumulated
+     * separately. After all divisions have been processed, totals are calculated
+     * for each object category and categories not marked for display are removed
+     * from the returned list.
+     * </p>
      *
-     * @param appropriation         entity representing fiscal year budget appropriation
-     * @param scale                 number of decimal places to round to
-     * @param showDefaultCategories whether to include default categories
-     * @return Category DTOs
+     * @param appropriation         the fiscal-year appropriation for which
+     *                              category data will be prepared
+     * @param scale                 the number of decimal places to which
+     *                              financial amounts are rounded
+     * @param showDefaultCategories {@code true} to include the standard report
+     *                              categories; {@code false} to rely on each
+     *                              category's calculated display status
+     * @return the object-category DTOs selected for inclusion in the report
      */
     private List<ObjectCategoryDto> prepareCategoryData(Appropriation appropriation,
-                                                        int scale, boolean showDefaultCategories) {
+                                                        int scale,
+                                                        boolean showDefaultCategories) {
 
         Fund oneYearFund = fundService.getAppropriationOneYearFund();
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
@@ -113,7 +168,17 @@ public class StatusOfFundsReportService {
                 .toList();
     }
 
-    // Groups a flat list into a map keyed by (divcode, moc)
+    /**
+     * Groups financial query results by division code and major object class.
+     * <p>
+     * Each source entity is expected to contain non-null {@code divcode} and
+     * {@code moc} values.
+     * </p>
+     *
+     * @param entities the financial query results to group
+     * @return a map whose keys identify a division and major object class and
+     * whose values contain the corresponding query results
+     */
     private Map<DivMocKey, List<KeyValueEntity>> indexByDivAndMoc(List<KeyValueEntity> entities) {
         return entities.stream().collect(
                 Collectors.groupingBy(e -> new DivMocKey(
@@ -121,9 +186,30 @@ public class StatusOfFundsReportService {
                         e.getValue("moc").toString())));
     }
 
-    // Handles allocations, which have separate one-year/two-year amount fields
-    private void applyAllocation(List<KeyValueEntity> matches, DivisionDto divisionDto,
-                                 ObjectCategoryDto categoryDto, boolean isMandatoryDivision, int scale) {
+
+    /**
+     * Applies allocation results to a division and its associated object category.
+     * <p>
+     * Allocation records contain separate one-year and two-year values. Values
+     * belonging to the mandatory division are stored as mandatory allocations;
+     * all other values are added to the applicable one-year and two-year
+     * category totals.
+     * </p>
+     *
+     * @param matches             allocation results for the division and major
+     *                            object class, or {@code null} if none exist
+     * @param divisionDto         the division DTO to update
+     * @param categoryDto         the object-category DTO to update
+     * @param isMandatoryDivision {@code true} if the division is the mandatory
+     *                            division
+     * @param scale               the number of decimal places to which allocation
+     *                            amounts are rounded
+     */
+    private void applyAllocation(List<KeyValueEntity> matches,
+                                 DivisionDto divisionDto,
+                                 ObjectCategoryDto categoryDto,
+                                 boolean isMandatoryDivision,
+                                 int scale) {
         if (matches == null) return;
         for (var kv : matches) {
             BigDecimal oneYear = roundToScale(kv.getValue("oneyearamount"), scale);
@@ -139,15 +225,48 @@ public class StatusOfFundsReportService {
         }
     }
 
-    // Handles projections/obligations/reimbursements, which split on fund type
-    private void applyFundSplit(
-            List<KeyValueEntity> matches, DivisionDto divisionDto, ObjectCategoryDto categoryDto,
-            boolean isMandatoryDivision, int scale, Fund oneYearFund,
-            BiConsumer<DivisionDto, BigDecimal> setDivOneYear,
-            BiConsumer<ObjectCategoryDto, BigDecimal> addCatOneYear,
-            BiConsumer<DivisionDto, BigDecimal> setDivTwoYear,
-            BiConsumer<ObjectCategoryDto, BigDecimal> addCatTwoYear,
-            BiConsumer<ObjectCategoryDto, BigDecimal> setCatMandatory) {
+    /**
+     * Applies fund-based financial results to a division and its associated
+     * object category.
+     * <p>
+     * This shared operation is used for projections, obligations, and
+     * reimbursements. Each amount is assigned to either the one-year or
+     * two-year totals according to its fund. For the mandatory division,
+     * one-year amounts are also assigned to the corresponding mandatory
+     * category field.
+     * </p>
+     *
+     * @param matches             financial results for the division and major
+     *                            object class, or {@code null} if none exist
+     * @param divisionDto         the division DTO to update
+     * @param categoryDto         the object-category DTO to update
+     * @param isMandatoryDivision {@code true} if the division is the mandatory
+     *                            division
+     * @param scale               the number of decimal places to which financial
+     *                            amounts are rounded
+     * @param oneYearFund         the fund identifying one-year amounts
+     * @param setDivOneYear       operation that assigns a one-year amount to the
+     *                            division DTO
+     * @param addCatOneYear       operation that adds a one-year amount to the
+     *                            category DTO
+     * @param setDivTwoYear       operation that assigns a two-year amount to the
+     *                            division DTO
+     * @param addCatTwoYear       operation that adds a two-year amount to the
+     *                            category DTO
+     * @param setCatMandatory     operation that assigns a mandatory amount to the
+     *                            category DTO
+     */
+    private void applyFundSplit(List<KeyValueEntity> matches,
+                                DivisionDto divisionDto,
+                                ObjectCategoryDto categoryDto,
+                                boolean isMandatoryDivision,
+                                int scale,
+                                Fund oneYearFund,
+                                BiConsumer<DivisionDto, BigDecimal> setDivOneYear,
+                                BiConsumer<ObjectCategoryDto, BigDecimal> addCatOneYear,
+                                BiConsumer<DivisionDto, BigDecimal> setDivTwoYear,
+                                BiConsumer<ObjectCategoryDto, BigDecimal> addCatTwoYear,
+                                BiConsumer<ObjectCategoryDto, BigDecimal> setCatMandatory) {
         if (matches == null) return;
         for (var kv : matches) {
             final BigDecimal amount = roundToScale(kv.getValue("amount"), scale);
@@ -163,12 +282,23 @@ public class StatusOfFundsReportService {
     }
 
     /**
-     * returns data used by dashboard reports
+     * Returns object-category data used by Status of Funds dashboard reports.
+     * <p>
+     * In addition to the prepared category data, this method calculates the
+     * difference between the appropriation amounts and the total allocated
+     * amounts. When applicable, the difference is appended as an
+     * {@code ALLOCATION DISCREPANCY} category.
+     * </p>
      *
-     * @param appropriation         entity representing fiscal year budget appropriation
-     * @param scale                 number of decimal places to round to
-     * @param showDefaultCategories whether to include default categories
-     * @return Category DTOs
+     * @param appropriation         the fiscal-year appropriation for which
+     *                              category data will be prepared
+     * @param scale                 the number of decimal places to which
+     *                              financial amounts are rounded
+     * @param showDefaultCategories {@code true} to include the standard report
+     *                              categories; {@code false} to include only
+     *                              categories selected by their display rules
+     * @return the category data, including an allocation-discrepancy category
+     *         when it is eligible for display
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryData(Appropriation appropriation,
                                                                 int scale, boolean showDefaultCategories) {
@@ -193,11 +323,25 @@ public class StatusOfFundsReportService {
     }
 
     /**
-     * returns data used by dashboard spending chart, includes unspent funds data
+     * Returns object-category data used by the Status of Funds dashboard
+     * spending chart, including calculated unspent funds.
+     * <p>
+     * Unspent funds are calculated separately for one-year and two-year funds
+     * by adding reimbursements to the appropriation amount and subtracting
+     * projections and obligations. A combined value is also calculated from
+     * the total appropriation, reimbursements, projections, and obligations.
+     * </p>
+     * <p>
+     * When applicable, the calculated values are appended as an
+     * {@code UNSPENT FUNDS} category.
+     * </p>
      *
-     * @param appropriation         entity representing fiscal year budget appropriation
-     * @param scale                 number of decimal places to round to
-     * @return Category DTOs
+     * @param appropriation the fiscal-year appropriation for which spending data
+     *                      will be prepared
+     * @param scale         the number of decimal places to which financial
+     *                      amounts are rounded
+     * @return the category data, including an unspent-funds category when it is
+     *         eligible for display
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryDataWithUnspent(Appropriation appropriation, int scale) {
         var categoryDtos = new ArrayList<>(prepareCategoryData(appropriation, scale, false));
