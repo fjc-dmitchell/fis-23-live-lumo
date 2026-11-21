@@ -22,6 +22,28 @@ import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an adjustment to an {@link Appropriation} that affects the
+ * available spending authority for a budget fiscal year.
+ *
+ * <p>Appropriation adjustments are used to record changes to enacted
+ * appropriations after the initial budget authority has been established.
+ * Examples include rescissions, sequestrations, reimbursements, transfers,
+ * and other funding actions that increase or decrease available authority.
+ * Each adjustment is recorded with an effective date, description, and
+ * separate one-year and two-year funding amounts.</p>
+ *
+ * <p>The entity provides a historical record of appropriation-level funding
+ * changes and supports the calculation of total available authority for the
+ * fiscal year. Multiple adjustments may be associated with a single
+ * appropriation, allowing the complete lifecycle of funding changes to be
+ * tracked and reported.</p>
+ *
+ * <p>The entity also includes Jmix auditing metadata, calculated reporting
+ * properties, and optimistic locking support.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_APPROPRIATION_ADJUSTMENT", indexes = {
         @Index(name = "IDX_FIS_APPROPRIATION_ADJUSTMENT_APPROPRIATION", columnList = "APPROPRIATION_ID")

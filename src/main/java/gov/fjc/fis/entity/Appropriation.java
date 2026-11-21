@@ -18,6 +18,24 @@ import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an appropriation for a specific budget fiscal year.
+ *
+ * <p>An appropriation records the one-year and two-year funding amounts,
+ * adjustments to those amounts, reimbursed funding, and whether the
+ * appropriation is currently open or closed. The budget fiscal year uniquely
+ * identifies the appropriation and is used as its Jmix instance name.</p>
+ *
+ * <p>The entity is the composition owner of its associated {@link Division},
+ * {@link ObjectCategory}, and {@link AppropriationAdjustment} entities.
+ * It also provides calculated properties for the original appropriation
+ * amount, total adjustments, and total available authority.</p>
+ *
+ * <p>Creation and modification information is maintained through Jmix
+ * auditing fields. Optimistic locking is provided by the entity version.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_APPROPRIATION", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_APPROPRIATION_UNQ", columnNames = {"BUDGET_FISCAL_YEAR"})
