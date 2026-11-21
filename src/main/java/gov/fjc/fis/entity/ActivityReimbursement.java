@@ -22,6 +22,27 @@ import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static gov.fjc.fis.app.FisUtilities.safeTrim;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a reimbursement received for an {@link Activity}.
+ *
+ * <p>An activity reimbursement records funding received from an external
+ * source to support a program, project, or activity. Unlike appropriated
+ * funds provided through the FJC budget process, reimbursement funds
+ * originate from outside entities and are used to offset or supplement
+ * activity costs.</p>
+ *
+ * <p>Each reimbursement is associated with an {@link Activity} and an
+ * {@link ObjectClass}, allowing reimbursed funding to be tracked and
+ * reported by budget object classification. The entity also captures
+ * supporting information such as the funding source, reimbursement amount,
+ * document number, document date, and optional explanatory notes.</p>
+ *
+ * <p>The entity supports financial accountability and reporting by
+ * maintaining reimbursement details along with Jmix auditing and
+ * optimistic locking information.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_ACTIVITY_REIMBURSEMENT", indexes = {
         @Index(name = "IDX_FIS_ACTIVITY_REIMBURSEMENT_ACTIVITY", columnList = "ACTIVITY_ID"),

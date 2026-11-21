@@ -19,6 +19,26 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a funded activity, program, or project administered by a
+ * {@link Division}.
+ *
+ * <p>An activity is uniquely identified within its division by a four-digit
+ * activity number. It may be associated with a {@link Branch}, {@link Group},
+ * {@link Fund}, and cost organization, and records descriptive and operational
+ * information such as its title, location, dates, program director, and
+ * participant, program, and faculty counts.</p>
+ *
+ * <p>The entity tracks projected, reimbursed, and obligated amounts and is
+ * the composition owner of its projections, projection audit records,
+ * reimbursements, obligations, and file attachments.</p>
+ *
+ * <p>Calculated properties provide formatted and derived values for use in
+ * the Jmix user interface and reports. The entity also supports file
+ * attachments, Jmix auditing, and optimistic locking.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_ACTIVITY", indexes = {
         @Index(name = "IDX_FIS_ACTIVITY_DIVISION", columnList = "DIVISION_ID"),

@@ -20,6 +20,27 @@ import java.time.OffsetDateTime;
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a projected expenditure amount for an {@link Activity}
+ * and {@link ObjectClass} combination.
+ *
+ * <p>An activity projection allocates a projected funding amount to a
+ * specific object class within an activity. These projections are used
+ * for budgeting, planning, and financial reporting purposes and provide
+ * a detailed breakdown of anticipated activity expenditures by object
+ * class.</p>
+ *
+ * <p>Each activity may contain multiple projections, but only one
+ * projection is permitted for a given object class within the same
+ * activity. Together, the activity and object class uniquely identify
+ * a projection record.</p>
+ *
+ * <p>The entity maintains audit and versioning information through
+ * Jmix auditing and optimistic locking facilities, supporting
+ * accountability and change tracking of projected funding data.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_ACTIVITY_PROJECTION", indexes = {
         @Index(name = "IDX_FIS_ACTIVITY_PROJECTION_ACTIVITY", columnList = "ACTIVITY_ID"),

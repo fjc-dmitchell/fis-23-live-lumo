@@ -20,6 +20,29 @@ import java.time.OffsetDateTime;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an audit record for changes made to an
+ * {@link ActivityProjection}.
+ *
+ * <p>An audit record is created whenever an activity projection is added,
+ * modified, or deleted. The entity preserves the projected amount before
+ * and after the change, allowing a complete audit trail of funding
+ * projections assigned to an {@link ObjectClass} within an
+ * {@link Activity}. Each audit record also identifies the type of change
+ * that occurred, such as a creation, update, or deletion.</p>
+ *
+ * <p>The entity supports audit reporting and historical analysis by
+ * recording the previous and new projection amounts, as well as the
+ * calculated net change resulting from the update. This information
+ * provides accountability and visibility into the evolution of projected
+ * activity funding over time.</p>
+ *
+ * <p>Audit metadata, including the user who performed the change and the
+ * date and time the audit record was created, is maintained automatically
+ * through Jmix auditing facilities.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_ACTIVITY_PROJECTION_AUDIT", indexes = {
         @Index(name = "IDX_FIS_ACTIVITY_PROJECTION_AUDIT_OBJECT_CLASS", columnList = "OBJECT_CLASS_ID"),
