@@ -19,6 +19,34 @@ import java.util.List;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a financial obligation associated with an {@link Activity}.
+ *
+ * <p>An obligation records a commitment of funds for goods, services,
+ * travel, or other authorized expenditures. Obligations typically
+ * represent miscellaneous obligations, purchase orders, contracts,
+ * blanket purchase orders, or travel authorizations that have been
+ * approved and funded as part of an activity.</p>
+ *
+ * <p>In the Financial Information System (FIS), obligation records are
+ * maintained at the budget object class ({@link ObjectClass}) level.
+ * Each obligation line item represents the amount obligated for a
+ * specific budget object class, allowing obligations to be tracked,
+ * reconciled, and reported by spending category.</p>
+ *
+ * <p>The entity maintains key administrative and financial information,
+ * including document identifiers, dates, vendor information, travel
+ * details, status, and funding amounts. Obligations may also contain
+ * related invoices, fund control notices (FCNs), and supporting
+ * documentation used throughout the procurement, payment, and
+ * reconciliation processes.</p>
+ *
+ * <p>The entity supports integration with external administrative
+ * systems and includes Jmix auditing, file attachment, and optimistic
+ * locking capabilities to ensure accountability and data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_OBLIGATION", indexes = {
         @Index(name = "IDX_FIS_OBLIGATION_ACTIVITY", columnList = "ACTIVITY_ID"),

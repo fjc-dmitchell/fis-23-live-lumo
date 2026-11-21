@@ -20,6 +20,26 @@ import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static gov.fjc.fis.app.FisUtilities.safeTrim;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an invoice applied against an {@link Obligation}.
+ *
+ * <p>An invoice records a request for payment for goods, services, travel,
+ * or other authorized expenditures associated with an obligation. It
+ * captures the invoice number, invoice date, amount, payment date, and
+ * optional explanatory information used to track the expenditure from
+ * invoicing through payment.</p>
+ *
+ * <p>Multiple invoices may be associated with a single obligation. Together,
+ * these records support monitoring the amounts invoiced and paid against the
+ * obligated amount. Supporting documentation may be maintained through the
+ * invoice's associated file attachments.</p>
+ *
+ * <p>The entity is the composition owner of its attachments and includes
+ * Jmix auditing metadata and optimistic locking support for accountability
+ * and data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_INVOICE", indexes = {
         @Index(name = "IDX_FIS_INVOICE_OBLIGATION", columnList = "OBLIGATION_ID")

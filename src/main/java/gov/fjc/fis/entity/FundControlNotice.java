@@ -18,6 +18,32 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a Fund Control Notice (FCN) issued for an
+ * {@link Obligation}.
+ *
+ * <p>A Fund Control Notice is an official budget authorization document
+ * used to allocate, adjust, or restrict spending authority for specific
+ * funds, programs, projects, or organizational units. Within the Financial
+ * Information System (FIS), an FCN is used to increase or decrease the
+ * authorized amount of an obligation, such as a purchase order, contract,
+ * or travel authorization.</p>
+ *
+ * <p>Each FCN records the effective date of the authorization, the amount
+ * of the adjustment, and supporting administrative information necessary
+ * for budget execution and financial management. Additional information,
+ * including travel dates, budget organization, employee identification
+ * information, explanatory notes, and supporting documentation, may also
+ * be maintained as part of the notice.</p>
+ *
+ * <p>The entity supports integration with administrative systems,
+ * maintains associated file attachments, and provides a historical record
+ * of funding authority changes affecting an obligation. Jmix auditing and
+ * optimistic locking facilities are used to maintain accountability and
+ * data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_FCN", indexes = {
         @Index(name = "IDX_FIS_FCN_OBLIGATION", columnList = "OBLIGATION_ID")

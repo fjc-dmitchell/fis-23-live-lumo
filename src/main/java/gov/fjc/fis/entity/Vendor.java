@@ -15,6 +15,32 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a vendor or payee associated with financial obligations
+ * and procurement activities within FIS.
+ *
+ * <p>A vendor identifies an organization, business, governmental entity,
+ * educational institution, or individual that provides goods or services
+ * to the Federal Judicial Center or receives payments through the financial
+ * management process. Vendor records are used to associate obligations,
+ * invoices, and other financial transactions with the appropriate payee.</p>
+ *
+ * <p>Each vendor is uniquely identified by a vendor code and address code
+ * combination and may include identifying and administrative information
+ * such as the vendor name, Employer Identification Number (EIN), DUNS
+ * number, CAGE code, mailing address, and active status. Multiple vendor
+ * records may exist for the same organization when different payment or
+ * mailing addresses are maintained.</p>
+ *
+ * <p>The entity supports procurement, payment processing, financial
+ * reporting, and reconciliation activities by providing a centralized
+ * source of vendor information used throughout the system.</p>
+ *
+ * <p>The entity includes Jmix auditing metadata and optimistic locking
+ * support to ensure accountability and data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_VENDOR", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_VENDOR_UNQ", columnNames = {"VENDOR_CODE", "ADDRESS_CODE"})
