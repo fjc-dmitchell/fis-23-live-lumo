@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
@@ -151,7 +152,7 @@ public class Vendor {
     }
 
     public void setState(String state) {
-        this.state = safeToUpperCase(safeTrim(state));
+        this.state = StringUtils.toUpperCase(safeTrim(state));
     }
 
     public String getCity() {

@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -157,7 +158,7 @@ public class ObjectClass {
     }
 
     public void setBudgetObjectClass(String budgetObjectClass) {
-        this.budgetObjectClass = safeToUpperCase(budgetObjectClass);
+        this.budgetObjectClass = StringUtils.toUpperCase(budgetObjectClass);
     }
 
     public ObjectCategory getObjectCategory() {

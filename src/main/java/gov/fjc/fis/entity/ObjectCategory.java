@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -143,7 +144,7 @@ public class ObjectCategory {
     }
 
     public void setMajorObjectClass(String majorObjectClass) {
-        this.majorObjectClass = safeTrim(safeToUpperCase(majorObjectClass));
+        this.majorObjectClass = safeTrim(StringUtils.toUpperCase(majorObjectClass));
     }
 
     public Appropriation getAppropriation() {

@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -364,7 +365,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setEin(String ein) {
-        this.ein = safeTrim(safeToUpperCase(ein));
+        this.ein = safeTrim(StringUtils.toUpperCase(ein));
     }
 
     public Boolean getStatus() {
@@ -420,7 +421,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = safeToUpperCase(documentNumber);
+        this.documentNumber = StringUtils.toUpperCase(documentNumber);
     }
 
     public Activity getActivity() {

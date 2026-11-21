@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
@@ -116,7 +117,7 @@ public class Fund {
     }
 
     public void setFundCode(String fundCode) {
-        this.fundCode = safeToUpperCase(fundCode);
+        this.fundCode = StringUtils.toUpperCase(fundCode);
     }
 
     public OffsetDateTime getLastModifiedDate() {

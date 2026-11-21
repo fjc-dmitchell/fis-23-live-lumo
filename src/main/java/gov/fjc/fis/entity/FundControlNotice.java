@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.*;
@@ -188,7 +189,7 @@ public class FundControlNotice implements FileAttachable {
     }
 
     public void setEin(String ein) {
-        this.ein = safeTrim(safeToUpperCase(ein));
+        this.ein = safeTrim(StringUtils.toUpperCase(ein));
     }
 
     public String getBudgetOrg() {

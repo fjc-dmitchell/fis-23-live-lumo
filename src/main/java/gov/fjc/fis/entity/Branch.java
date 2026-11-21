@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -137,7 +138,7 @@ public class Branch {
     }
 
     public void setBranchCode(String branchCode) {
-        this.branchCode = safeTrim(safeToUpperCase(branchCode));
+        this.branchCode = safeTrim(StringUtils.toUpperCase(branchCode));
     }
 
     public Division getDivision() {

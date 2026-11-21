@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -137,7 +138,7 @@ public class Group {
     }
 
     public void setGroupCode(String groupCode) {
-        this.groupCode = safeTrim(safeToUpperCase(groupCode));
+        this.groupCode = safeTrim(StringUtils.toUpperCase(groupCode));
     }
 
     public Division getDivision() {

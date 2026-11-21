@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity.personnel;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.metamodel.annotation.*;
 import jakarta.persistence.*;
@@ -217,7 +218,7 @@ public class Position {
     }
 
     public void setStatus(String status) {
-        this.status = safeToUpperCase(status);
+        this.status = StringUtils.toUpperCase(status);
     }
 
     public String getGvtWorkSched() {
@@ -225,7 +226,7 @@ public class Position {
     }
 
     public void setGvtWorkSched(String gvtWorkSched) {
-        this.gvtWorkSched = safeToUpperCase(gvtWorkSched);
+        this.gvtWorkSched = StringUtils.toUpperCase(gvtWorkSched);
     }
 
     public BigDecimal getAnnualRt() {
@@ -257,7 +258,7 @@ public class Position {
     }
 
     public void setPaygroup(String paygroup) {
-        this.paygroup = safeToUpperCase(paygroup);
+        this.paygroup = StringUtils.toUpperCase(paygroup);
     }
 
     public String getJlCostOrgCd() {
@@ -265,7 +266,7 @@ public class Position {
     }
 
     public void setJlCostOrgCd(String jlCostOrgCd) {
-        this.jlCostOrgCd = safeToUpperCase(jlCostOrgCd);
+        this.jlCostOrgCd = StringUtils.toUpperCase(jlCostOrgCd);
     }
 
     public BigDecimal getStdHours() {
@@ -281,7 +282,7 @@ public class Position {
     }
 
     public void setRegTemp(String regTemp) {
-        this.regTemp = safeToUpperCase(regTemp);
+        this.regTemp = StringUtils.toUpperCase(regTemp);
     }
 
     public String getJobtitle() {

@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.app.StringUtils;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
@@ -216,7 +217,7 @@ public class Division {
     }
 
     public void setBudgetOrg(String budgetOrg) {
-        this.budgetOrg = safeTrim(safeToUpperCase(budgetOrg));
+        this.budgetOrg = safeTrim(StringUtils.toUpperCase(budgetOrg));
     }
 
     public List<Activity> getActivities() {
@@ -256,7 +257,7 @@ public class Division {
     }
 
     public void setDivisionCode(String divisionCode) {
-        this.divisionCode = safeToUpperCase(divisionCode);
+        this.divisionCode = StringUtils.toUpperCase(divisionCode);
     }
 
     public Fund getFund() {

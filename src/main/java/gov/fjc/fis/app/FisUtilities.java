@@ -116,16 +116,6 @@ public final class FisUtilities {
         return loadedByStr.isEmpty() ? "" : loadedByStr;
     }
 
-    /**
-     * Jmix 2.x removed @CaseConversion annotation. Use this method until they replace it.
-     *
-     * @param value
-     * @return String
-     */
-    public static String safeToUpperCase(String value) {
-        return value == null ? null : value.toUpperCase(Locale.ROOT);
-    }
-
     public static String getDateTimeReportString(LocalDateTime dateTime) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy h:mm a");
         return dtf.format(dateTime);
