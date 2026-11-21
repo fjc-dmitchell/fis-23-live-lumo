@@ -18,6 +18,34 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a budget object class (BOC) within an
+ * {@link ObjectCategory}.
+ *
+ * <p>A budget object class is a standardized federal budgeting and
+ * accounting classification used to identify the specific type of goods,
+ * services, personnel compensation, travel, equipment, or other items for
+ * which funds are obligated and spent. Budget object classes provide a
+ * detailed breakdown of expenditures within a major object class
+ * ({@link ObjectCategory}).</p>
+ *
+ * <p>Within FIS, each budget object class is defined by a four-digit BOC
+ * code and title and is associated with a single object category. Budget
+ * object classes are used throughout the system to classify projected
+ * expenditures, reimbursements, and obligations, providing consistency in
+ * budgeting, financial reporting, and spending analysis.</p>
+ *
+ * <p>The entity is the composition owner of its associated
+ * {@link ActivityProjection}, {@link ActivityReimbursement}, and
+ * {@link Obligation} records. These relationships enable financial data
+ * to be tracked and reported at the detailed spending-category level
+ * required for budget execution and management.</p>
+ *
+ * <p>The entity includes Jmix auditing metadata and optimistic locking
+ * support to ensure accountability and data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_OBJECT_CLASS", indexes = {
         @Index(name = "IDX_FIS_OBJECT_CLASS_CATEGORY", columnList = "OBJECT_CATEGORY_ID")

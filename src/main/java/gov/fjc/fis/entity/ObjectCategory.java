@@ -18,6 +18,32 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a budget object category, also known as a major object class,
+ * within an {@link Appropriation}.
+ *
+ * <p>A budget object category is a high-level federal budgeting and
+ * accounting classification used to group obligations according to the
+ * type of goods, property, services, personnel compensation, or other
+ * expenditures being financed. Major object classes provide a summarized
+ * view of spending and serve as the parent classification for individual
+ * budget object classes.</p>
+ *
+ * <p>Within FIS, an object category is defined within an appropriation and
+ * is identified by a two-digit major object class (MOC) code and title.
+ * Each object category contains one or more {@link ObjectClass} records
+ * that provide a more detailed breakdown of spending classifications.
+ * Object categories are also used to allocate funding to divisions through
+ * {@link DivisionAllocation} records.</p>
+ *
+ * <p>The entity is the composition owner of its associated budget object
+ * classes and division allocations and supports budgeting, allocation,
+ * reporting, and financial analysis throughout the system. Jmix auditing
+ * metadata and optimistic locking are provided to ensure accountability
+ * and data integrity.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_OBJECT_CATEGORY", indexes = {
         @Index(name = "IDX_FIS_OBJECT_CATEGORY_APPROPRIATION", columnList = "APPROPRIATION_ID")
