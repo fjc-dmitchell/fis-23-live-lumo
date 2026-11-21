@@ -14,6 +14,38 @@ import java.util.Objects;
 import static gov.fjc.fis.app.BigDecimalUtils.anyNonZero;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Maintains an audit trail of document processing performed by the
+ * JIFMS-to-FIS obligation conversion process.
+ *
+ * <p>A document audit record is created each time an imported
+ * {@link Document} is evaluated, inserted, updated, or rejected during
+ * processing. The audit record preserves the document data received from
+ * JIFMS, the resulting obligation values stored in FIS, and details about
+ * the actions performed by the processing job.
+ *
+ * <p>For successfully processed documents, this entity records the
+ * obligation that was created or updated, including key identifying
+ * information, financial values, organizational assignments, vendor data,
+ * and any projection adjustments resulting from the transaction.
+ *
+ * <p>For rejected documents, the audit record provides a permanent record
+ * of the source document and the reason processing could not be completed.
+ * This information enables users and administrators to review processing
+ * results, troubleshoot validation failures, and reconcile imported JIFMS
+ * data with FIS obligations.
+ *
+ * <p>The entity captures both the source document values and the resulting
+ * obligation values, allowing users to understand precisely how a document
+ * affected FIS data, what field values changed, and what actions were taken
+ * by the processing job.
+ *
+ * <p>Document audit records are intended for reporting, reconciliation,
+ * troubleshooting, and historical accountability of document processing
+ * activities.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DOCUMENT_AUDIT", indexes = {
         @Index(name = "IDX_FIS_DOCUMENT_AUDIT", columnList = "DOCUMENT_BBFY"),

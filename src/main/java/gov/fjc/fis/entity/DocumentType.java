@@ -4,7 +4,25 @@ import io.jmix.core.metamodel.datatype.EnumClass;
 
 import org.springframework.lang.Nullable;
 
-
+/**
+ * Identifies the type of document received from the JIFMS interface.
+ *
+ * <p>Document types categorize imported documents and determine how they
+ * are processed within FIS. Each type represents a specific business
+ * document supported by the document import and obligation creation
+ * process.
+ *
+ * <p>Currently, the JIFMS interface supports two document types:
+ * miscellaneous obligations and travel authorizations. Imported
+ * {@link Document} records are validated and processed according to the
+ * rules applicable to their document type before being converted into
+ * FIS obligations.
+ *
+ * <p>Each enum value is persisted using the JIFMS document type code
+ * through the Jmix {@link EnumClass} interface.
+ *
+ * @author Doug Mitchell
+ */
 public enum DocumentType implements EnumClass<String> {
 
     MISCELLANEOUS_OBLIGATION("MOJ"),

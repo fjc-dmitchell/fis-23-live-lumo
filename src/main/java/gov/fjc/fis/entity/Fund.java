@@ -17,6 +17,28 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a funding source used to finance activities, programs,
+ * and projects.
+ *
+ * <p>A fund identifies the source of financing associated with an activity
+ * and is used for budgeting, planning, financial management, and reporting.
+ * Funds may represent appropriated resources, reimbursable funding, or
+ * other authorized sources of program support.</p>
+ *
+ * <p>Examples include the one-year portion of an appropriation, the
+ * multi-year portion of an appropriation, the Federal Judicial Center
+ * Foundation, and the Judiciary Information Technology Fund (JITF).
+ * Each fund is uniquely identified by a fund code and title and may be
+ * referenced by divisions, activities, and other financial records
+ * throughout the system.</p>
+ *
+ * <p>The entity provides descriptive and audit information for use in the
+ * Jmix user interface and supports optimistic locking and auditing through
+ * standard Jmix persistence facilities.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_FUND", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_FUND_UNQ_CODE", columnNames = {"FUND_CODE"}),

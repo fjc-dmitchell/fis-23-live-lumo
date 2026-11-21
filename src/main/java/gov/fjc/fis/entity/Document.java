@@ -1,5 +1,6 @@
 package gov.fjc.fis.entity;
 
+import gov.fjc.fis.entity.personnel.Employee;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
@@ -17,6 +18,33 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
 
+/**
+ * Represents a source document imported from the JIFMS interface for
+ * processing within the Financial Information System (FIS).
+ *
+ * <p>Document records are loaded from an external feed and contain the
+ * financial, accounting, vendor, and budget information necessary to create
+ * FIS obligations. Similar to how {@link Employee} records are imported from
+ * the HRMIS interface, document records serve as staging data received from
+ * JIFMS and are not intended to be maintained directly by end users.
+ *
+ * <p>Each document represents a single imported document line and includes
+ * information such as the document number, document type, budget fiscal year,
+ * funding information, vendor details, budget object class, line amount, and
+ * document status data received from JIFMS.
+ *
+ * <p>After import, document records are validated and processed by a separate
+ * background job. During processing, eligible document records are transformed
+ * into corresponding {@link Obligation} entities within FIS. Validation rules
+ * ensure that required reference data, funding structures, and business rules
+ * are satisfied before an obligation can be created.
+ *
+ * <p>The entity also serves as an auditable record of the source data received
+ * from JIFMS, allowing imported documents to be reviewed, validated, and
+ * reconciled with the resulting obligations.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DOCUMENT", indexes = {
         @Index(name = "IDX_FIS_DOCUMENT", columnList = "BBFY"),

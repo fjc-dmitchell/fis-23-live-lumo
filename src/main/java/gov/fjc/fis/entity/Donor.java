@@ -15,6 +15,25 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a donor that contributes funds to the FJC Foundation.
+ *
+ * <p>A donor may be an individual, corporation, nonprofit organization,
+ * foundation, government entity, or other organization that provides
+ * financial support to Foundation-sponsored programs, projects, events,
+ * or initiatives.
+ *
+ * <p>This entity maintains donor contact information, including mailing
+ * address, contact person, telephone numbers, email address, and other
+ * notes relevant to the donor relationship. Donor records provide a
+ * centralized source of information for managing contributions and
+ * Foundation-related fundraising activities.
+ *
+ * <p>Audit information is maintained to track when donor records were
+ * created or modified and by whom.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DONOR")
 @Entity(name = "fis_Donor")

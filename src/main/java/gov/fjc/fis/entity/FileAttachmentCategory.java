@@ -15,6 +15,24 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
+/**
+ * Defines a category that can be assigned to a {@link FileAttachment}.
+ *
+ * <p>File attachment categories provide a mechanism for classifying and
+ * organizing attachments associated with entities that implement
+ * {@link FileAttachable}. Examples may include supporting documentation,
+ * contracts, correspondence, invoices, approvals, or other business-defined
+ * attachment types.
+ *
+ * <p>Categories are maintained by application administrators and may be
+ * activated or deactivated as business requirements change. Category titles
+ * are unique across the system.
+ *
+ * <p>This entity includes standard auditing information to track when the
+ * category was created or modified and by whom.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_FILE_ATTACHMENT_CATEGORY", indexes = {
         @Index(name = "IDX_FIS_FILE_ATTACHMENT_CATEGORY_UNQ", columnList = "TITLE", unique = true)

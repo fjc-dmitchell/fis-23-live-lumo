@@ -16,6 +16,31 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
+/**
+ * Represents a document processing exception to prevent an imported
+ * {@link Document} from being converted into an {@link Obligation}.
+ *
+ * <p>Document exceptions are user-defined exclusions created when a document
+ * received from the JIFMS interface should not be processed by the obligation
+ * creation job. When a matching exception record exists, the document is
+ * excluded from validation and obligation creation processing.
+ *
+ * <p>Exceptions are identified by a unique combination of fund code, budget
+ * fiscal year (BBFY), budget organization, budget object class (BOC),
+ * document type, and document number. This combination corresponds to the
+ * key attributes used to identify imported JIFMS documents.
+ *
+ * <p>The entity provides users with a mechanism to permanently or temporarily
+ * exclude specific documents from processing without modifying the source
+ * data received from JIFMS. This is useful when a document should not result
+ * in an obligation within FIS because it is invalid, duplicated, outside the
+ * scope of FIS processing, or otherwise requires manual exclusion.
+ *
+ * <p>Audit information is maintained to track when exception records were
+ * created or modified and by whom.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DOCUMENT_EXCEPTION", indexes = {
         @Index(name = "IDX_FIS_DOCUMENT_EXCEPTION_UNQ", columnList = "FUND_CODE, BBFY, BUDGET_ORG, BOC, DOCUMENT_TYPE, DOCUMENT_NUMBER", unique = true)

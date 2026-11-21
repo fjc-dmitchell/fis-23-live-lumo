@@ -1,18 +1,28 @@
 package gov.fjc.fis.entity;
 
 /**
- * interface should be implemented by any entity class that allows file attachments.
- * Currently used by Activity, Obligation, Invoice, and FundControlNotice.
- * <p>
- * Created to solve an issue with Obligation. If an attachment is added to an
- * Invoice or FCN from the Obligation detail view, the list of attachments
- * on the obligation view should be <em>immediately</em> refreshed using a load delegate
- * in the file attachment fragment. This issue is unique to FileAttachment
- * as it has associations to Activity and Obligation even when attached to
- * Invoice or FundControlNotice.
- * <p>
- * This also avoids "Object smell" that would otherwise occur in FileAttachmentFragment's
- * setHostEntity and FileAttachmentService if Object was allowed to be
- * passed a method parameters.
+ * Marker interface for entity types that support file attachments.
+ *
+ * <p>Implemented by entities that can serve as the host of one or more
+ * file attachments, including {@link Activity}, {@link Obligation},
+ * {@link Invoice}, and {@link FundControlNotice}.
+ *
+ * <p>This interface provides a common type for attachment-related
+ * components and services, allowing them to operate on supported
+ * entities without relying on {@code Object} parameters or
+ * entity-specific logic.
+ *
+ * <p>The interface was introduced to support attachment refresh behavior
+ * when attachments are added from related entity views. In particular,
+ * attachments associated with Invoice or FundControlNotice records may
+ * also need to be reflected immediately within the corresponding
+ * Obligation view because {@code FileAttachment} maintains relationships
+ * with both Activity and Obligation entities.
+ *
+ * <p>Using a dedicated marker interface improves type safety and avoids
+ * the use of generic {@code Object} parameters in attachment-related
+ * services and UI components.
+ *
+ * @author Doug Mitchell
  */
 public interface FileAttachable { }
