@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 public class BudgetRequestReportData {
     private final String budgetFiscalYear;
@@ -160,14 +161,14 @@ public class BudgetRequestReportData {
     }
 
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     public String getFileName() {
         return String.format(
                 "Budget Request FY%s as of %s",
                 budgetFiscalYear,
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 public class EducationBranchReportData {
     private final String budgetFiscalYear;
@@ -142,7 +143,7 @@ public class EducationBranchReportData {
     }
 
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     public String getDivisionAndBranch() {
@@ -154,7 +155,7 @@ public class EducationBranchReportData {
                 "%s programs for FY %s as of %s",
                 branchTitle,
                 budgetFiscalYear,
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 public class OpenTravelObligationsReportData {
     private final String budgetFiscalYear;
@@ -82,7 +83,7 @@ public class OpenTravelObligationsReportData {
     }
 
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     public String getDateString() {
@@ -100,7 +101,7 @@ public class OpenTravelObligationsReportData {
                 "%s open travel authorizations %s as of %s",
                 divisionTitles,
                 getDateString(),
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 }

@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 public class SalaryProjectionsReportData {
     private final LocalDateTime reportDateTime;
@@ -88,7 +89,7 @@ public class SalaryProjectionsReportData {
     }
 
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     public BigDecimal getTotalProjectedSalary() {
@@ -107,7 +108,7 @@ public class SalaryProjectionsReportData {
         return String.format(
                 "Salary Projections for %s as of %s",
                 divisionTitle,
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 }

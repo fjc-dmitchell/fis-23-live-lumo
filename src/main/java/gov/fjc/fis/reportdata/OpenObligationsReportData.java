@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 public class OpenObligationsReportData {
 
@@ -93,7 +94,7 @@ public class OpenObligationsReportData {
     }
 
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     public String getFileName() {
@@ -101,7 +102,7 @@ public class OpenObligationsReportData {
                 "%s open obligations for FY %s as of %s",
                 divisionAndBranch,
                 budgetFiscalYear,
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 }

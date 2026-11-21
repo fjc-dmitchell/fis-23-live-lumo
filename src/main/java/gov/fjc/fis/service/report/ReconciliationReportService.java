@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.getDateTime;
-import static gov.fjc.fis.app.FisUtilities.getDateTimeFilenameString;
+import static gov.fjc.fis.app.DateUtils.formatFilenameDateTime;
 
 @Component("fis_ReconciliationReportService")
 public class ReconciliationReportService {
@@ -82,7 +82,7 @@ public class ReconciliationReportService {
         return String.format(
                 "FIS Reconciliation FY%s as of %s.xlsx",
                 appropriation.getBudgetFiscalYear(),
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 

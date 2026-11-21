@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import static gov.fjc.fis.app.BigDecimalUtils.sum;
 import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.DateUtils.*;
 
 /**
  * Holds the data and calculated totals used to generate a Status of Funds report.
@@ -88,7 +89,7 @@ public class StatusOfFundsReportData {
      * @return the formatted report date and time
      */
     public String getReportDateTime() {
-        return getDateTimeReportString(reportDateTime);
+        return formatReportDateTime(reportDateTime);
     }
 
     /**
@@ -104,7 +105,7 @@ public class StatusOfFundsReportData {
         return String.format(
                 "Status of Funds FY%s as of %s",
                 budgetFiscalYear,
-                getDateTimeFilenameString(reportDateTime)
+                formatFilenameDateTime(reportDateTime)
         );
     }
 

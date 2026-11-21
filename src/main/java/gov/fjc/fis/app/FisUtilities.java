@@ -116,16 +116,6 @@ public final class FisUtilities {
         return loadedByStr.isEmpty() ? "" : loadedByStr;
     }
 
-    public static String getDateTimeReportString(LocalDateTime dateTime) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy h:mm a");
-        return dtf.format(dateTime);
-    }
-
-    public static String getDateTimeFilenameString(LocalDateTime dateTime) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd hh-mm a");
-        return dtf.format(dateTime);
-    }
-
     public static LocalDateTime getDateTime() {
         return LocalDateTime.now();
     }
