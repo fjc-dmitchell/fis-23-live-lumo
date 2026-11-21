@@ -13,6 +13,22 @@ import io.jmix.flowui.DialogWindows;
 import io.jmix.flowui.component.UiComponentUtils;
 import org.springframework.stereotype.Component;
 
+/**
+ * Routes report menu actions to their corresponding report parameter views.
+ * <p>
+ * Jmix main-menu items can only invoke application methods and cannot directly
+ * open report parameter dialogs. This component serves as an intermediary
+ * between the menu system and report views by opening the appropriate view in
+ * a modal dialog window.
+ * </p>
+ * <p>
+ * Each method launches a report-specific parameter view that allows the user
+ * to configure report options before report generation and execution.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.1
+ */
 @Component("fis_ReportRouter")
 public class ReportRouter {
     private final DialogWindows dialogWindows;

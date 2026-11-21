@@ -103,7 +103,7 @@ public class ObligationEventListener {
      *
      * @param event the obligation entity change event
      */
-    void recalculateActivityObligationSums(EntityChangedEvent<Obligation> event) {
+    private void recalculateActivityObligationSums(EntityChangedEvent<Obligation> event) {
         Set<Id<Activity>> activityIds = new HashSet<>();
 
         if (event.getType() != EntityChangedEvent.Type.DELETED) {
