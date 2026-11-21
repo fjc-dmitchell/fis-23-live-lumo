@@ -17,6 +17,28 @@ import java.time.OffsetDateTime;
 import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
 
+/**
+ * Represents an employee record imported from the Human Resources
+ * Management Information System (HRMIS).
+ *
+ * <p>Employee records are loaded into FIS through an automated interface
+ * and serve as the authoritative source of personnel, position, pay, and
+ * employment information used by the system. The entity contains employee
+ * identifiers, position assignments, job classifications, work schedules,
+ * compensation rates, and other workforce attributes received from HRMIS.</p>
+ *
+ * <p>Employee records are synchronized with FIS position records and are
+ * used to support personnel planning, compensation projections, benefit
+ * projections, and workforce budgeting activities. Personnel actions and
+ * position changes affecting projected salary and benefit costs are applied
+ * using the employee information maintained by this entity.</p>
+ *
+ * <p>The entity is maintained through periodic HRMIS data feeds rather than
+ * direct user entry. Load metadata is captured to support reconciliation,
+ * auditing, and validation of imported employee information.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_EMPLOYEE", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_EMPLOYEE_UNQ", columnNames = {"EMPLID"})

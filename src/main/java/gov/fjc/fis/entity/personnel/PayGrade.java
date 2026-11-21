@@ -14,6 +14,34 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
+/**
+ * Represents an FJC pay grade used to classify positions and determine
+ * applicable salary ranges for personnel planning and compensation
+ * calculations.
+ *
+ * <p>Pay grades are imported from the personnel system and define the
+ * salary administration plan, grade level, locality pay eligibility,
+ * and descriptive information used to identify a position's compensation
+ * structure. Positions reference pay grades when calculating projected
+ * salary costs, personnel actions, and pay adjustments.
+ *
+ * <p>Each pay grade may have one or more associated
+ * {@link PayGradeRate} records that define the minimum and maximum
+ * annual salary rates effective during specific time periods. This
+ * allows FIS to accurately calculate salary projections using the
+ * rates that were in effect for a given pay period.
+ *
+ * <p>The entity also stores locality pay information indicating whether
+ * employees assigned to the pay grade are eligible for locality pay and
+ * whether locality pay may be forfeited under applicable personnel rules.
+ *
+ * <p>Pay grade information serves as a foundational component of the
+ * personnel budgeting and forecasting process, supporting position
+ * management, compensation analysis, pay adjustments, and salary
+ * projections.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_PAY_GRADE", indexes = {
         @Index(name = "IDX_FIS_PAY_GRADE_UNQ", columnList = "SETID, SAL_ADMIN_PLAN, GRADE", unique = true)

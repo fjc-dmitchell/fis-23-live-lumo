@@ -17,6 +17,33 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+/**
+ * Defines the compensation rates associated with a {@link PayGrade}
+ * for a specific effective period.
+ *
+ * <p>Pay grade rates establish the minimum and maximum annual salary
+ * amounts that may be paid within a pay grade. Rate records are
+ * effective-dated, allowing salary schedules to change over time while
+ * preserving historical compensation data used for reporting and
+ * projections.
+ *
+ * <p>Each rate is associated with a specific {@link PayPeriod} that
+ * identifies when the rate becomes effective. This enables FIS to apply
+ * the correct salary range when processing position actions, pay
+ * adjustments, compensation planning, and salary projections.
+ *
+ * <p>In addition to the base salary range, the entity provides derived
+ * quartile calculations that divide the pay range into four equal
+ * segments. These values support compensation analysis and reporting by
+ * identifying salary distribution ranges within a pay grade, and
+ * are used for quartile-based pay adjustments.
+ *
+ * <p>Multiple effective-dated rate records may exist for a pay grade,
+ * allowing FIS to maintain a complete history of salary schedule
+ * changes and accurately project personnel costs across fiscal years.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_PAY_GRADE_RATE", indexes = {
         @Index(name = "IDX_FIS_PAY_GRADE_RATE_PAY_GRADE", columnList = "PAY_GRADE_ID"),

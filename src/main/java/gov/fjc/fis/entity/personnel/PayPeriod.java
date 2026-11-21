@@ -17,6 +17,32 @@ import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 
+/**
+ * Represents a federal biweekly pay period used for personnel planning,
+ * compensation management, and salary projection calculations.
+ *
+ * <p>In the federal government, a pay period is a fourteen-day biweekly
+ * interval that begins on a Sunday and ends on the second Saturday. For
+ * full-time employees, a pay period typically represents eighty hours of
+ * scheduled work and serves as the basis for payroll processing, leave
+ * accrual, and compensation calculations.
+ *
+ * <p>Pay periods are used throughout FIS to support personnel-related
+ * functions, including position actions, pay adjustments, staffing plans,
+ * salary projections, and other forecasting activities that require
+ * compensation data to be allocated to specific payroll periods.
+ *
+ * <p>Each record identifies a pay year and pay period number, along with
+ * the corresponding start and end dates. Most calendar years contain
+ * twenty-six pay periods, although certain payroll years may contain
+ * twenty-seven pay periods depending on the federal payroll calendar.
+ *
+ * <p>This entity provides a centralized reference for associating personnel
+ * transactions and projected salary expenses with a specific payroll cycle,
+ * ensuring consistent calculations and reporting across the application.
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_PAY_PERIOD", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_PAY_PERIOD_UNQ", columnNames = {"START_DATE"}),

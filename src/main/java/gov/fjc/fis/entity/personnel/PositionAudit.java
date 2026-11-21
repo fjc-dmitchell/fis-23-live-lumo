@@ -9,6 +9,27 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;
 
+/**
+ * Represents an audit record generated when a {@link Position} is created or
+ * updated during synchronization with employee data received from HRMIS.
+ *
+ * <p>Position audit records provide a historical record of changes made to
+ * position information as part of the employee-to-position synchronization
+ * process. Whenever a change is detected between an HRMIS employee record
+ * and its corresponding position record, an audit entry is created to
+ * capture the affected field and its before-and-after values.</p>
+ *
+ * <p>Each audit record identifies the position, the field that changed,
+ * the previous value, the new value, and the date and time the change
+ * occurred. This information supports reconciliation, validation, and
+ * troubleshooting of position data derived from HRMIS employee feeds.</p>
+ *
+ * <p>The entity serves as a permanent audit trail of automated position
+ * updates, providing accountability and visibility into workforce and
+ * compensation-related data changes over time.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_POSITION_AUDIT")
 @Entity(name = "fis_PositionAudit")

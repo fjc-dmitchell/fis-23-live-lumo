@@ -22,6 +22,31 @@ import java.time.OffsetDateTime;
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a planned personnel action affecting a {@link Position}.
+ *
+ * <p>A position action models a future change to a position's employment,
+ * compensation, or staffing status. Examples include hires, promotions,
+ * reassignments, retirements, resignations, pay adjustments, conversions,
+ * and other personnel actions that impact projected workforce costs.</p>
+ *
+ * <p>Each position action is associated with an {@link ActionCode},
+ * effective date, and compensation data that define the expected change.
+ * Position actions may be linked to a specific {@link PayPeriod} and are
+ * used to forecast future salary and benefit expenses based on anticipated
+ * personnel events.</p>
+ *
+ * <p>Together with {@link Position} records, position actions provide the
+ * foundation for personnel budgeting, workforce planning, and compensation
+ * projections within FIS. Multiple actions may be associated with a
+ * position to model changes occurring throughout the fiscal year.</p>
+ *
+ * <p>The entity includes Jmix auditing metadata, calculated compensation
+ * properties, and optimistic locking support to maintain data integrity and
+ * support reporting requirements.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_POSITION_ACTION", indexes = {
         @Index(name = "IDX_FIS_POSITION_ACTION_PAY_PERIOD", columnList = "PAY_PERIOD_ID"),

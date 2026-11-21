@@ -19,6 +19,34 @@ import java.util.List;
 
 import static gov.fjc.fis.app.FisUtilities.*;
 
+/**
+ * Represents a position used for personnel planning, compensation
+ * projections, and benefit projections within FIS.
+ *
+ * <p>A position may represent either an existing employee position or a
+ * planned future hire. Positions can be created manually to support
+ * workforce planning and budgeting activities, or they can be created and
+ * updated from employee records received through the HRMIS interface.</p>
+ *
+ * <p>Position records maintain staffing, organizational, and compensation
+ * information, including position number, employee assignment, job title,
+ * employment status, work schedule, pay rates, cost organization, and
+ * other attributes required for personnel budgeting. When associated with
+ * an employee, the position is synchronized with HRMIS data to ensure
+ * projected personnel costs are based on current workforce information.</p>
+ *
+ * <p>The entity is the composition owner of its associated
+ * {@link PositionAction} records, which model personnel actions that affect
+ * projected compensation and benefits over time. Together, positions and
+ * position actions provide the foundation for workforce and salary
+ * forecasting within FIS.</p>
+ *
+ * <p>The entity includes Jmix auditing metadata, optimistic locking, and
+ * calculated properties used throughout the user interface and reporting
+ * processes.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_POSITION", uniqueConstraints = {
         @UniqueConstraint(name = "IDX_FIS_POSITION_UNQ", columnNames = {"POSITION_NBR"})
