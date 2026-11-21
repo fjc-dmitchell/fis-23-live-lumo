@@ -39,7 +39,7 @@ import static gov.fjc.fis.app.FisUtilities.getReportOutputType;
  * </p>
  *
  * @author Doug Mitchell
- * @since 2.1
+ * @since 2.0
  */
 @Route(value = "status-of-funds-report-view", layout = MainView.class)
 @ViewController("fis_StatusOfFundsReportView")
@@ -51,23 +51,14 @@ public class StatusOfFundsReportView extends StandardView {
     @Autowired
     private UiReportRunner uiReportRunner;
 
-    /**
-     * data loaders
-     */
     @ViewComponent
     private CollectionLoader<Appropriation> appropriationsDl;
 
-    /**
-     * services
-     */
     @Autowired
     private StatusOfFundsReportService statusOfFundsReportService;
     @Autowired
     private AppropriationService appropriationService;
 
-    /**
-     * view components
-     */
     @ViewComponent
     private EntityComboBox<Appropriation> bfySelectorField;
     @ViewComponent

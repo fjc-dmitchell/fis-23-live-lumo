@@ -104,7 +104,7 @@ public class SpendingChartFragment extends Fragment<VerticalLayout> {
                     }
                     Objects.requireNonNull(allocationsChart.getTitle()).setText(appropriation.getBudgetFiscalYear().concat(" Two Year Allocations"));
                     break;
-                case OBBBA_APPROPRIATION:
+                case OBBBA_ADJUSTMENT:
                     categories = categorySofDc.getItems().stream().filter(categoryDto -> categoryDto.getMandatoryAllocated().signum() != 0).toList();
                     for (var cat : categories) {
                         allocations.addItem(new MapDataItem(Map.of("category", cat.getTitleAndCode(), "value", cat.getMandatoryAllocated())));
@@ -142,7 +142,7 @@ public class SpendingChartFragment extends Fragment<VerticalLayout> {
                     }
                     spendingChart.getTitle().setText(appropriation.getBudgetFiscalYear().concat(" Two Year Spending"));
                     break;
-                case OBBBA_APPROPRIATION:
+                case OBBBA_ADJUSTMENT:
                     categories = categorySpendDc.getItems().stream().filter(categoryDto -> categoryDto.getMandatoryObligated().add(categoryDto.getMandatoryProjected()).signum() != 0).toList();
                     for (var cat : categories) {
                         spending.addItem(new MapDataItem(Map.of("category", cat.getTitleAndCode(), "value", cat.getMandatoryObligated().add(cat.getMandatoryProjected()))));
