@@ -21,6 +21,24 @@ import java.time.OffsetDateTime;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents the allocation of division funding to a specific
+ * {@link ObjectCategory}.
+ *
+ * <p>A division allocation records the one-year and two-year amounts
+ * assigned from a {@link Division} to an object category. Together, the
+ * division and object category form a unique allocation relationship,
+ * ensuring that only one allocation exists for a given combination.</p>
+ *
+ * <p>The entity supports funding allocation and reporting by providing
+ * calculated aggregate amounts and maintaining references to both the
+ * division and object category associated with the allocation.</p>
+ *
+ * <p>The entity also includes Jmix auditing metadata, optimistic locking,
+ * and user interface properties used for display and reporting purposes.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DIVISION_ALLOCATION", indexes = {
         @Index(name = "IDX_FIS_DIVISION_ALLOCATION_DIVISION", columnList = "DIVISION_ID"),

@@ -17,6 +17,24 @@ import java.util.List;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a branch within a {@link Division}.
+ *
+ * <p>A branch provides an organizational grouping identified by a unique
+ * branch code and title within a division. Branches are used to organize
+ * and manage related activities and serve as an intermediate level in the
+ * funding and organizational hierarchy.</p>
+ *
+ * <p>The entity is the composition owner of its associated
+ * {@link Activity} records. Each branch must have a unique branch code
+ * within its parent division.</p>
+ *
+ * <p>The entity provides calculated properties for user interface display,
+ * including activity counts, formatted title and code values, and audit
+ * information. It also supports Jmix auditing and optimistic locking.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_BRANCH", indexes = {
         @Index(name = "IDX_FIS_BRANCH_DIVISION", columnList = "DIVISION_ID")

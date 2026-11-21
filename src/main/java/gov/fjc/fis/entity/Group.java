@@ -17,6 +17,24 @@ import java.util.List;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents a group within a {@link Division}.
+ *
+ * <p>A group provides an organizational classification identified by a
+ * unique group code and title within a division. Groups are used to
+ * organize and manage related activities and serve as part of the
+ * organizational structure used for funding and reporting purposes.</p>
+ *
+ * <p>The entity is the composition owner of its associated
+ * {@link Activity} records. Each group must have a unique group code
+ * within its parent division.</p>
+ *
+ * <p>The entity provides calculated properties for user interface display,
+ * including activity counts, formatted title and code values, and audit
+ * information. It also supports Jmix auditing and optimistic locking.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_GROUP", indexes = {
         @Index(name = "IDX_FIS_GROUP_DIVISION", columnList = "DIVISION_ID")

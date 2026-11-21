@@ -20,6 +20,27 @@ import static gov.fjc.fis.app.FisUtilities.convertOffsetDateTimeToLocalDateTime;
 import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an audit record for changes made to a
+ * {@link DivisionAllocation}.
+ *
+ * <p>An audit record is created whenever a division allocation is added,
+ * modified, or deleted. The entity preserves the allocation values before
+ * and after the change, allowing historical tracking of funding amounts
+ * assigned to an {@link ObjectCategory} within a {@link Division}. Each
+ * record also identifies the type of change that occurred and the specific
+ * attributes that were updated.</p>
+ *
+ * <p>The entity supports audit reporting and change analysis by recording
+ * old and new one-year and two-year allocation amounts, as well as
+ * calculated change amounts derived from those values.</p>
+ *
+ * <p>Audit metadata, including the user who performed the change and the
+ * date and time the audit record was created, is maintained automatically
+ * through Jmix auditing facilities.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DIVISION_ALLOCATION_AUDIT", indexes = {
         @Index(name = "IDX_FIS_DIVISION_ALLOCATION_AUDIT_DIVISION", columnList = "DIVISION_ID"),

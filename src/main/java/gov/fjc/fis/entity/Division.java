@@ -19,6 +19,26 @@ import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
+/**
+ * Represents an organizational division within an {@link Appropriation}.
+ *
+ * <p>A division identifies a funding organization by its division code,
+ * title, budget organization, and associated default {@link Fund}. It records
+ * the one-year and two-year amounts allocated to the division and provides a
+ * calculated total of those amounts.</p>
+ *
+ * <p>The division is the composition owner of its allocations, allocation
+ * audit records, branches, groups, and activities. Each division must be
+ * uniquely identified within an appropriation by both its division code and
+ * its title.</p>
+ *
+ * <p>The entity provides formatted values for use in the Jmix user interface,
+ * including its instance name, title and budget organization, title and
+ * division code, and creation and modification details. It also supports
+ * optimistic locking and Jmix auditing.</p>
+ *
+ * @author Doug Mitchell
+ */
 @JmixEntity
 @Table(name = "FIS_DIVISION", indexes = {
         @Index(name = "IDX_FIS_DIVISION_APPROPRIATION", columnList = "APPROPRIATION_ID"),
