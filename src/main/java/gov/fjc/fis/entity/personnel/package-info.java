@@ -1,6 +1,5 @@
 /**
- * Provides the personnel and human resources JPA entity model for the
- * Financial Information System (FIS).
+ * Provides the personnel and human resources JPA entity model for FIS.
  *
  * <p>This package contains the persistent domain entities that represent
  * employees, positions, compensation structures, personnel actions, and

@@ -21,6 +21,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Quartz job that imports Employee records from the HRMIS employee feed.
+ * <p>
+ * The job reads the configured tab-delimited employee file, clears existing
+ * {@link gov.fjc.fis.entity.personnel.Employee} records, and loads the latest
+ * employee data into FIS. The imported data serves as the authoritative
+ * personnel source received from HRMIS and is subsequently used for position
+ * synchronization, compensation projections, and workforce planning.
+ * </p>
+ *
+ * <p>
+ * After a successful import, the source file is archived and the
+ * {@code syncEmployeeToPosition} job is triggered to synchronize employee
+ * information with Position records. If the feed file is missing or an error
+ * occurs during processing, the job sends a notification email and aborts
+ * processing.
+ * </p>
+ *
+ * <p>
+ * Concurrent execution is disabled to prevent multiple imports from modifying
+ * employee data simultaneously.
+ * </p>
+ *
+ * @see gov.fjc.fis.entity.personnel.Employee
+ * @see SyncEmployeeToPositionJob
+ *
+ * @author Doug Mitchell
+ */
 @DisallowConcurrentExecution
 public class LoadEmployeesJob implements Job {
     @Autowired
@@ -47,6 +75,27 @@ public class LoadEmployeesJob implements Job {
     private static final String ABEND_SUBJECT = "HRMIS feed processing ABENDED";
     private static final Logger log = LoggerFactory.getLogger(LoadEmployeesJob.class);
 
+    /**
+     * Executes the employee import process.
+     * <p>
+     * The job verifies that the configured HRMIS employee feed file exists before
+     * replacing the current Employee data. It truncates the employee table, imports
+     * and persists the records from the feed, archives the processed file, and
+     * triggers the job that synchronizes Employee entities with Position records.
+     * </p>
+     *
+     * <p>
+     * If the feed file is missing, the existing Employee records remain unchanged.
+     * If the import or downstream job trigger fails, a failure notification is sent
+     * and execution terminates with a {@link JobExecutionException}.
+     * </p>
+     *
+     * @param context the Quartz execution context for this job
+     * @throws JobExecutionException if the feed file is missing, employee loading
+     *                               fails, the file cannot be archived, or the
+     *                               employee-to-position synchronization job cannot
+     *                               be triggered
+     */
     @Authenticated
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -75,6 +124,16 @@ public class LoadEmployeesJob implements Job {
         log.info("LoadEmployeesJob has ended");
     }
 
+    /**
+     * Reports that the configured HRMIS employee feed file could not be found.
+     * <p>
+     * A warning is written to the application log and an email notification is
+     * sent indicating that processing was aborted without modifying the existing
+     * Employee records.
+     * </p>
+     *
+     * @param employeeFilePath the expected path of the missing employee feed file
+     */
     private void notifyFileMissing(Path employeeFilePath) {
         log.warn("{} not found at {}. Processing aborted.", employeeFile, employeeFilePath);
         var body = """
@@ -85,10 +144,22 @@ public class LoadEmployeesJob implements Job {
         administrationService.sendEmail(jobStatusEmailAddresses, ABEND_SUBJECT, body);
     }
 
+    /**
+     * Sends an email notification describing a failure encountered while processing
+     * the HRMIS employee feed.
+     *
+     * @param message the HTML-formatted failure message to include in the email
+     */
     private void notifyFailure(String message) {
         administrationService.sendEmail(jobStatusEmailAddresses, ABEND_SUBJECT, message);
     }
 
+    /**
+     * Loads employee records from the specified HRMIS feed file and persists
+     * them in a batch operation.
+     *
+     * @param employeeFilePath the path to the employee feed file
+     */
     private void loadEmployees(Path employeeFilePath) {
         try (Reader reader = Files.newBufferedReader(employeeFilePath)) {
             CsvToBean<EmployeeImportRow> csvToBean = new CsvToBeanBuilder<EmployeeImportRow>(reader)
@@ -115,6 +186,12 @@ public class LoadEmployeesJob implements Job {
         }
     }
 
+    /**
+     * Creates an Employee entity from a row in the HRMIS employee feed.
+     *
+     * @param employeeImportRow the imported employee feed record
+     * @return a populated Employee entity that has not yet been persisted
+     */
     Employee createEmployee(EmployeeImportRow employeeImportRow) {
         Employee employee = unconstrainedDataManager.create(Employee.class);
         employee.setPositionNbr(employeeImportRow.getPositionNbr());

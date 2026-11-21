@@ -1,6 +1,5 @@
 /**
- * Provides the core financial and administrative JPA entity model for the
- * Financial Information System (FIS).
+ * Provides the core financial and administrative JPA entity model for FIS.
  *
  * <p>This package contains the persistent domain entities that represent the
  * financial, budgetary, organizational, and operational data managed by FIS.

@@ -1,5 +1,5 @@
 /**
- * Provides application event listeners for the Financial Information System (FIS).
+ * Provides application event listeners for the FIS.
  *
  * <p>This package contains Spring and Jmix event listener implementations that
  * respond to entity lifecycle events, application events, user actions, and

@@ -7,6 +7,25 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Represents a row imported from the HRMIS employee feed.
+ * <p>
+ * Each field is mapped by position to a column in the tab-delimited feed file.
+ * The imported values contain the employee, position, organizational, work
+ * schedule, and compensation data used to create an
+ * {@link gov.fjc.fis.entity.personnel.Employee} entity.
+ * </p>
+ *
+ * <p>
+ * This class is an import data-transfer object and is not a persistent Jmix
+ * entity.
+ * </p>
+ *
+ * @see gov.fjc.fis.entity.personnel.Employee
+ * @see LoadEmployeesJob
+ *
+ * @author Doug Mitchell
+ */
 public class EmployeeImportRow implements Serializable {
 
     @CsvBindByPosition(position = 0)
