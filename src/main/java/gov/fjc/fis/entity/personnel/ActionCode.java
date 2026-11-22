@@ -18,10 +18,9 @@ import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
  * Represents a personnel action code used to classify changes affecting an
  * employee's status, pay, or position.
  *
- * <p>Within the Financial Information System (FIS), an action code identifies
- * the type of personnel change represented by a {@link PositionAction}. The
- * code is used to trigger the corresponding change in projected employee
- * compensation and benefit costs.</p>
+ * <p>Within FIS, an action code identifies the type of personnel change
+ * represented by a {@link PositionAction}. The code is used to trigger the
+ * corresponding change in projected employee compensation and benefit costs.</p>
  *
  * <p>Action codes generally correspond to the three-digit federal Nature of
  * Action Codes used for personnel actions, including appointments,

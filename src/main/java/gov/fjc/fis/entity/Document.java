@@ -20,7 +20,7 @@ import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
 
 /**
  * Represents a source document imported from the JIFMS interface for
- * processing within the Financial Information System (FIS).
+ * processing within FIS.
  *
  * <p>Document records are loaded from an external feed and contain the
  * financial, accounting, vendor, and budget information necessary to create

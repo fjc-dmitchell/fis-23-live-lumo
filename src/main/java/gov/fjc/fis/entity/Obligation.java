@@ -29,11 +29,11 @@ import static java.util.Objects.requireNonNullElse;
  * blanket purchase orders, or travel authorizations that have been
  * approved and funded as part of an activity.</p>
  *
- * <p>In the Financial Information System (FIS), obligation records are
- * maintained at the budget object class ({@link ObjectClass}) level.
- * Each obligation line item represents the amount obligated for a
- * specific budget object class, allowing obligations to be tracked,
- * reconciled, and reported by spending category.</p>
+ * <p>In FIS, obligation records are maintained at the budget object
+ * class ({@link ObjectClass}) level. Each obligation line item
+ * represents the amount obligated for a specific budget object class,
+ * allowing obligations to be tracked, reconciled, and reported by
+ * spending category.</p>
  *
  * <p>The entity maintains key administrative and financial information,
  * including document identifiers, dates, vendor information, travel

@@ -25,10 +25,9 @@ import static gov.fjc.fis.app.FisUtilities.*;
  *
  * <p>A Fund Control Notice is an official budget authorization document
  * used to allocate, adjust, or restrict spending authority for specific
- * funds, programs, projects, or organizational units. Within the Financial
- * Information System (FIS), an FCN is used to increase or decrease the
- * authorized amount of an obligation, such as a purchase order, contract,
- * or travel authorization.</p>
+ * funds, programs, projects, or organizational units. Within FIS, an FCN
+ * is used to increase or decrease the amount of an obligation, such as
+ * a purchase order or travel authorization.</p>
  *
  * <p>Each FCN records the effective date of the authorization, the amount
  * of the adjustment, and supporting administrative information necessary
