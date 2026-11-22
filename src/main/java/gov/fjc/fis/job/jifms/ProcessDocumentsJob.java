@@ -10,6 +10,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Quartz job that validates and processes documents imported from JIFMS.
+ *
+ * <p>This job serves as the primary processing entry point for JIFMS purchase
+ * orders and travel authorizations that have been imported into FIS as
+ * {@link Document} entities. For each open appropriation, the job retrieves
+ * eligible documents, validates required accounting and organizational
+ * information, and performs the business operations necessary to synchronize
+ * FIS with the incoming JIFMS data.
+ *
+ * <p>Document validation includes verification of funds, divisions,
+ * activities, object classes, document numbering rules, and duplicate budget
+ * object class restrictions. Documents that fail validation are rejected and
+ * audited without further processing.
+ *
+ * <p>Validated documents are processed through a pipeline that may create or
+ * update {@link Obligation} records, adjust activity projections, create
+ * division allocations, generate financial change notices, create vendors,
+ * and record audit information describing the outcome of processing.
+ *
+ * <p>Upon successful completion of document processing, the job triggers the
+ * reconciliation reporting job so that Finance users can review the resulting
+ * reconciliation reports.
+ *
+ * <p>{@link DisallowConcurrentExecution} prevents multiple instances of the
+ * job from running simultaneously, ensuring that documents are not processed
+ * more than once during a scheduling cycle.
+ *
+ * @author Doug Mitchell
+ */
 @DisallowConcurrentExecution
 public class ProcessDocumentsJob implements Job {
     @Autowired
@@ -28,6 +58,25 @@ public class ProcessDocumentsJob implements Job {
     private static final List<String> PURCHASE_DOCUMENT_TYPES = List.of("MO", "MOJ");
     private static final JobKey RECONCILIATION_REPORT_JOB_KEY = new JobKey("reconciliationReport", "JIFMS");
 
+    /**
+     * Executes the JIFMS document validation and processing workflow.
+     *
+     * <p>The job retrieves configuration data required for validation,
+     * processes documents for each open appropriation in manageable batches,
+     * executes validation and processing pipelines, creates audit records for
+     * rejected, inserted, and updated documents, and triggers the
+     * reconciliation reporting job after all processing has completed.
+     *
+     * <p>If required configuration data cannot be found, if no open
+     * appropriations exist, or if the reconciliation reporting job cannot be
+     * triggered, a {@link JobExecutionException} is thrown and job execution
+     * is considered unsuccessful.
+     *
+     * @param context the Quartz job execution context
+     * @throws JobExecutionException if a required processing dependency cannot
+     *                               be resolved or if the reconciliation
+     *                               reporting job cannot be triggered
+     */
     @Authenticated
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

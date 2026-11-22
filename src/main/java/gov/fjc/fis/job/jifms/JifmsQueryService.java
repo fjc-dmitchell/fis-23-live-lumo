@@ -335,7 +335,7 @@ public class JifmsQueryService {
      *            entities
      * @return the newly created, unsaved obligation
      */
-    public Obligation createObligationFrom(ResolvedContext ctx) {
+    Obligation createObligationFrom(ResolvedContext ctx) {
 
         var newObligation = unconstrainedDataManager.create(Obligation.class);
         newObligation.setActivity(ctx.getActivity());
@@ -393,7 +393,7 @@ public class JifmsQueryService {
      * @param ctx the resolved context containing the obligation and amount
      *            difference
      */
-    public void createFcnFrom(ResolvedContext ctx) {
+    void createFcnFrom(ResolvedContext ctx) {
         var obligation = ctx.getObligation();
         var today = LocalDate.now();
 

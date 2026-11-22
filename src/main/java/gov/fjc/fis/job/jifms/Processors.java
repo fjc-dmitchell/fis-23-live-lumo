@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  *
  * <p>Each processor returned by this class performs one stage of the document
  * processing pipeline. These stages create or update obligations, activity
- * projections, division allocations, financial change notices, and vendors.
+ * projections, division allocations, fund control notices, and vendors.
  * Processors may also enrich the {@link ResolvedContext} and populate the
  * associated {@link AuditRecord} with details of the changes made.
  *
@@ -220,11 +220,11 @@ public final class Processors {
     }
 
     /**
-     * Creates a processor that generates a financial change notice when one is
+     * Creates a processor that generates a fund control notice when one is
      * required by the resolved context.
      *
-     * @param q the query service used to create the financial change notice
-     * @return a processor that conditionally creates a financial change notice
+     * @param q the query service used to create the fund control notice
+     * @return a processor that conditionally creates a fund control notice
      * and returns {@link ProcessingResult.Continue}
      */
     public static Processor fcn(JifmsQueryService q) {

@@ -17,6 +17,27 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Quartz job that generates and distributes FIS reconciliation reports.
+ *
+ * <p>This job is typically executed after JIFMS document processing has
+ * completed and is responsible for producing the reconciliation workbooks
+ * used by the Finance Office. The generated reports summarize reconciliation
+ * data for the applicable appropriations and are delivered as Excel
+ * attachments in an email message.
+ *
+ * <p>The job retrieves reconciliation report attachments from
+ * {@link ReconciliationReportService} and sends them to the configured
+ * reconciliation distribution list using {@link AdministrationService}. If
+ * the email cannot be sent successfully, the job fails so that the scheduling
+ * framework can record the error.
+ *
+ * <p>{@link DisallowConcurrentExecution} prevents multiple instances of the
+ * job from running simultaneously, ensuring that reconciliation reports are
+ * generated and distributed only once for a given execution cycle.
+ *
+ * @author Doug Mitchell
+ */
 @DisallowConcurrentExecution
 public class ReconciliationReportJob implements Job {
     @Autowired
@@ -29,6 +50,17 @@ public class ReconciliationReportJob implements Job {
 
     private static final Logger log = LoggerFactory.getLogger(ReconciliationReportJob.class);
 
+    /**
+     * Executes the reconciliation reporting process.
+     *
+     * <p>This method generates the reconciliation report attachments, creates
+     * an email listing the generated workbooks, and sends the reports to the
+     * configured reconciliation recipients. A
+     * {@link JobExecutionException} is thrown if email delivery fails.
+     *
+     * @param context the Quartz job execution context
+     * @throws JobExecutionException if the reconciliation email cannot be sent
+     */
     @Authenticated
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
