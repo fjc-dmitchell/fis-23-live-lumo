@@ -22,6 +22,6 @@ public class FundListView extends StandardListView<Fund> {
 
     @Install(to = "fundsDl", target = Target.DATA_LOADER)
     private List<Fund> fundsDlLoadDelegate(final LoadContext<Fund> loadContext) {
-        return fundService.getFundList();
+        return fundService.fetchFundList();
     }
 }

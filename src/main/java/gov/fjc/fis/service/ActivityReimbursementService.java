@@ -42,7 +42,7 @@ public class ActivityReimbursementService {
     }
 
     public BigDecimal sumReimbursements(Appropriation appropriation) {
-        var funds = fundService.getAppropriationFunds();
+        var funds = fundService.fetchAppropriationFunds();
         return dataManager.loadValue("SELECT coalesce(sum(e.amount),0)"
                         + " FROM fis_ActivityReimbursement e"
                         + " INNER JOIN fis_Activity act ON e.activity=act"

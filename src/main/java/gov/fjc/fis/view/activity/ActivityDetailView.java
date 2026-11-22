@@ -188,7 +188,7 @@ public class ActivityDetailView extends StandardDetailView<Activity> {
 
     @Install(to = "fundsDl", target = Target.DATA_LOADER)
     protected List<Fund> fundsDlLoadDelegate(final LoadContext<Fund> loadContext) {
-        return fundService.getDivisionFundList(division);
+        return divisionService.getDivisionFundList(division);
     }
 
     @Install(to = "groupsDl", target = Target.DATA_LOADER)

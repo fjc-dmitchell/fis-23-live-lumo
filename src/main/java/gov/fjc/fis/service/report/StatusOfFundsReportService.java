@@ -120,7 +120,7 @@ public class StatusOfFundsReportService {
 
         Fund oneYearFund = fundService.getAppropriationOneYearFund();
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
-        var funds = fundService.getFundListForReports(twoYearFund);
+        List<Fund> funds = List.of(oneYearFund, twoYearFund);
 
         var categoryDtos = categoryService.getCategoryDtos(appropriation);
 

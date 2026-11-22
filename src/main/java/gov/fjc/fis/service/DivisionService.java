@@ -14,13 +14,17 @@ import java.util.stream.Collectors;
 
 @Component("fis_DivisionService")
 public class DivisionService {
-    @Autowired
-    private DataManager dataManager;
-    @Lazy
-    @Autowired
-    private FundService fundService;
-    @Autowired
-    private AppropriationService appropriationService;
+
+    private final DataManager dataManager;
+
+    private final AppropriationService appropriationService;
+    private final FundService fundService;
+
+    public DivisionService(DataManager dataManager, FundService fundService, AppropriationService appropriationService) {
+        this.dataManager = dataManager;
+        this.fundService = fundService;
+        this.appropriationService = appropriationService;
+    }
 
     final private String EDUCATION_DIVISION_CODE = "2";
     final private String RESEARCH_DIVISION_CODE = "4";
@@ -322,7 +326,7 @@ public class DivisionService {
         return dataManager.load(Division.class)
                 .query("SELECT e FROM fis_Division e" +
                         " WHERE e.appropriation = :appropriation" +
-                        " AND (e.divisionCode = :divisionCode OR e.budgetOrg = :budgetOrg)" )
+                        " AND (e.divisionCode = :divisionCode OR e.budgetOrg = :budgetOrg)")
                 .parameter("appropriation", appropriation)
                 .parameter("divisionCode", EDUCATION_DIVISION_CODE)
                 .parameter("budgetOrg", OBBBA_BUDGET_ORG)
@@ -387,6 +391,28 @@ public class DivisionService {
                 .parameter("funds", funds)
                 .list();
         return divisions.stream().collect(Collectors.toMap(Division::getBudgetOrg, Division::getTitleAndBudgetOrg));
+    }
+
+    // placed here to avoid circular dependency
+    public List<Fund> getDivisionFundList(Division division) {
+        if (division == null) {
+            return List.of();
+        }
+
+        var appropriation = division.getAppropriation();
+
+        List<Fund> funds = new ArrayList<>();
+        funds.add(division.getFund());
+
+        if (division.equals(getEducationDivision(appropriation))) {
+            funds.add(fundService.getAppropriationTwoYearFund());
+        }
+
+        if (division.equals(getAdministrationDivision(appropriation))) {
+            funds.add(fundService.getJitfFund());
+        }
+
+        return funds;
     }
 
 //    public Division getDivisionByBudgetOrg(String budgetOrg) {
