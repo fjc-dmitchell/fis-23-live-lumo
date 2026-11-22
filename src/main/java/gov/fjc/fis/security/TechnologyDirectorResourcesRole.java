@@ -10,6 +10,30 @@ import io.jmix.security.role.annotation.ResourceRole;
 import io.jmix.securityflowui.role.annotation.MenuPolicy;
 import io.jmix.securityflowui.role.annotation.ViewPolicy;
 
+/**
+ * Resource role that grants the Technology Director access to technology
+ * financial data, reports, and user interface resources.
+ * <p>
+ * This role provides read access to the core FIS entities required for
+ * technology financial management, including activities, appropriations,
+ * divisions, branches, funds, and obligations. It also grants access to
+ * report views and menu actions used to analyze and report on technology
+ * spending and obligations.
+ * </p>
+ * <p>
+ * In addition, the role grants access to report data transfer objects (DTOs)
+ * used by the application's reporting framework. These DTOs are not
+ * persistent entities but serve as report models that aggregate and transform
+ * financial data for presentation and export.
+ * </p>
+ * <p>
+ * This role defines the functional capabilities available to Technology
+ * Directors. Data visibility is further restricted by
+ * {@link TechnologyDirectorDataRole}, which limits access to authorized
+ * divisions, branches, and fiscal years.
+ * </p>
+ * @author Doug Mitchell
+ */
 @ResourceRole(name = "ITO Director resources", code = TechnologyDirectorResourcesRole.CODE, scope = "UI", description = "entity and report access")
 public interface TechnologyDirectorResourcesRole extends UiMinimalRole, ReportResourcesRole {
     String CODE = "resources-ito-director";

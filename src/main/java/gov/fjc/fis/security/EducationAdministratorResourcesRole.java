@@ -11,6 +11,42 @@ import io.jmix.security.role.annotation.ResourceRole;
 import io.jmix.securityflowui.role.annotation.MenuPolicy;
 import io.jmix.securityflowui.role.annotation.ViewPolicy;
 
+/**
+ * Resource role for Education Administrators.
+ * <p>
+ * This role provides access to the screens, reports, entities, and supporting
+ * resources required to manage and monitor education-related financial
+ * activities within FIS. Users assigned this role can view activities,
+ * projections, reimbursements, obligations, invoices, Fund Control Notices
+ * (FCNs), organizational structures, and related budget information used in
+ * education program planning and oversight.
+ * </p>
+ * <p>
+ * The role grants access to education-focused reports, obligation tracking,
+ * activity management screens, and supporting search fragments used throughout
+ * the application. It also provides access to report data transfer objects
+ * (DTOs) used to generate financial reports and analytical views.
+ * </p>
+ * <p>
+ * This role extends {@link UiMinimalRole} to provide basic application access
+ * and {@link ReportResourcesRole} to provide the reporting permissions
+ * required for execution of FIS reports.
+ * </p>
+ * <p>
+ * The role defines the functionality available to Education Administrators,
+ * including report execution and inquiry capabilities. Visibility of specific
+ * records is controlled separately through
+ * {@link EducationAdministratorDataRole}, which limits users to authorized
+ * divisions, object classes, fiscal years, and related financial data.
+ * </p>
+ * <p>
+ * This role is intended for Education Division administrators responsible for
+ * budgeting, program oversight, obligation monitoring, and financial
+ * reporting, while restricting access to functions outside their area of
+ * responsibility.
+ * </p>
+ * @author Doug Mitchell
+ */
 @ResourceRole(name = "Education Admin resources", code = EducationAdministratorResourcesRole.CODE, scope = "UI", description = "menu, screen, report access")
 public interface EducationAdministratorResourcesRole extends UiMinimalRole, ReportResourcesRole {
     String CODE = "resources-ed-admin";

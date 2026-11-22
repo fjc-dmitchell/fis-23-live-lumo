@@ -13,6 +13,41 @@ import io.jmix.security.role.annotation.ResourceRole;
 import io.jmix.securityflowui.role.annotation.MenuPolicy;
 import io.jmix.securityflowui.role.annotation.ViewPolicy;
 
+/**
+ * Resource role for Financial Management users.
+ * <p>
+ * This role provides access to the entities, views, menus, dashboards,
+ * reports, and supporting resources required to perform day-to-day financial
+ * management activities within FIS. Users assigned this role can manage
+ * appropriations, activities, projections, obligations, invoices, Fund
+ * Control Notices (FCNs), organizational structures, personnel budgeting
+ * data, vendor information, documents, and related financial records.
+ * </p>
+ * <p>
+ * In addition to operational entities, the role grants access to report
+ * data objects, dashboards, audit views, document-processing information,
+ * reconciliation data, budget planning resources, and file attachment
+ * functionality used throughout the application.
+ * </p>
+ * <p>
+ * This role extends {@link UiMinimalRole} to provide basic application
+ * access and {@link ReportResourcesRole} to provide permissions required
+ * for execution of reports. Together these roles provide the common
+ * UI and reporting capabilities expected of finance users.
+ * </p>
+ * <p>
+ * The role defines the application functionality available to financial
+ * management staff. Any restrictions on the records a user may view are
+ * enforced separately through the user's assigned data roles.
+ * </p>
+ * <p>
+ * This role is intended for Office of Financial Management (OFM) personnel
+ * who require broad access to FIS financial administration, reporting,
+ * budgeting, obligation management, and reconciliation functions, but who
+ * do not require unrestricted system administrator access.
+ * </p>
+ * @author Doug Mitchell
+ */
 @ResourceRole(name = "Financial Management User", code = FinanceUserResourcesRole.CODE, scope = "UI", description = "Full access to most screens, entities, and reports")
 public interface FinanceUserResourcesRole extends UiMinimalRole, ReportResourcesRole {
     String CODE = "resources-ofm-user";
