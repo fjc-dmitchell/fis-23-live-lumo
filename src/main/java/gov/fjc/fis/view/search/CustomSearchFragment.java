@@ -39,6 +39,37 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Provides reusable search controls and query configuration for FIS entity
+ * list views.
+ * <p>
+ * The fragment is attached to a host view and operates on the host view's
+ * collection container and loader. It provides common search criteria such
+ * as budget fiscal year, fund, division, object category, object class,
+ * branch, group, and file attachment category. It also supports quick
+ * searches and searches based on selected grid items and their related
+ * entities.
+ * </p>
+ * <p>
+ * For entities requiring additional search criteria, this fragment creates
+ * an entity-specific {@link EntitySearchFragment}. The subfragment supplies
+ * additional property-filter conditions that are combined with the common
+ * criteria before the host loader is executed.
+ * </p>
+ * <p>
+ * Search criteria are stored in the user session and restored when the host
+ * view is reopened. Available criteria and query joins are configured
+ * according to the entity type managed by the host container.
+ * </p>
+ * <p>
+ * A host view must call {@link #setHostDataContainer(CollectionContainer)}
+ * before the fragment is attached. It may also call
+ * {@link #setDataGrid(DataGrid)} to enable subset searches and
+ * {@link #setFjcFoundation(boolean)} to restrict searches to FJC Foundation
+ * records.
+ * </p>
+ * @author Doug Mitchell
+ */
 @FragmentDescriptor("custom-search-fragment.xml")
 public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @Autowired
@@ -207,12 +238,16 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     private static final String FILE_ATTACHMENT = "fis_FileAttachment";
 //    private static final String PAY_PERIOD = "fis_PayPeriod";
 
-
     /**
-     * The hostDataContainer property must be explicitly set by the host invoking the fragment.
-     * The hostDataContainer must have a dataLoader
+     * Configures the collection container searched by this fragment.
+     * <p>
+     * The container must have an associated {@link CollectionLoader}. The
+     * container's entity metadata is used to configure the appropriate query,
+     * joins, fetch plan, and entity-specific search fragment.
+     * </p>
      *
-     * @param hostDataContainer dataContainer of host view
+     * @param hostDataContainer the collection container belonging to the host view
+     * @throws IllegalStateException if the container has no associated loader
      */
     public void setHostDataContainer(CollectionContainer<?> hostDataContainer) {
         hostContainer = hostDataContainer;
@@ -224,24 +259,40 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     }
 
     /**
-     * fjcFoundation is optional but is needed by most entities
+     * Specifies whether searches should be restricted to FJC Foundation records.
+     * <p>
+     * When enabled, the Foundation fund is selected automatically and cannot be
+     * changed by the user.
+     * </p>
      *
-     * @param fjcFoundation limits search to Foundation entities
+     * @param fjcFoundation {@code true} to restrict searches to FJC Foundation
+     *                      records; {@code false} to exclude Foundation records
+     *                      unless otherwise selected
      */
     public void setFjcFoundation(boolean fjcFoundation) {
         this.fjcFoundation = fjcFoundation;
     }
 
     /**
-     * optional, used by the subset search
+     * Configures the data grid used for searches based on selected records.
+     * <p>
+     * Setting the grid enables the subset-search tab and allows the fragment to
+     * search the selected records or records related by activity, branch, or
+     * group.
+     * </p>
      *
-     * @param dataGrid
+     * @param dataGrid the host view's data grid
      */
     public void setDataGrid(DataGrid<?> dataGrid) {
         this.dataGrid = dataGrid;
         searchTabSheetSubsetTab.setVisible(true);
     }
 
+    /**
+     * Initializes the mapping between quick-search buttons and division codes.
+     *
+     * @param event the host view initialization event
+     */
     @Subscribe(target = Target.HOST_CONTROLLER)
     public void onHostInit(final View.InitEvent event) {
         buttonDivisionCodeMap = Map.of(
@@ -257,6 +308,17 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         );
     }
 
+    /**
+     * Completes fragment setup when the host view is attached.
+     * <p>
+     * The handler verifies that a host container has been configured, loads the
+     * current budget fiscal years and Foundation fund, and assigns the appropriate
+     * keyboard shortcut for the selected search tab.
+     * </p>
+     *
+     * @param event the host view attach event
+     * @throws IllegalStateException if no host container has been configured
+     */
     @Subscribe(target = Target.HOST_CONTROLLER)
     protected void onHostAttach(final AttachEvent event) {
         if (hostContainer == null) {
@@ -267,6 +329,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         setShortcut();
     }
 
+    /**
+     * Configures the search for the host entity and restores the user's saved
+     * search criteria after the host view is ready.
+     *
+     * @param event the host view ready event
+     */
     @Subscribe(target = Target.HOST_CONTROLLER)
     protected void onHostReady(final View.ReadyEvent event) {
         configureHostEntity();
@@ -444,9 +512,9 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
 
         subFragment = fragments.create(this, fragmentClass);
 //        subFragment = (EntitySearchFragment) fragments.create(this, fragmentClass);
-        subFragment.addCategoryObjectClass(categorySearchField, objectClassSearchField);
-        subFragment.addBranchGroup(branchSearchField, groupSearchField);
-        subFragment.addFileCategory(fileCategorySearchField);
+        subFragment.attachCategoryObjectClassFields(categorySearchField, objectClassSearchField);
+        subFragment.attachBranchGroupFields(branchSearchField, groupSearchField);
+        subFragment.attachFileCategoryField(fileCategorySearchField);
 
         subFragmentSearchBox.add(subFragment);
         subFragmentSearchBox.setVisible(true);
@@ -466,6 +534,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         fiscalYearsField.setValue(bfyList);
     }
 
+    /**
+     * Updates the visible quick-search division buttons when the available
+     * divisions change.
+     *
+     * @param event the division container change event
+     */
     @Subscribe(id = "divisionsDc", target = Target.DATA_CONTAINER)
     public void onDivisionsDcCollectionChange(final CollectionContainer.CollectionChangeEvent<Division> event) {
         Set<String> divisionCodes = divisionsDc.getItems().stream()
@@ -564,6 +638,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         objectClassesDl.load();
     }
 
+    /**
+     * Performs a quick search for the division associated with the selected
+     * division button.
+     *
+     * @param event the division action event
+     */
     @Subscribe("showDivisionAction")
     public void onShowDivisionAction(final ActionPerformedEvent event) {
         buttonDivisionCodeMap.entrySet().stream()
@@ -578,6 +658,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
                 });
     }
 
+    /**
+     * Clears custom criteria and displays records for the current budget fiscal
+     * year selection.
+     *
+     * @param event the button click event
+     */
     @Subscribe(id = "showBfyBtn", subject = "clickListener")
     protected void onShowBfyBtnClick(final ClickEvent<JmixButton> event) {
         divisionCode = null;
@@ -586,6 +672,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         performSearch();
     }
 
+    /**
+     * Updates selection behavior and keyboard shortcuts when the selected search
+     * tab changes.
+     *
+     * @param event the tab selection event
+     */
     @Subscribe("searchTabSheet")
     protected void onSearchTabSheetSelectedChange(final JmixTabSheet.SelectedChangeEvent event) {
         tabIdx = event.getSource().getSelectedIndex();
@@ -641,6 +733,15 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         dataGrid.deselectAll();
     }
 
+    /**
+     * Executes the subset search selected by the user.
+     * <p>
+     * Depending on the selected action, the search may include the selected
+     * records or records related to a selected activity, branch, or group.
+     * </p>
+     *
+     * @param event the subset action event
+     */
     @Subscribe("showSubsetAction")
     protected void onShowSubsetAction(final ActionPerformedEvent event) {
         FragmentUtils.getComponentId(event.getComponent()).ifPresent(componentId -> {
@@ -675,6 +776,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         });
     }
 
+    /**
+     * Applies the common and entity-specific search criteria and executes the
+     * configured host loader.
+     *
+     * @param event the button click event
+     */
     @Subscribe(id = "customSearchBtn", subject = "clickListener")
     protected void onCustomSearchBtnClick(final ClickEvent<JmixButton> event) {
 //        hostLoader.setParameter("bfyFilterField", searchYears);
@@ -717,6 +824,11 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         }
     }
 
+    /**
+     * Clears the common and entity-specific search fields.
+     *
+     * @param event the button click event
+     */
     @Subscribe(id = "clearSearchBtn", subject = "clickListener")
     protected void onClearSearchBtnClick(final ClickEvent<JmixButton> event) {
         clearSearchFields();
@@ -1002,10 +1114,12 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         saveSearchParameters();
     }
 
+
     /**
-     * Changes the Show BFY button caption after a Fiscal Year change event
+     * Refreshes the available search criteria after the user's budget fiscal year
+     * selection changes.
      *
-     * @param event custom event
+     * @param event the fiscal-year change event
      */
     @EventListener
     public void handleFiscalYearChangeEvent(FiscalYearChangeEvent event) {
@@ -1013,10 +1127,17 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         searchYears = fiscalYears;
     }
 
+
     /**
-     * if datagrid match, sets related items and button visibility
+     * Updates the subset-search actions when the selection in the configured data
+     * grid changes.
+     * <p>
+     * For a single selected record, the handler resolves its related activity,
+     * branch, and group. It also enables or disables the applicable subset-search
+     * buttons based on the current selection.
+     * </p>
      *
-     * @param event custom event that publishes grid and selection size
+     * @param event the grid-selection event
      */
     @EventListener
     public void handleSearchGridSelectedItemsEvent(SearchGridSelectedItemsEvent event) {

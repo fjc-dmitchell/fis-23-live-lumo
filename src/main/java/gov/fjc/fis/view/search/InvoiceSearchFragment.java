@@ -11,6 +11,26 @@ import io.jmix.flowui.view.ViewComponent;
 
 import java.util.Map;
 
+/**
+ * Provides invoice-specific search criteria for
+ * {@link CustomSearchFragment}.
+ * <p>
+ * The fragment extends the common search functionality with filters for
+ * invoice number, invoice amount, invoice date, payment date, obligation
+ * document number, obligation vendor, obligation status, and activity
+ * number.
+ * </p>
+ * <p>
+ * It also incorporates the common object category and object class search
+ * fields supplied by the parent search fragment.
+ * </p>
+ * <p>
+ * Saved filter values and comparison operations are restored through
+ * {@link #setPropertyFilters(Map)} when search criteria are reloaded from
+ * the user session.
+ * </p>
+ * @author Doug Mitchell
+ */
 @FragmentDescriptor("invoice-search-fragment.xml")
 public class InvoiceSearchFragment extends EntitySearchFragment {
     @ViewComponent
@@ -34,57 +54,59 @@ public class InvoiceSearchFragment extends EntitySearchFragment {
     @ViewComponent
     private PropertyFilter<Object> actnumSearch;
 
+    /**
+     * Configures the obligation status filter to display boolean values as
+     * {@code Open} and {@code Closed}.
+     */
     @Override
     protected void additionalFragmentActions() {
         ((JmixSelect<Boolean>) obligationStatusSearch.getValueComponent())
                 .setItemLabelGenerator(status -> status == null ? "" : status ? "Open" : "Closed");
     }
 
+    /**
+     * Restores saved invoice search values and comparison operations.
+     * <p>
+     * Entries are matched to the entity property searched by each filter.
+     * Operation entries are identified by the corresponding property name
+     * followed by {@code _op}. Unrecognized entries are ignored because the
+     * map may contain parameters managed by the parent search fragment.
+     * </p>
+     *
+     * @param filters the saved search parameters to restore
+     */
     @Override
     public void setPropertyFilters(Map<String, Object> filters) {
         for (var entry : filters.entrySet()) {
             var key = entry.getKey();
             var value = entry.getValue();
+
             switch (key) {
-                case "invoiceNumber":
-                    invoiceNumberSearch.setValue(value);
-                    break;
-                case "amount":
-                    invoiceAmountSearch.setValue(value);
-                    break;
-                case "amount_op":
-                    invoiceAmountSearch.setOperation((PropertyFilter.Operation) value);
-                    break;
-                case "invoiceDate":
-                    invoiceDateSearch.setValue(value);
-                    break;
-                case "invoiceDate_op":
-                    invoiceDateSearch.setOperation((PropertyFilter.Operation) value);
-                    break;
-                case "paymentDate":
-                    invoicePaidDateSearch.setValue(value);
-                    break;
-                case "paymentDate_op":
-                    invoicePaidDateSearch.setOperation((PropertyFilter.Operation) value);
-                    break;
-                case "obligation.documentNumber":
-                    obligationDocnumSearch.setValue(value);
-                    break;
-                case "obligation.vendor":
-                    obligationVendorSearch.setValue(value);
-                    break;
-                case "obligation.status":
-                    obligationStatusSearch.setValue((Boolean) value);
-                    break;
-                case "obligation.activity.activityNumber":
-                    actnumSearch.setValue(value);
+                case "invoiceNumber" -> invoiceNumberSearch.setValue(value);
+                case "amount" -> invoiceAmountSearch.setValue(value);
+                case "amount_op" -> invoiceAmountSearch.setOperation((PropertyFilter.Operation) value);
+                case "invoiceDate" -> invoiceDateSearch.setValue(value);
+                case "invoiceDate_op" -> invoiceDateSearch.setOperation((PropertyFilter.Operation) value);
+                case "paymentDate" -> invoicePaidDateSearch.setValue(value);
+                case "paymentDate_op" -> invoicePaidDateSearch.setOperation((PropertyFilter.Operation) value);
+                case "obligation.documentNumber" -> obligationDocnumSearch.setValue(value);
+                case "obligation.vendor" -> obligationVendorSearch.setValue(value);
+                case "obligation.status" -> obligationStatusSearch.setValue((Boolean) value);
+                case "obligation.activity.activityNumber" -> actnumSearch.setValue(value);
             }
         }
     }
 
+    /**
+     * Attaches the common object category and object class search fields to the
+     * invoice search layout.
+     *
+     * @param categorySearchField the object category search field
+     * @param objectClassSearchField the object class search field
+     */
     @Override
-    public void addCategoryObjectClass(EntityComboBox<ObjectCategory> categorySearchField,
-                                       EntityComboBox<ObjectClass> objectClassSearchField) {
+    public void attachCategoryObjectClassFields(EntityComboBox<ObjectCategory> categorySearchField,
+                                                EntityComboBox<ObjectClass> objectClassSearchField) {
         mocBox.add(categorySearchField);
         bocBox.add(objectClassSearchField);
     }
