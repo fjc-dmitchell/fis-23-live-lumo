@@ -4,6 +4,31 @@ import gov.fjc.fis.entity.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Encapsulates the state of a JIFMS document as it moves through the
+ * validation and processing pipelines.
+ * <p>
+ * A {@code ResolvedContext} is created for a single {@link Document} and
+ * serves as a shared working object for validators and processors. As the
+ * document is evaluated, related entities such as the {@link Fund},
+ * {@link Division}, {@link Activity}, {@link ObjectClass}, and
+ * {@link Obligation} are resolved and stored in the context for use by
+ * subsequent pipeline steps.
+ * </p>
+ * <p>
+ * In addition to resolved entities, the context maintains processing state
+ * including previous obligation values, obligation amount changes,
+ * reassignment information, and indicators used to determine whether
+ * additional actions such as Fund Control Notice (FCN) processing are
+ * required.
+ * </p>
+ * <p>
+ * This class acts as a data-transfer object within the document import
+ * process and is not a persistent Jmix entity.
+ * </p>
+ *
+ * @author Doug Mitchell
+ */
 public class ResolvedContext {
 
     private Document document;

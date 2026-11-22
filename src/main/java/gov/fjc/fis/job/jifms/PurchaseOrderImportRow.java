@@ -10,6 +10,21 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a purchase order row imported from a JIFMS feed CSV file.
+ * <p>
+ * Instances serve as data-transfer objects during the import process. Field
+ * values are populated from CSV columns using OpenCSV annotations and may be
+ * validated or transformed before being processed by the application.
+ * </p>
+ * <p>
+ * This class is not a persistent Jmix entity.
+ * </p>
+ * @see gov.fjc.fis.entity.Document
+ * @see LoadDocumentsJob
+ *
+ * @author Doug Mitchell
+ */
 public class PurchaseOrderImportRow implements Serializable {
 
     @CsvBindByPosition(position = 1)

@@ -2,6 +2,22 @@ package gov.fjc.fis.job.jifms;
 
 import java.math.BigDecimal;
 
+/**
+ * Audit data container used to capture activity projection changes resulting
+ * from JIFMS document processing.
+ *
+ * <p>The class stores projection identifiers and amounts before and after
+ * processing for both the current projection and, when applicable, a previous
+ * projection affected by a reassignment of an obligation. This information is
+ * used to populate audit records that explain how projection balances were
+ * adjusted during processing.
+ *
+ * <p>The previous projection fields are populated when an obligation changes
+ * activities or budget object classes and the prior projection balance must be
+ * restored before applying amounts to the current projection.
+ *
+ * @author Doug Mitchell
+ */
 public class ProjectionAuditFields {
     private String currentActivityNumber;
     private String currentProjectionBoc;

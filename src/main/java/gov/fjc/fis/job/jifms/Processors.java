@@ -9,11 +9,47 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+/**
+ * Provides processing steps used to create or update FIS records from
+ * documents imported from JIFMS.
+ *
+ * <p>Each processor returned by this class performs one stage of the document
+ * processing pipeline. These stages create or update obligations, activity
+ * projections, division allocations, financial change notices, and vendors.
+ * Processors may also enrich the {@link ResolvedContext} and populate the
+ * associated {@link AuditRecord} with details of the changes made.
+ *
+ * <p>This class is not intended to be instantiated.
+ *
+ * @author Doug Mitchell
+ */
 public final class Processors {
 
+    /**
+     * Prevents instantiation of this utility class.
+     */
     private Processors() {
     } // Same pattern as Validators
 
+    /**
+     * Creates a processor that inserts or updates the {@link Obligation}
+     * represented by a JIFMS document.
+     *
+     * <p>If no matching obligation exists, the processor creates and saves a
+     * new obligation, records the document amount as the obligation amount
+     * difference, and returns {@link ProcessingResult.Inserted}. If an
+     * obligation exists, the processor captures its original audit values,
+     * calculates the change in amount, and updates fields whose incoming
+     * values differ from the existing values.
+     *
+     * <p>The processor records the previous activity or object class in the
+     * context when either value changes. It also indicates whether a financial
+     * change notice is required when the obligation amount changes.
+     *
+     * @param q     the query service used to retrieve, create, and save obligations
+     * @param audit the audit record in which processing changes are recorded
+     * @return a processor that inserts, updates, or ignores the obligation
+     */
     public static Processor processObligation(JifmsQueryService q, AuditRecord audit) {
         return ctx -> {
             var doc = ctx.getDocument();
@@ -54,6 +90,29 @@ public final class Processors {
         };
     }
 
+    /**
+     * Creates a processor that adjusts the {@link ActivityProjection}
+     * associated with an obligation.
+     *
+     * <p>When an obligation's activity or object class changes, the processor
+     * first restores the amount previously deducted from the former
+     * projection, provided that projection exists. It then applies the
+     * obligation amount difference to the current projection. For activities
+     * that use generic projections, the corresponding generic object class is
+     * used.
+     *
+     * <p>If the current projection does not exist, the processor creates it.
+     * The projection amounts and identifying values before and after processing
+     * are stored in the supplied audit record.
+     *
+     * @param q              the query service used to retrieve, create, and save activity
+     *                       projections
+     * @param objectClassMap the object classes indexed by budget object class
+     *                       code
+     * @param audit          the audit record in which projection changes are recorded
+     * @return a processor that updates the applicable activity projections and
+     * returns {@link ProcessingResult.Continue}
+     */
     public static Processor projection(JifmsQueryService q, Map<String, ObjectClass> objectClassMap, AuditRecord audit) {
         return ctx -> {
             var projectionAudit = new ProjectionAuditFields();
@@ -133,6 +192,18 @@ public final class Processors {
         };
     }
 
+    /**
+     * Creates a processor that ensures a {@link DivisionAllocation} exists for
+     * the resolved division and object category.
+     *
+     * <p>A new allocation is created only when the context contains both a
+     * division and an object class and no matching allocation already exists.
+     *
+     * @param q the query service used to retrieve and create division
+     *          allocations
+     * @return a processor that ensures the required division allocation exists
+     * and returns {@link ProcessingResult.Continue}
+     */
     public static Processor allocation(JifmsQueryService q) {
         return ctx -> {
             var division = ctx.getDivision();
@@ -148,6 +219,14 @@ public final class Processors {
         };
     }
 
+    /**
+     * Creates a processor that generates a financial change notice when one is
+     * required by the resolved context.
+     *
+     * @param q the query service used to create the financial change notice
+     * @return a processor that conditionally creates a financial change notice
+     * and returns {@link ProcessingResult.Continue}
+     */
     public static Processor fcn(JifmsQueryService q) {
         return ctx -> {
             if (ctx.isFcnRequired()) {
@@ -157,6 +236,16 @@ public final class Processors {
         };
     }
 
+    /**
+     * Creates a processor that ensures the document's vendor exists.
+     *
+     * <p>A vendor is created when no vendor matches the document's vendor and
+     * address codes and both codes are non-null.
+     *
+     * @param q the query service used to retrieve and create vendors
+     * @return a processor that conditionally creates a vendor and returns
+     * {@link ProcessingResult.Continue}
+     */
     public static Processor vendor(JifmsQueryService q) {
         return ctx -> {
             String vendorCode = ctx.getDocument().getVendorCode();
@@ -169,6 +258,21 @@ public final class Processors {
         };
     }
 
+    /**
+     * Updates an existing obligation with values from the resolved document
+     * and records the names of changed fields.
+     *
+     * <p>Values required by later processing steps are captured in the context
+     * before the corresponding obligation fields are overwritten. When at
+     * least one audited field changes, a description of the changes is added
+     * to the audit record.
+     *
+     * @param context the resolved processing context containing the document
+     *                and obligation
+     * @param audit   the audit record in which obligation changes are recorded
+     * @return {@code true} if at least one audited field changed; otherwise
+     * {@code false}
+     */
     static boolean updateObligation(ResolvedContext context, AuditRecord audit) {
         var document = context.getDocument();
         var obligation = context.getObligation();
@@ -195,8 +299,17 @@ public final class Processors {
         return changed;
     }
 
+
     /**
-     * Syncs a field that requires no prior-value tracking.
+     * Replaces a field value when the incoming and current values differ and
+     * appends the field name to the change description.
+     *
+     * @param name     the field name to include in the change description
+     * @param incoming the incoming field value
+     * @param current  the current field value
+     * @param setter   the operation that replaces the current value
+     * @param changes  the accumulated description of changed fields
+     * @param <T>      the field value type
      */
     private static <T> void sync(String name, T incoming, T current,
                                  Consumer<T> setter, StringBuilder changes) {
@@ -206,8 +319,19 @@ public final class Processors {
         }
     }
 
+
     /**
-     * Syncs a field and captures the old value before overwriting.
+     * Captures and replaces a field value when the incoming and current values
+     * differ, then appends the field name to the change description.
+     *
+     * @param name            the field name to include in the change description
+     * @param incoming        the incoming field value
+     * @param current         the current field value
+     * @param setter          the operation that replaces the current value
+     * @param previousCapture the operation that captures the current value
+     *                        before it is replaced
+     * @param changes         the accumulated description of changed fields
+     * @param <T>             the field value type
      */
     private static <T> void syncTracked(String name, T incoming, T current,
                                         Consumer<T> setter, Consumer<T> previousCapture,
@@ -219,11 +343,17 @@ public final class Processors {
         }
     }
 
-
     /**
-     * Business rule (2019): only close an obligation when JIFMS closes it;
-     * never re-open FIS obligation through this sync path. User may close
-     * obligation in FIS before Document is closed in JIFMS.
+     * Synchronizes the obligation's open status with the JIFMS document.
+     *
+     * <p>This operation closes an open obligation when the corresponding
+     * document has a closed date. It does not reopen an obligation when the
+     * JIFMS document remains open because users may close an obligation in FIS
+     * before the document is closed in JIFMS.
+     *
+     * @param document   the incoming JIFMS document
+     * @param obligation the obligation whose status may be updated
+     * @param changes    the accumulated description of changed fields
      */
     private static void syncStatus(Document document, Obligation obligation, StringBuilder changes) {
         boolean jifmsOpen = document.getClosedDate() == null;
@@ -243,6 +373,20 @@ public final class Processors {
      */
     private static final String BPO_SYNC_START_BBFY = "2026";
 
+    /**
+     * Synchronizes the obligation's blanket purchase order flag with the
+     * document's FJC value.
+     *
+     * <p>When the FJC value is present, the blanket purchase order flag is set
+     * according to whether that value equals {@code bpo}, ignoring case, and
+     * any change is recorded. When the FJC value is absent, an existing flag
+     * is cleared without an audit entry for budget fiscal year 2026 and later.
+     *
+     * @param document   the incoming JIFMS document
+     * @param obligation the obligation whose blanket purchase order flag may
+     *                   be updated
+     * @param changes    the accumulated description of audited field changes
+     */
     private static void syncBlanketPurchaseOrder(Document document, Obligation obligation, StringBuilder changes) {
         if (document.getFjc() == null) {
             if (obligation.getBlanketPurchaseOrder()
@@ -261,15 +405,22 @@ public final class Processors {
     }
 
     /**
-     * Projection rule created from 10/3/19 meeting with Nanticha and Mary. Doug suggested
-     * to make rule based on training. Nanticha rule: do not increase projections for training de-obs.
-     * Mary rule: do not increase projections after fiscal yearend. Otherwise, adjust the projection.
+     * Calculates an updated projection amount from a change in an obligation.
      *
-     * @param bbfy
-     * @param originalProjection
-     * @param obligationChange
-     * @param trainingProject
-     * @return new projection
+     * <p>An increase in the obligation decreases the projection, but never
+     * below zero. A decrease in the obligation normally increases the
+     * projection. The projection is not increased for a training project or
+     * on or after October 1 of the specified budget fiscal year.
+     *
+     * @param bbfy               the four-digit budget fiscal year
+     * @param originalProjection the projection amount before the obligation
+     *                           change
+     * @param obligationChange   the change in the obligation amount; a positive
+     *                           value represents an increase and a negative value
+     *                           represents a decrease
+     * @param trainingProject    whether the obligation belongs to a training
+     *                           project
+     * @return the adjusted projection amount
      */
     static BigDecimal calculateNewProjection(String bbfy, BigDecimal originalProjection, BigDecimal obligationChange, boolean trainingProject) {
 
@@ -288,6 +439,16 @@ public final class Processors {
         return originalProjection.subtract(obligationChange);
     }
 
+    /**
+     * Determines whether the current date is on or after October 1 of the
+     * specified year.
+     *
+     * @param yearString the year as a four-digit string
+     * @return {@code true} if the current date is October 1 of the specified
+     * year or later; otherwise {@code false}
+     * @throws IllegalArgumentException if {@code yearString} is null or is not
+     *                                  a four-digit year
+     */
     static boolean isOnOrAfterOctoberFirst(String yearString) {
         // Validate and parse the year
         if (yearString == null || !yearString.matches("\\d{4}")) {
