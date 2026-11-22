@@ -19,6 +19,23 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 
+/**
+ * Dashboard view that displays graphical spending information for a selected
+ * appropriation.
+ *
+ * <p>The view allows users to select an appropriation and presents spending
+ * data through a {@link SpendingChartFragment}. The dashboard provides a
+ * visual representation of appropriation activity, enabling users to quickly
+ * analyze spending trends and financial activity for the selected budget
+ * fiscal year.
+ *
+ * <p>The initial appropriation is determined from the budget fiscal year
+ * stored in the user's session and is automatically refreshed when a
+ * {@link FiscalYearChangeEvent} occurs, ensuring that the displayed chart
+ * remains synchronized with the user's current fiscal year context.
+ *
+ * @author Doug Mitchell
+ */
 @Route(value = "spending-chart-dashboard", layout = MainView.class)
 @ViewController(id = "fis_SpendingChartDashboardView")
 @ViewDescriptor(path = "spending-chart-dashboard-view.xml")

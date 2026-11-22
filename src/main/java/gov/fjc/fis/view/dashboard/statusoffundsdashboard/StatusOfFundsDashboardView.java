@@ -20,6 +20,18 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 
+/**
+ * Dashboard view that displays a summary of the Status of Funds report for a
+ * selected appropriation.
+ *
+ * <p>The view allows the user to select an appropriation and coordinates the
+ * {@link StatusOfFundsFragment} and {@link DivisionBalanceFragment} to display
+ * the corresponding status-of-funds and division-balance information. The
+ * initial appropriation is determined from the budget fiscal year stored in
+ * the user's session and is refreshed when the fiscal year changes.
+ *
+ * @author Doug Mitchell
+ */
 @Route(value = "status-of-funds-dashboard", layout = MainView.class)
 @ViewController(id = "fis_StatusOfFundsDashboardView")
 @ViewDescriptor(path = "status-of-funds-dashboard-view.xml")

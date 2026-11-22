@@ -23,6 +23,24 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 
+/**
+ * Dashboard view that displays reconciliation data for a selected
+ * appropriation.
+ *
+ * <p>The view presents a reconciliation pivot table that summarizes spending
+ * by budget organization and budget object class, allowing users to compare
+ * and analyze financial activity across organizational and spending
+ * categories. The dashboard also provides access to the underlying
+ * reconciliation data used to produce the summarized results, enabling users
+ * to review supporting detail and investigate discrepancies.
+ *
+ * <p>The displayed appropriation is initialized from the user's current
+ * budget fiscal year context and is automatically refreshed when a
+ * {@link FiscalYearChangeEvent} occurs. Users may also download the
+ * reconciliation report for the selected appropriation.
+ *
+ * @author Doug Mitchell
+ */
 @Route(value = "reconciliation-dashboard", layout = MainView.class)
 @ViewController(id = "fis_ReconciliationDashboardView")
 @ViewDescriptor(path = "reconciliation-dashboard-view.xml")
