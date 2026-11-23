@@ -64,10 +64,10 @@ public class StatusOfFundsReportService {
      * Composite key used to group financial data by division code and
      * major object class.
      *
-     * @param divCode the division code
-     * @param moc     the major object class code
+     * @param divisionCode     the division code
+     * @param majorObjectClass the major object class code
      */
-    private record DivMocKey(String divCode, String moc) {
+    private record DivMocKey(String divisionCode, String majorObjectClass) {
     }
 
     /**
@@ -171,8 +171,8 @@ public class StatusOfFundsReportService {
     /**
      * Groups financial query results by division code and major object class.
      * <p>
-     * Each source entity is expected to contain non-null {@code divcode} and
-     * {@code moc} values.
+     * Each source entity is expected to contain non-null {@code divisionCode} and
+     * {@code majorObjectClass} values.
      * </p>
      *
      * @param entities the financial query results to group
@@ -182,8 +182,8 @@ public class StatusOfFundsReportService {
     private Map<DivMocKey, List<KeyValueEntity>> indexByDivAndMoc(List<KeyValueEntity> entities) {
         return entities.stream().collect(
                 Collectors.groupingBy(e -> new DivMocKey(
-                        e.getValue("divcode").toString(),
-                        e.getValue("moc").toString())));
+                        e.getValue("divisionCode").toString(),
+                        e.getValue("majorObjectClass").toString())));
     }
 
 
@@ -212,8 +212,8 @@ public class StatusOfFundsReportService {
                                  int scale) {
         if (matches == null) return;
         for (var kv : matches) {
-            BigDecimal oneYear = roundToScale(kv.getValue("oneyearamount"), scale);
-            BigDecimal twoYear = roundToScale(kv.getValue("twoyearamount"), scale);
+            BigDecimal oneYear = roundToScale(kv.getValue("oneYearAmount"), scale);
+            BigDecimal twoYear = roundToScale(kv.getValue("twoYearAmount"), scale);
             divisionDto.setOneYearAllocations(oneYear);
             divisionDto.setTwoYearAllocations(twoYear);
             if (isMandatoryDivision) {
@@ -297,8 +297,7 @@ public class StatusOfFundsReportService {
      * @param showDefaultCategories {@code true} to include the standard report
      *                              categories; {@code false} to include only
      *                              categories selected by their display rules
-     * @return the category data, including an allocation-discrepancy category
-     *         when it is eligible for display
+     * @return the category data, including an allocation-discrepancy category when it is eligible for display
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryData(Appropriation appropriation,
                                                                 int scale, boolean showDefaultCategories) {
@@ -340,8 +339,7 @@ public class StatusOfFundsReportService {
      *                      will be prepared
      * @param scale         the number of decimal places to which financial
      *                      amounts are rounded
-     * @return the category data, including an unspent-funds category when it is
-     *         eligible for display
+     * @return the category data, including an unspent-funds category when it is eligible for display
      */
     public List<ObjectCategoryDto> getStatusOfFundsCategoryDataWithUnspent(Appropriation appropriation, int scale) {
         var categoryDtos = new ArrayList<>(prepareCategoryData(appropriation, scale, false));

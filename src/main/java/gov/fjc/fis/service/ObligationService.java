@@ -517,7 +517,7 @@ public class ObligationService {
                                 + " AND act.fund IN :funds"
                                 + " GROUP BY obj.objectCategory.majorObjectClass, div.divisionCode, act.fund"
                                 + " ORDER BY obj.objectCategory.majorObjectClass, div.divisionCode, act.fund.fundCode")
-                .properties("moc", "divcode", "fund", "amount")
+                .properties("majorObjectClass", "divisionCode", "fund", "amount")
                 .parameter("appropriation", appropriation)
                 .parameter("funds", funds)
                 .list();

@@ -284,7 +284,7 @@ public class ActivityReimbursementService {
                                 + " AND act.fund in :funds"
                                 + " GROUP BY cat.majorObjectClass, div.divisionCode, act.fund"
                                 + " ORDER BY cat.majorObjectClass, div.divisionCode, act.fund.fundCode")
-                .properties("moc", "divcode", "fund", "amount")
+                .properties("majorObjectClass", "divisionCode", "fund", "amount")
                 .parameter("appropriation", appropriation)
                 .parameter("funds", funds)
                 .list();
