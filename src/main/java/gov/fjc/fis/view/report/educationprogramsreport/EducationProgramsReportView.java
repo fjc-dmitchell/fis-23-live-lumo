@@ -117,7 +117,7 @@ public class EducationProgramsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     private List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchEducationAndObbaDivisions(bfySelectorField.getValue());
+        return divisionService.fetchEducationAndObbbaDivisions(bfySelectorField.getValue());
     }
 
     @Install(to = "branchesDl", target = Target.DATA_LOADER)

@@ -101,7 +101,7 @@ public class OpenObligationsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchDivisions(appropriation, false);
+        return divisionService.fetchNonFoundationDivisions(appropriation);
     }
 
     @Install(to = "branchesDl", target = Target.DATA_LOADER)

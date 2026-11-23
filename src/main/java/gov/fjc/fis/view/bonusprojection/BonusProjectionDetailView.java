@@ -77,7 +77,7 @@ public class BonusProjectionDetailView extends StandardDetailView<BonusProjectio
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     private List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchDivisions(appropriation, false);
+        return divisionService.fetchNonFoundationDivisions(appropriation);
     }
 
     @Install(to = "divisionsComboBox", subject = "itemLabelGenerator")

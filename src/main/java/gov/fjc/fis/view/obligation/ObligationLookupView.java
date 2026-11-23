@@ -151,7 +151,7 @@ public class ObligationLookupView extends StandardListView<Obligation> {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getObligationDivisionsForAppropriationFoundation(appropriation, fjcFoundation);
+        return divisionService.fetchObligationDivisions(appropriation, fjcFoundation);
     }
 
     @Install(to = "activitiesDl", target = Target.DATA_LOADER)

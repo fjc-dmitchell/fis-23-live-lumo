@@ -139,7 +139,7 @@ public class StatusOfFundsReportService {
 
         for (var categoryDto : categoryDtos) {
             for (var division : divisions) {
-                var divisionDto = divisionService.divisionToDivisionDto(division);
+                var divisionDto = divisionService.toDivisionDto(division);
                 boolean isMandatory = division.equals(mandatoryDivision);
                 var key = new DivMocKey(divisionDto.getDivisionCode(), categoryDto.getMajorObjectClass());
 

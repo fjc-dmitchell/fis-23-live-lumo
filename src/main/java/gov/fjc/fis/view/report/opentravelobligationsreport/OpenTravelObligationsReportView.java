@@ -112,7 +112,7 @@ public class OpenTravelObligationsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchDivisions(appropriation, false);
+        return divisionService.fetchNonFoundationDivisions(appropriation);
     }
 
     @Subscribe("bfySelectorField")

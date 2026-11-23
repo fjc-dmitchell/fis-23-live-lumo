@@ -71,7 +71,7 @@ public class PositionDetailView extends StandardDetailView<Position> {
 
     @Subscribe
     public void onInit(final InitEvent event) {
-        ComponentUtils.setItemsMap(divisionComboBox, divisionService.getPositionDivisions());
+        ComponentUtils.setItemsMap(divisionComboBox, divisionService.fetchPositionDivisions());
         ComponentUtils.setItemsMap(statusComboBox, positionService.getEmployeeStatusItems());
         ComponentUtils.setItemsMap(regTempComboBox, positionService.getRegTempItems());
         ComponentUtils.setItemsMap(gvtWorkSchedComboBox, positionService.getWorkScheduleItems());
