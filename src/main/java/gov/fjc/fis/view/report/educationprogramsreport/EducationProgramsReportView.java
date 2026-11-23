@@ -84,7 +84,7 @@ public class EducationProgramsReportView extends StandardView {
         appropriation = bfySelectorField.getValue();
 
         divisionsDl.load();
-        divisionSelectorField.setValue(divisionService.getEducationDivision(appropriation));
+        divisionSelectorField.setValue(divisionService.findEducationDivision(appropriation));
         division = divisionSelectorField.getValue();
     }
 
@@ -117,7 +117,7 @@ public class EducationProgramsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     private List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchEducationPlusObbaDivisions(bfySelectorField.getValue());
+        return divisionService.fetchEducationAndObbaDivisions(bfySelectorField.getValue());
     }
 
     @Install(to = "branchesDl", target = Target.DATA_LOADER)

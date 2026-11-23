@@ -91,7 +91,7 @@ public class GroupDetailView extends StandardDetailView<Group> {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getDivisions(appropriation, fjcFoundation);
+        return divisionService.fetchDivisions(appropriation, fjcFoundation);
     }
 
     @Install(to = "divisionsComboBox", subject = "itemLabelGenerator")

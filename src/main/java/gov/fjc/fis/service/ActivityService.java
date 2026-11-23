@@ -281,7 +281,7 @@ public class ActivityService {
         Fund oneYearFund = fundService.getAppropriationOneYearFund();
         Fund twoYearFund = fundService.getAppropriationTwoYearFund();
 
-        String divisionCode = divisionService.getEducationDivivisionCode();
+        String divisionCode = divisionService.getEducationDivisionCode();
 
         SimpleDateFormat mdyFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date firstDayOfCalendarYear, lastDayOfCalendarYear;

@@ -84,7 +84,7 @@ public class EducationProgramsAnalysis {
         for (var appropriation : appropriations) {
 
             var priorYearAppropriation = appropriationService.getPreviousFiscalYear(appropriation);
-            var division = divisionService.getEducationDivision(appropriation);
+            var division = divisionService.findEducationDivision(appropriation);
             var activities = activityService.getBiFiscalActivityDtos(division, branchCodes, groupCodes);
 
             // for self-service reporting, rewrite to provide aggregations by activity (memory issue)
@@ -192,7 +192,7 @@ public class EducationProgramsAnalysis {
         for (var appropriation : appropriations) {
 
             var priorYearAppropriation = appropriationService.getPreviousFiscalYear(appropriation);
-            var division = divisionService.getEducationDivision(appropriation);
+            var division = divisionService.findEducationDivision(appropriation);
 
             var activities = activityService.getCalendarYearActivityDtos(appropriation, branchCodes, groupCodes);
 

@@ -84,7 +84,7 @@ public class StatusOfFundsReportService {
      * @return the assembled Status of Funds report data
      */
     public StatusOfFundsReportData generateReportData(Appropriation appropriation, int scale) {
-        var mandatoryDivision = divisionService.fetchMandatoryDivision(appropriation);
+        var mandatoryDivision = divisionService.findObbbaDivision(appropriation);
         var reportData = new StatusOfFundsReportData(appropriation, mandatoryDivision);
         reportData.setCategoryDtos(prepareCategoryData(appropriation, scale, true));
         return reportData;
@@ -129,7 +129,7 @@ public class StatusOfFundsReportService {
                 : Collections.emptySet();
 
         var divisions = divisionService.fetchDivisions(appropriation, oneYearFund);
-        var mandatoryDivision = divisionService.fetchMandatoryDivision(appropriation);
+        var mandatoryDivision = divisionService.findObbbaDivision(appropriation);
 
         // Pre-index all data sets by (divcode, moc) for O(1) lookup
         var allocationIndex = indexByDivAndMoc(divisionAllocationService.fetchAllocations(appropriation, funds));

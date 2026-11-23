@@ -169,7 +169,7 @@ public class SalaryProjectionsReportView extends StandardView {
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     private List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
         // include only one year fund divisions
-        return divisionService.getDivisions(appropriation, false)
+        return divisionService.fetchDivisions(appropriation, false)
                 .stream().filter(division -> division.getFund().equals(oneYearFund)).toList();
     }
 

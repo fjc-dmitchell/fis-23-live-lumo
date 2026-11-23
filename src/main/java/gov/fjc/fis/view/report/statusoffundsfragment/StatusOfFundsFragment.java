@@ -41,7 +41,7 @@ public class StatusOfFundsFragment extends Fragment<VerticalLayout> {
         oneYearDetails.setSummaryText(appropriation.getBudgetFiscalYear().concat(" One Year Fund"));
         twoYearDetails.setSummaryText(appropriation.getBudgetFiscalYear().concat(" Two Year Fund"));
 
-        obbbaDetails.setVisible(divisionService.fetchMandatoryDivision(appropriation) != null);
+        obbbaDetails.setVisible(divisionService.findObbbaDivision(appropriation) != null);
         categoryBalances = statusOfFundsReportService.getStatusOfFundsCategoryData(appropriation, 0, false);
         categorySofDl.load();
         categorySof2Dl.load();

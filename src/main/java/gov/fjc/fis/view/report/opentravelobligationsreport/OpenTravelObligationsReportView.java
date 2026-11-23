@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,8 +87,8 @@ public class OpenTravelObligationsReportView extends StandardView {
         divisionsDl.load();
         // set Education and Research as defaults
         var divisionSet = Stream.of(
-                        divisionService.getEducationDivision(appropriation),
-                        divisionService.getResearchDivision(appropriation))
+                        divisionService.findEducationDivision(appropriation),
+                        divisionService.findResearchDivision(appropriation))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         divisionSelectorField.setValue(divisionSet);
@@ -113,13 +112,13 @@ public class OpenTravelObligationsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getDivisions(appropriation, false);
+        return divisionService.fetchDivisions(appropriation, false);
     }
 
     @Subscribe("bfySelectorField")
     protected void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
         appropriation = event.getValue();
-        obbbaField.setVisible(divisionService.fetchMandatoryDivision(appropriation) != null);
+        obbbaField.setVisible(divisionService.findObbbaDivision(appropriation) != null);
         divisionsDl.load();
         if (!divisionSelectorField.getValue().isEmpty()) {
             divisionSelectorField.setValue(

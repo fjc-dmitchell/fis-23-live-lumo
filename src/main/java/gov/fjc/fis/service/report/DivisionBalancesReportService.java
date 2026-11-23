@@ -45,7 +45,7 @@ public class DivisionBalancesReportService {
         var oneYearFund = fundService.getAppropriationOneYearFund();
         var twoYearFund = fundService.getAppropriationTwoYearFund();
 
-        var divisions = divisionService.getAppropriationDivisions(appropriation);
+        var divisions = divisionService.fetchAppropriationDivisions(appropriation);
         var divisionAllocations = divisionAllocationService.sumDivisionAllocations(divisions);
         var oneYearProjections = activityProjectionService.sumActivityProjections(divisions, oneYearFund);
         var twoYearProjections = activityProjectionService.sumActivityProjections(divisions, twoYearFund);

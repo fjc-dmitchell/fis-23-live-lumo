@@ -63,7 +63,7 @@ public class OpenTravelObligationsReportService {
         List<Appropriation> appropriations = List.of(appropriation, priorAppropriation);
         Set<String> divisionCodes = divisions.stream().map(Division::getDivisionCode).collect(Collectors.toSet());
 
-        var obbbaDivision = divisionService.fetchMandatoryDivision(appropriation);
+        var obbbaDivision = divisionService.findObbbaDivision(appropriation);
         boolean includeObbba = obbba && !divisions.contains(obbbaDivision);
 
         var obligations = travelObligationLoader("a.division", "", appropriations, divisionCodes, bDate, eDate)
@@ -71,7 +71,7 @@ public class OpenTravelObligationsReportService {
 
         if (includeObbba) {
             List<Division> obbbaDivisions = Stream.of(obbbaDivision,
-                            divisionService.fetchMandatoryDivision(priorAppropriation))
+                            divisionService.findObbbaDivision(priorAppropriation))
                     .filter(Objects::nonNull)
                     .toList();
 

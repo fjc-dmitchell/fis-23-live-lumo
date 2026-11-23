@@ -16,7 +16,6 @@ import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.combobox.EntityComboBox;
 import io.jmix.flowui.component.details.JmixDetails;
 import io.jmix.flowui.component.grid.DataGrid;
-import io.jmix.flowui.component.textarea.JmixTextArea;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.exception.ValidationException;
 import io.jmix.flowui.model.CollectionContainer;
@@ -140,7 +139,7 @@ public class ActivityDetailView extends StandardDetailView<Activity> {
         attachmentFragment.setHostEntity(activity);
         if (entityStates.isNew(activity)) {
             entryBfy = appropriationService.getBfyEntryAppropriation(sessionData);
-            mandatoryDivision = divisionService.fetchMandatoryDivision(entryBfy);
+            mandatoryDivision = divisionService.findObbbaDivision(entryBfy);
             if (entryBfy != null) {
                 budgetFiscalYearField.setValue(entryBfy.getBudgetFiscalYear());
             }
@@ -156,7 +155,7 @@ public class ActivityDetailView extends StandardDetailView<Activity> {
             });
         } else {
             entryBfy = activity.getDivision().getAppropriation();
-            mandatoryDivision = divisionService.fetchMandatoryDivision(entryBfy);
+            mandatoryDivision = divisionService.findObbbaDivision(entryBfy);
             division = activity.getDivision();
             setCostOrg(division.equals(mandatoryDivision));
             budgetFiscalYearField.setValue(entryBfy.getBudgetFiscalYear());
@@ -178,12 +177,12 @@ public class ActivityDetailView extends StandardDetailView<Activity> {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getDivisions(entryBfy, fjcFoundation);
+        return divisionService.fetchDivisions(entryBfy, fjcFoundation);
     }
 
     @Install(to = "costOrgsDl", target = Target.DATA_LOADER)
     protected List<Division> costOrgsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getCostOrgDivisions(entryBfy);
+        return divisionService.fetchCostOrgDivisions(entryBfy);
     }
 
     @Install(to = "fundsDl", target = Target.DATA_LOADER)

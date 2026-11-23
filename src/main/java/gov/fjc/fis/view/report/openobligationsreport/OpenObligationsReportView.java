@@ -89,7 +89,7 @@ public class OpenObligationsReportView extends StandardView {
         bfySelectorField.setValue(appropriationService.getBfyEntryAppropriation(sessionData));
         appropriation = bfySelectorField.getValue();
         divisionsDl.load();
-        divisionSelectorField.setValue(divisionService.getEducationDivision(appropriation));
+        divisionSelectorField.setValue(divisionService.findEducationDivision(appropriation));
         divisions = divisionSelectorField.getValue();
         numberOfDaysField.setValue("15"); // ask Nanticha whether this should be dropdown
     }
@@ -101,7 +101,7 @@ public class OpenObligationsReportView extends StandardView {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getDivisions(appropriation, false);
+        return divisionService.fetchDivisions(appropriation, false);
     }
 
     @Install(to = "branchesDl", target = Target.DATA_LOADER)

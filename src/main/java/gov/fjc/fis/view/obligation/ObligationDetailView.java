@@ -205,7 +205,7 @@ public class ObligationDetailView extends StandardDetailView<Obligation> {
 
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.getDivisions(entryBfy, fjcFoundation);
+        return divisionService.fetchDivisions(entryBfy, fjcFoundation);
     }
 
     @Install(to = "activitiesDl", target = Target.DATA_LOADER)

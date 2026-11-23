@@ -63,14 +63,14 @@ public class OpenObligationsReportService {
         List<Appropriation> appropriations = List.of(appropriation, priorAppropriation);
         LocalDate endDate = numberOfDays != 0 ? getCurrentDateMinusDays(numberOfDays) : null;
 
-        var obbbaDivision = divisionService.fetchMandatoryDivision(appropriation);
+        var obbbaDivision = divisionService.findObbbaDivision(appropriation);
         boolean includeObbba = obbba && !divisions.contains(obbbaDivision);
 
         var obligations = loadRegularObligations(appropriations, divisions, branch, endDate);
 
         if (includeObbba) {
             List<Division> obbbaDivisions = Stream.of(obbbaDivision,
-                            divisionService.fetchMandatoryDivision(priorAppropriation))
+                            divisionService.findObbbaDivision(priorAppropriation))
                     .filter(Objects::nonNull)
                     .toList();
             obligations.addAll(loadObbbaObligations(appropriations, obbbaDivisions, endDate));
