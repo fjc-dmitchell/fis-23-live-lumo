@@ -17,6 +17,7 @@
  *     <li>{@code DateUtils} for date-related helper methods</li>
  *     <li>{@code StringUtils} for string processing and validation</li>
  *     <li>{@code FrameworkUtils} for framework-specific convenience methods</li>
+ *     <li>{@code FisConstants} for application constants (use judiciously)</li>
  * </ul>
  * <p>
  * Classes in this package are intended to be reusable throughout the FIS

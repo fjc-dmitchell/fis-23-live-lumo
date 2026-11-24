@@ -24,6 +24,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static gov.fjc.fis.app.FisUtilities.cleanText;
+import static gov.fjc.fis.app.FisConstants.JITF_FUND_CODE;
+import static gov.fjc.fis.app.FisConstants.JITF_BUDGET_ORG;
 
 /**
  * Job to load Document files (purchase and travel) into FIS and trigger processing job.
@@ -59,8 +61,6 @@ public class LoadDocumentsJob implements Job {
     private String jobStatusEmailAddresses;
 
     private static final int BATCH_SIZE = 500;
-    private static final String JITF_FUND = "51140X";
-    private static final String JITF_BUDGET_ORG = "JXXXXXF";
 
     private static final JobKey PROCESS_DOCUMENTS_JOB_KEY = new JobKey("processDocuments", "JIFMS");
     private static final String ABEND_SUBJECT = "JIFMS feed processing ABENDED";
@@ -135,7 +135,7 @@ public class LoadDocumentsJob implements Job {
 
             // Business rules filter
             Predicate<PurchaseOrderImportRow> filter = row -> {
-                if (row.getFundCode().equals(JITF_FUND) &&
+                if (row.getFundCode().equals(JITF_FUND_CODE) &&
                         !row.getBudgetOrg().equals(JITF_BUDGET_ORG)) return false;
 
                 return row.getBbfy().compareTo(STARTING_YEAR) >= 0;
@@ -176,7 +176,7 @@ public class LoadDocumentsJob implements Job {
 
             // Business rules filter
             Predicate<TravelAuthorizationImportRow> filter = row -> {
-                if (row.getFundCode().equals(JITF_FUND) &&
+                if (row.getFundCode().equals(JITF_FUND_CODE) &&
                         !row.getBudgetOrg().equals(JITF_BUDGET_ORG)) return false;
 
                 return row.getBbfy().compareTo(STARTING_YEAR) >= 0;

@@ -17,6 +17,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static gov.fjc.fis.app.FisConstants.ADMINISTRATION_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.EDUCATION_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.RESEARCH_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.OBBBA_BUDGET_ORG;
+
 /**
  * Provides operations for retrieving, filtering, and converting FIS divisions.
  *
@@ -31,12 +36,6 @@ import java.util.stream.Collectors;
  */
 @Component("fis_DivisionService")
 public class DivisionService {
-
-    // todo: consider rewriting these all as budgetOrgs
-    private static final String ADMINISTRATION_DIVISION_CODE = "1";
-    private static final String EDUCATION_DIVISION_CODE = "2";
-    private static final String RESEARCH_DIVISION_CODE = "4";
-    private static final String OBBBA_BUDGET_ORG = "JXXMAPP";
 
     private final DataManager dataManager;
     private final AppropriationService appropriationService;

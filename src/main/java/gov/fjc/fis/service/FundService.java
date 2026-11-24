@@ -5,6 +5,7 @@ import io.jmix.core.DataManager;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import static gov.fjc.fis.app.FisConstants.*;
 
 /**
  * Provides access to funds used by FIS and operations for retrieving fund
@@ -20,11 +21,6 @@ import java.util.List;
 public class FundService {
 
     private final DataManager dataManager;
-
-    private final String ONE_YEAR_FUND = "092800";
-    private final String TWO_YEAR_FUND = "09280M";
-    private final String FOUNDATION_FUND = "812300";
-    private final String JITF_FUND = "51140X";
 
     public FundService(DataManager dataManager) {
         this.dataManager = dataManager;
@@ -51,7 +47,7 @@ public class FundService {
      * @return the one-year appropriation fund
      */
     public Fund getAppropriationOneYearFund() {
-        return fetchFund(ONE_YEAR_FUND);
+        return fetchFund(ONE_YEAR_FUND_CODE);
     }
 
     /**
@@ -60,7 +56,7 @@ public class FundService {
      * @return the two-year appropriation fund
      */
     public Fund getAppropriationTwoYearFund() {
-        return fetchFund(TWO_YEAR_FUND);
+        return fetchFund(TWO_YEAR_FUND_CODE);
     }
 
     /**
@@ -69,7 +65,7 @@ public class FundService {
      * @return the Foundation fund
      */
     public Fund getFoundationFund() {
-        return fetchFund(FOUNDATION_FUND);
+        return fetchFund(FOUNDATION_FUND_CODE);
     }
 
     /**
@@ -78,7 +74,7 @@ public class FundService {
      * @return the JITF fund
      */
     public Fund getJitfFund() {
-        return fetchFund(JITF_FUND);
+        return fetchFund(JITF_FUND_CODE);
     }
 
     /**
@@ -90,7 +86,7 @@ public class FundService {
         return dataManager.load(Fund.class)
                 .query("SELECT e FROM fis_Fund e"
                         + " WHERE e.fundCode IN :funds")
-                .parameter("funds", List.of(ONE_YEAR_FUND, TWO_YEAR_FUND))
+                .parameter("funds", List.of(ONE_YEAR_FUND_CODE, TWO_YEAR_FUND_CODE))
                 .list();
     }
 
@@ -110,7 +106,7 @@ public class FundService {
                         + "((:foundation = TRUE AND e.fundCode = :foundationFund) OR "
                         + "(:foundation = FALSE AND e.fundCode <> :foundationFund))")
                 .parameter("foundation", foundation)
-                .parameter("foundationFund", FOUNDATION_FUND)
+                .parameter("foundationFund", FOUNDATION_FUND_CODE)
                 .list();
     }
 
@@ -134,8 +130,8 @@ public class FundService {
         return dataManager.load(Fund.class)
                 .query("SELECT e FROM fis_Fund e"
                         + " WHERE e.fundCode IN (:oneYearFund, :twoYearFund) ORDER BY e.id")
-                .parameter("oneYearFund", ONE_YEAR_FUND)
-                .parameter("twoYearFund", TWO_YEAR_FUND)
+                .parameter("oneYearFund", ONE_YEAR_FUND_CODE)
+                .parameter("twoYearFund", TWO_YEAR_FUND_CODE)
                 .list();
     }
 }

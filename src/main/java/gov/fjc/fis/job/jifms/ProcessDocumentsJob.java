@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 
+import static gov.fjc.fis.app.FisConstants.TWO_YEAR_FUND_CODE;
+import static gov.fjc.fis.app.FisConstants.EDUCATION_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.OBBBA_BUDGET_ORG;
+
 /**
  * Quartz job that validates and processes documents imported from JIFMS.
  *
@@ -51,9 +55,6 @@ public class ProcessDocumentsJob implements Job {
 
     private static final Logger log = LoggerFactory.getLogger(gov.fjc.fis.job.jifms.ProcessDocumentsJob.class);
 
-    private static final String TWO_YEAR_FUND_CODE = "09280M";
-    private static final String EDUCATION_DIVISION_CODE = "2";
-    private static final String OBBBA_BUDGET_ORG = "JXXMAPP";
     private static final List<String> TRAVEL_DOCUMENT_TYPES = List.of("TA", "TAJ", "JTA");
     private static final List<String> PURCHASE_DOCUMENT_TYPES = List.of("MO", "MOJ");
     private static final JobKey RECONCILIATION_REPORT_JOB_KEY = new JobKey("reconciliationReport", "JIFMS");

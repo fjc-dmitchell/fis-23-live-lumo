@@ -11,21 +11,25 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static gov.fjc.fis.app.FisConstants.PERSONNEL_COMPENSATION_MOC;
+import static gov.fjc.fis.app.FisConstants.PERSONNEL_BENEFITS_MOC;
+import static gov.fjc.fis.app.FisConstants.PERSONNEL_PAYOUTS_MOC;
+import static gov.fjc.fis.app.FisConstants.TRAVEL_MOC;
+
 @Component("fis_ObjectCategoryService")
 public class ObjectCategoryService {
 
     private final DataManager dataManager;
 
-    final private List<String> compensationAndBenefits = Arrays.asList("11", "12", "13");
-
-    final private String travel = "21";
+    final private List<String> compensationAndBenefits = Arrays.asList(
+            PERSONNEL_COMPENSATION_MOC, PERSONNEL_BENEFITS_MOC, PERSONNEL_PAYOUTS_MOC);
 
     public ObjectCategoryService(DataManager dataManager) {
         this.dataManager = dataManager;
     }
 
     public String getTravel() {
-        return travel;
+        return TRAVEL_MOC;
     }
 
     public List<String> getCompensationAndBenefits() {

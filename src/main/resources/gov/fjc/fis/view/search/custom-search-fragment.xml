@@ -42,15 +42,15 @@
                         <hbox width="100%">
                             <button id="showBfyBtn" width="190px" themeNames="primary contrast"/>
                             <hbox id="divisionSearchButtons">
-                                <button id="showDiv1Btn" action="showDivisionAction" text="Show GA"/>
-                                <button id="showDiv2Btn" action="showDivisionAction" text="Show Education"/>
-                                <button id="showDiv3Btn" action="showDivisionAction" text="Show EIS"/>
-                                <button id="showDiv4Btn" action="showDivisionAction" text="Show Research"/>
-                                <button id="showDiv5Btn" action="showDivisionAction" text="Show ITO"/>
-                                <button id="showDiv6Btn" action="showDivisionAction" text="Show JED"/>
-                                <button id="showDiv7Btn" action="showDivisionAction" text="Show MPO"/>
-                                <button id="showDiv8Btn" action="showDivisionAction" text="Show JITF"/>
-                                <button id="showDiv9Btn" action="showDivisionAction" text="Show OBBBA"/>
+                                <button id="showGaBtn" action="showDivisionAction" text="Show GA"/>
+                                <button id="showEdBtn" action="showDivisionAction" text="Show Education"/>
+                                <button id="showEisBtn" action="showDivisionAction" text="Show EIS"/>
+                                <button id="showResBtn" action="showDivisionAction" text="Show Research"/>
+                                <button id="showItoBtn" action="showDivisionAction" text="Show ITO"/>
+                                <button id="showJedBtn" action="showDivisionAction" text="Show JED"/>
+                                <button id="showMpoBtn" action="showDivisionAction" text="Show MPO"/>
+                                <button id="showJitfBtn" action="showDivisionAction" text="Show JITF"/>
+                                <button id="showObbbaBtn" action="showDivisionAction" text="Show OBBBA"/>
                             </hbox>
                         </hbox>
                     </tab>
@@ -66,14 +66,14 @@
                                 <entityComboBox id="divisionSearchField" itemsContainer="divisionsDc"
                                                 metaClass="fis_Division" width="30em">
                                     <actions>
-                                        <action id="clearDivision" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearDivision" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
                                 <span text="Fund"/>
                                 <entityComboBox id="fundSearchField" itemsContainer="fundsDc"
                                                 metaClass="fis_Fund" width="16em">
                                     <actions>
-                                        <action id="clearFund" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearFund" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
                             </hbox>
@@ -82,13 +82,13 @@
                                 <entityComboBox id="categorySearchField" itemsContainer="categoriesDc"
                                                 metaClass="fis_ObjectCategory" width="22em">
                                     <actions>
-                                        <action id="clearMoc" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearMoc" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
                                 <entityComboBox id="objectClassSearchField" itemsContainer="objectClassesDc"
                                                 metaClass="fis_ObjectClass" width="32em">
                                     <actions>
-                                        <action id="clearBoc" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearBoc" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
                             </hbox>
@@ -98,7 +98,7 @@
                                 <entityComboBox id="branchSearchField" itemsContainer="branchesDc"
                                                 metaClass="fis_Branch" width="30em">
                                     <actions>
-                                        <action id="clearBranch" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearBranch" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
 
@@ -106,7 +106,7 @@
                                 <entityComboBox id="groupSearchField" itemsContainer="groupsDc"
                                                 metaClass="fis_Group" width="35em">
                                     <actions>
-                                        <action id="clearGroup" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearGroup" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </entityComboBox>
                             </hbox>
@@ -119,7 +119,7 @@
                                                            itemsContainer="fileAttachmentCategoriesDc"
                                                            metaClass="fis_FileAttachmentCategory" width="60em">
                                     <actions>
-                                        <action id="clearFileCategory" type="entity_clear" icon="vaadin:close-small"/>
+                                        <action id="clearFileCategory" type="entity_clear" icon="CLOSE_SMALL"/>
                                     </actions>
                                 </multiSelectComboBoxPicker>
                             </hbox>

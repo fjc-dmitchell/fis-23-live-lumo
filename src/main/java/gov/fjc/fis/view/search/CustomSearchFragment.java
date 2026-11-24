@@ -39,6 +39,16 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static gov.fjc.fis.app.FisConstants.ADMINISTRATION_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.EDUCATION_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.EDITORIAL_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.RESEARCH_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.TECHNOLOGY_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.JED_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.MPO_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.JITF_DIVISION_CODE;
+import static gov.fjc.fis.app.FisConstants.OBBBA_DIVISION_CODE;
+
 /**
  * Provides reusable search controls and query configuration for FIS entity
  * list views.
@@ -68,6 +78,7 @@ import java.util.stream.Collectors;
  * {@link #setFjcFoundation(boolean)} to restrict searches to FJC Foundation
  * records.
  * </p>
+ *
  * @author Doug Mitchell
  */
 @FragmentDescriptor("custom-search-fragment.xml")
@@ -77,17 +88,11 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @Autowired
     private Fragments fragments;
 
-    /**
-     * data containers
-     */
     @ViewComponent
     private CollectionContainer<Division> divisionsDc;
     @ViewComponent
     private CollectionContainer<FileAttachmentCategory> fileAttachmentCategoriesDc;
 
-    /**
-     * data loaders
-     */
     @ViewComponent
     private CollectionLoader<Division> divisionsDl;
     @ViewComponent
@@ -103,9 +108,6 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @ViewComponent
     private CollectionLoader<FileAttachmentCategory> fileAttachmentCategoriesDl;
 
-    /**
-     * services
-     */
     @Autowired
     private AppropriationService appropriationService;
     @Autowired
@@ -121,9 +123,6 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @Autowired
     private GroupService groupService;
 
-    /**
-     * components
-     */
     @ViewComponent("searchTabSheet.customSearchTab")
     private Tab searchTabSheetCustomSearchTab;
     @ViewComponent("searchTabSheet.subsetTab")
@@ -137,23 +136,23 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @ViewComponent
     private TypedTextField<String> fiscalYearsField;
     @ViewComponent
-    private JmixButton showDiv1Btn;
+    private JmixButton showGaBtn;
     @ViewComponent
-    private JmixButton showDiv2Btn;
+    private JmixButton showEdBtn;
     @ViewComponent
-    private JmixButton showDiv3Btn;
+    private JmixButton showEisBtn;
     @ViewComponent
-    private JmixButton showDiv4Btn;
+    private JmixButton showResBtn;
     @ViewComponent
-    private JmixButton showDiv5Btn;
+    private JmixButton showItoBtn;
     @ViewComponent
-    private JmixButton showDiv6Btn;
+    private JmixButton showJedBtn;
     @ViewComponent
-    private JmixButton showDiv7Btn;
+    private JmixButton showMpoBtn;
     @ViewComponent
-    private JmixButton showDiv8Btn;
+    private JmixButton showJitfBtn;
     @ViewComponent
-    private JmixButton showDiv9Btn;
+    private JmixButton showObbbaBtn;
     @ViewComponent
     private JmixButton showGroupBtn;
     @ViewComponent
@@ -296,15 +295,15 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
     @Subscribe(target = Target.HOST_CONTROLLER)
     public void onHostInit(final View.InitEvent event) {
         buttonDivisionCodeMap = Map.of(
-                showDiv1Btn, "1",
-                showDiv2Btn, "2",
-                showDiv3Btn, "3",
-                showDiv4Btn, "4",
-                showDiv5Btn, "5",
-                showDiv6Btn, "6",
-                showDiv7Btn, "7",
-                showDiv8Btn, "8",
-                showDiv9Btn, "9"
+                showGaBtn, ADMINISTRATION_DIVISION_CODE,
+                showEdBtn, EDUCATION_DIVISION_CODE,
+                showEisBtn, EDITORIAL_DIVISION_CODE,
+                showResBtn, RESEARCH_DIVISION_CODE,
+                showItoBtn, TECHNOLOGY_DIVISION_CODE,
+                showJedBtn, JED_DIVISION_CODE,
+                showMpoBtn, MPO_DIVISION_CODE,
+                showJitfBtn, JITF_DIVISION_CODE,
+                showObbbaBtn, OBBBA_DIVISION_CODE
         );
     }
 
