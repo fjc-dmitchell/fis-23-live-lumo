@@ -117,7 +117,7 @@ public class DivisionService {
      *
      * @return the Education division code
      * @deprecated Avoid relying on the designated division code directly.
-     * Nancy's report will be rewritten to remove this dependency.
+     * ED program analysis reports will be rewritten to remove this dependency.
      */
     @Deprecated(since = "2.3", forRemoval = true)
     public String getEducationDivisionCode() {

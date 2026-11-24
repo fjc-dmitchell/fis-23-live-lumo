@@ -265,9 +265,11 @@ public class ActivityDetailView extends StandardDetailView<Activity> {
 
     @Subscribe("activityNumberField")
     protected void onActivityNumberFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<TypedTextField<?>, ?> event) {
-        if (entityStates.isNew(getEditedEntity()) && !activityNumberField.isEmpty()) {
-            groupField.setValue(groupService.getGroupByActivity(division, activityNumberField.getValue()));
+        if (!entityStates.isNew(getEditedEntity()) || activityNumberField.isEmpty()) {
+            return;
         }
+        groupService.fetchGroupByActivity(division, activityNumberField.getValue())
+                .ifPresentOrElse(groupField::setValue, groupField::clear);
     }
 
     @Subscribe("trainingProjectField")
