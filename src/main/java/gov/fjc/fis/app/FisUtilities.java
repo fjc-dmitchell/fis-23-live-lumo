@@ -15,26 +15,6 @@ public final class FisUtilities {
     private FisUtilities() {
     }
 
-    public static String getAoSyncDateString(Date aoSendDate) {
-        SimpleDateFormat f = new SimpleDateFormat("M/d/yyyy");
-        Date cutoff;
-        try {
-            cutoff = f.parse("10/1/2020");
-        } catch (ParseException e) {
-
-            throw new RuntimeException("Unable to parse date in getAoSendDateString");
-        }
-        if (aoSendDate == null) {
-            return "";
-        }
-        if (aoSendDate.compareTo(cutoff) < 0) {
-            return "Sent to AO on " + f.format(aoSendDate);
-        } else {
-            return "Received from AO on " + f.format(aoSendDate);
-        }
-    }
-
-
     public static LocalDateTime getDateTime() {
         return LocalDateTime.now();
     }
