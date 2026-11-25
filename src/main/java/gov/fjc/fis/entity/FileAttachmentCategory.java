@@ -13,7 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
 
 /**
  * Defines a category that can be assigned to a {@link FileAttachment}.

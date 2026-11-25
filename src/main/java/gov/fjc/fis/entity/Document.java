@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.getLoadedByString;
+import static gov.fjc.fis.app.AuditTextUtils.getLoadedByString;
 
 /**
  * Represents a source document imported from the JIFMS interface for

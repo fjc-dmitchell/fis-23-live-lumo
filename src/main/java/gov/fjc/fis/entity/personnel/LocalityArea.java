@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.AuditTextUtils.getCreatedString;
 
 @JmixEntity
 @Table(name = "FIS_LOCALITY_AREA", indexes = {
@@ -58,7 +58,7 @@ public class LocalityArea {
 
     @JmixProperty
     public String getCreatedByString() {
-        return getCreatedModifiedString(createdBy, createdDate);
+        return getCreatedString(createdBy, createdDate);
     }
 
     public OffsetDateTime getCreatedDate() {

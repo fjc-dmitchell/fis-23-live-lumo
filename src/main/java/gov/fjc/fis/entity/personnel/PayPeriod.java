@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
 
 /**
  * Represents a federal biweekly pay period used for personnel planning,

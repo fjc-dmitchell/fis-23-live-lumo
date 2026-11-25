@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.*;
+import static gov.fjc.fis.app.AuditTextUtils.*;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -86,12 +86,12 @@ public class ActivityProjectionAudit {
     @DependsOnProperties({"createdDate"})
     @JmixProperty
     public LocalDateTime getAuditDate() {
-        return convertOffsetDateTimeToLocalDateTime(createdDate);
+        return toEasternLocalDateTime(createdDate);
     }
 
     @JmixProperty
     public String getCreatedByString() {
-        return getCreatedModifiedString(createdBy, createdDate);
+        return getCreatedString(createdBy, createdDate);
     }
 
     public void setChangeType(AuditChangeType changeType) {
@@ -105,7 +105,7 @@ public class ActivityProjectionAudit {
     @DependsOnProperties({"createdDate"})
     @JmixProperty
     public String getCreatedDateString() {
-        return getCreateDateTimeString(createdDate);
+        return getCreatedDateTimeString(createdDate);
     }
 
     public Activity getActivity() {

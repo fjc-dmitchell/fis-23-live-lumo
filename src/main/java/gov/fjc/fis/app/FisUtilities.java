@@ -6,7 +6,6 @@ import io.jmix.reports.entity.ReportOutputType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
@@ -14,55 +13,6 @@ import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
 public final class FisUtilities {
 
     private FisUtilities() {
-    }
-
-    public static String getCreateDateTimeString(OffsetDateTime createdDate) {
-        if (createdDate == null) {
-            return "";
-        }
-
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm");
-        return f.format(createdDate);
-    }
-
-    public static String getCreatedModifiedString(String createdBy, OffsetDateTime createdDate) {
-        String createdByStr = "";
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("M/d/yyyy");
-
-        if (createdDate != null) {
-            createdByStr += "Created on " + f.format(createdDate);
-            if (createdBy != null) {
-                createdByStr += " by " + createdBy;
-            }
-            createdByStr += ". ";
-        }
-        return createdByStr;
-    }
-
-    public static String getCreatedModifiedString(String createdBy, OffsetDateTime createdDate,
-                                                  String lastModifiedBy, OffsetDateTime lastModifiedDate) {
-        String createdByStr = "";
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("M/d/yyyy");
-
-        if (createdDate != null) {
-            createdByStr += "Created on " + f.format(createdDate);
-            if (createdBy != null) {
-                createdByStr += " by " + createdBy;
-            }
-            createdByStr += ". ";
-        }
-
-        if (lastModifiedDate != null && lastModifiedBy != null) {
-            createdByStr += "Last modified on " + f.format(lastModifiedDate);
-            createdByStr += " by " + lastModifiedBy;
-            createdByStr += ". ";
-        }
-
-        if (createdByStr.isEmpty()) {
-            return null;
-        } else {
-            return createdByStr;
-        }
     }
 
     public static String getAoSyncDateString(Date aoSendDate) {
@@ -84,37 +34,6 @@ public final class FisUtilities {
         }
     }
 
-    // rewritten 2026-08-05 to use LocalDate due to Jmix 3.0 upgrade
-    public static String getAoSyncDateString(LocalDate aoSendDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
-        LocalDate cutoff = LocalDate.of(2020, 10, 1);
-
-        if (aoSendDate == null) {
-            return "";
-        }
-
-        if (aoSendDate.isBefore(cutoff)) {
-            return "Sent to AO on " + aoSendDate.format(formatter);
-        } else {
-            return "Received from AO on " + aoSendDate.format(formatter);
-        }
-    }
-
-
-    public static String getLoadedByString(String loadedBy, OffsetDateTime loadDate) {
-        String loadedByStr = "";
-        SimpleDateFormat f = new SimpleDateFormat("M/d/yy");
-
-        if (loadDate != null) {
-            loadedByStr += "Loaded on " + f.format(loadDate);
-            if (loadedBy != null) {
-                loadedByStr += " by " + loadedBy;
-            }
-            loadedByStr += ".";
-        }
-
-        return loadedByStr.isEmpty() ? "" : loadedByStr;
-    }
 
     public static LocalDateTime getDateTime() {
         return LocalDateTime.now();
@@ -160,12 +79,7 @@ public final class FisUtilities {
         return LocalDate.now().minusDays(days);
     }
 
-    public static LocalDateTime convertOffsetDateTimeToLocalDateTime(OffsetDateTime offsetDateTime) {
-        ZonedDateTime zoned = offsetDateTime.atZoneSameInstant(ZoneId.of("America/New_York"));
-        return zoned.toLocalDateTime();
-    }
-
-//    public static int getNumberOfDaysFromToday(Date date) {
+    //    public static int getNumberOfDaysFromToday(Date date) {
 //        if (date == null) {
 //            return 0;
 //        }

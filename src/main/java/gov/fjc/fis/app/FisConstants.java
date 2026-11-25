@@ -6,11 +6,11 @@ package gov.fjc.fis.app;
  *
  * <p>The constants defined by this class identify commonly referenced funds,
  * divisions, budget organizations, and major object categories. They are
- * primarily intended for use by service classes, JPQL security policies, and
- * Quartz jobs that must reference these values without depending on business
- * services.
- *
- * <p>This class cannot be instantiated.
+ * primarily intended for use by entity {@linkplain gov.fjc.fis.service service classes},
+ * {@linkplain gov.fjc.fis.security JPQL security policies}, and
+ * {@linkplain gov.fjc.fis.job Quartz jobs} that must reference these values
+ * without depending on business services.
+ * <p><strong>These constants should <em>not</em> be used in reports or views!</strong></p>
  *
  * @author Doug Mitchell
  */
@@ -22,62 +22,60 @@ public final class FisConstants {
     // =========================================================================
     // Fund Codes
     // =========================================================================
-
     /**
-     * Appropriation One-year Fund code
+     * Appropriation One-year Fund code ({@value})
      */
     public static final String ONE_YEAR_FUND_CODE = "092800";
     /**
-     * Appropriation Multi-year Fund code
+     * Appropriation Multi-year Fund code ({@value})
      */
     public static final String TWO_YEAR_FUND_CODE = "09280M";
     /**
-     * FJC Foundation Fund code
+     * FJC Foundation Fund code ({@value})
      */
     public static final String FOUNDATION_FUND_CODE = "812300";
     /**
-     * Judiciary Information Technology Fund code
+     * Judiciary Information Technology Fund code ({@value})
      */
     public static final String JITF_FUND_CODE = "51140X";
 
     // =========================================================================
     // Division Codes
     // =========================================================================
-
     /**
-     * General Administration Division Code
+     * General Administration Division Code ({@value})
      */
     public static final String ADMINISTRATION_DIVISION_CODE = "1";
     /**
-     * Education (formerly Court Education) Division Code
+     * Education (formerly Court Education) Division Code ({@value})
      */
     public static final String EDUCATION_DIVISION_CODE = "2";
     /**
-     * Editorial (formerly CPD, PubMed) Division Code
+     * Editorial (formerly CPD, PubMed) Division Code ({@value})
      */
     public static final String EDITORIAL_DIVISION_CODE = "3";
     /**
-     * Research Division Code
+     * Research Division Code ({@value})
      */
     public static final String RESEARCH_DIVISION_CODE = "4";
     /**
-     * Technology (formerly OSID, P&amp;T) Division Code
+     * Technology (formerly OSID, P&amp;T) Division Code ({@value})
      */
     public static final String TECHNOLOGY_DIVISION_CODE = "5";
     /**
-     * Judicial Education Division Code (defunct)
+     * Judicial Education Division Code (defunct) ({@value})
      */
     public static final String JED_DIVISION_CODE = "6";
     /**
-     * Media Production Office division Code (defunct)
+     * Media Production Office division Code (defunct) ({@value})
      */
     public static final String MPO_DIVISION_CODE = "7";
     /**
-     * Judiciary Information Technology Fund division Code
+     * Judiciary Information Technology Fund division Code ({@value})
      */
     public static final String JITF_DIVISION_CODE = "8";
     /**
-     * One Big Beautiful Bill Act™ division code
+     * One Big Beautiful Bill Act™ division code ({@value})
      */
     public static final String OBBBA_DIVISION_CODE = "9";
 
@@ -85,39 +83,39 @@ public final class FisConstants {
     // Division Budget Orgs.
     // =========================================================================
     /**
-     * General Administration Budget Org.
+     * General Administration Budget Org ({@value})
      */
     public static final String ADMINISTRATION_BUDGET_ORG = "JXXXXXF";
     /**
-     * Education (formerly Court Education) Budget Org.
+     * Education (formerly Court Education) Budget Org ({@value})
      */
     public static final String EDUCATION_BUDGET_ORG = "JXXXXXA";
     /**
-     * Editorial (formerly CPD, PubMed) Budget Org.
+     * Editorial (formerly CPD, PubMed) Budget Org ({@value})
      */
     public static final String EDITORIAL_BUDGET_ORG = "JXXXXXD";
     /**
-     * Research Budget Org.
+     * Research Budget Org ({@value})
      */
     public static final String RESEARCH_BUDGET_ORG = "JXXXXXC";
     /**
-     * Technology (formerly OSID, P&amp;T) Budget Org.
+     * Technology (formerly OSID, P&amp;T) Budget Org ({@value})
      */
     public static final String TECHNOLOGY_BUDGET_ORG = "JXXXXXB";
     /**
-     * Judicial Education Budget Org (defunct)
+     * Judicial Education Budget Org (defunct) ({@value})
      */
     public static final String JED_BUDGET_ORG = "JXXXXXE";
     /**
-     * Media Production Office Budget Org (defunct)
+     * Media Production Office Budget Org (defunct) ({@value})
      */
     public static final String MPO_BUDGET_ORG = "JXXXXXG";
     /**
-     * Judiciary Information Technology Fund Budget Org.
+     * Judiciary Information Technology Fund Budget Org ({@value})
      */
     public static final String JITF_BUDGET_ORG = "JXXXXXF";
     /**
-     * One Big Beautiful Bill Act™ Budget Org.
+     * One Big Beautiful Bill Act™ Budget Org ({@value})
      */
     public static final String OBBBA_BUDGET_ORG = "JXXMAPP";
 
@@ -125,23 +123,23 @@ public final class FisConstants {
     // Major Object Category Codes
     // =========================================================================
     /**
-     * Personnel Compensation Major Object Category Code
+     * Personnel Compensation Major Object Category Code ({@value})
      */
     public static final String PERSONNEL_COMPENSATION_MOC = "11";
     /**
-     * Personnel Benefits Major Object Category Code
+     * Personnel Benefits Major Object Category Code ({@value})
      */
     public static final String PERSONNEL_BENEFITS_MOC = "12";
     /**
-     * Benefits for Former Personnel Major Object Category Code
+     * Benefits for Former Personnel Major Object Category Code ({@value})
      */
     public static final String PERSONNEL_PAYOUTS_MOC = "13";
     /**
-     * Travel and Transportation of Persons Major Object Category Code
+     * Travel and Transportation of Persons Major Object Category Code ({@value})
      */
     public static final String TRAVEL_MOC = "21";
     /**
-     * JPQL pattern matching major object category codes for personnel expenses.
+     * JPQL pattern matching major object category codes for personnel expenses ({@value})
      */
     public static final String MOC_PERSONNEL_GENERIC_CODE = "1%";
 }

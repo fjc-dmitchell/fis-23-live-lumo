@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import static gov.fjc.fis.app.FisUtilities.convertOffsetDateTimeToLocalDateTime;
-import static gov.fjc.fis.app.FisUtilities.getCreatedModifiedString;
+import static gov.fjc.fis.app.AuditTextUtils.toEasternLocalDateTime;
+import static gov.fjc.fis.app.AuditTextUtils.getCreatedString;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -100,7 +100,7 @@ public class DivisionAllocationAudit {
     @DependsOnProperties({"createdDate"})
     @JmixProperty
     public LocalDateTime getAuditDate() {
-        return convertOffsetDateTimeToLocalDateTime(createdDate);
+        return toEasternLocalDateTime(createdDate);
     }
 
     public AuditChangeType getChangeType() {
@@ -124,7 +124,7 @@ public class DivisionAllocationAudit {
     @DependsOnProperties({"createdBy", "createdDate"})
     @JmixProperty
     public String getCreatedByString() {
-        return getCreatedModifiedString(createdBy, createdDate);
+        return getCreatedString(createdBy, createdDate);
     }
 
     public BigDecimal getNewTwoYearAmount() {
