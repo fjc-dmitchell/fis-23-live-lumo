@@ -280,7 +280,7 @@ public class MainView extends StandardTabbedModeMainView {
     }
 
     private void fetchMessages() {
-        List<UserMessage> userMessageList = userMessageService.getUserMessages();
+        List<UserMessage> userMessageList = userMessageService.fetchPublishedMessages();
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, yyyy-MM-dd hh:mma");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, yyyy-MM-dd hh:mma");
         message = new StringBuilder("<div>");
