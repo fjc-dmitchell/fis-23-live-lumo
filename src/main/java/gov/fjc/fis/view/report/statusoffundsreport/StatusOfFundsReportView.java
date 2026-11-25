@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static gov.fjc.fis.app.FisUtilities.getReportOutputType;
+import static gov.fjc.fis.app.ReportUtils.getReportOutputType;
 
 /**
  * View controller for configuring and executing the Status of Funds report.
