@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.safeTrim;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -117,7 +117,7 @@ public class ActivityReimbursement {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public String getDocumentNumber() {
@@ -125,7 +125,7 @@ public class ActivityReimbursement {
     }
 
     public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = safeTrim(documentNumber);
+        this.documentNumber = sanitizeToNull(documentNumber);
     }
 
     @DependsOnProperties({"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate"})
@@ -147,7 +147,7 @@ public class ActivityReimbursement {
     }
 
     public void setSource(String source) {
-        this.source = safeTrim(source);
+        this.source = sanitizeToNull(source);
     }
 
     public ObjectClass getObjectClass() {

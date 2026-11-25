@@ -18,8 +18,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 
 /**
  * Represents a funded activity, program, or project administered by a
@@ -403,7 +403,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setNote(String note) {
-        this.note = safeTrim(note);
+        this.note = sanitizeToNull(note);
     }
 
     public String getMemo() {
@@ -411,7 +411,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public Integer getNumberFaculty() {
@@ -443,7 +443,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setProgramDirector(String programDirector) {
-        this.programDirector = safeTrim(programDirector);
+        this.programDirector = sanitizeToNull(programDirector);
     }
 
     public String getState() {
@@ -451,7 +451,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setState(String state) {
-        this.state = safeTrim(StringUtils.toUpperCase(state));
+        this.state = sanitizeToNull(StringUtils.toUpperCase(state));
     }
 
     public String getCity() {
@@ -459,7 +459,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setCity(String city) {
-        this.city = safeTrim(city);
+        this.city = sanitizeToNull(city);
     }
 
     public String getShortTitle() {
@@ -467,7 +467,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setShortTitle(String shortTitle) {
-        this.shortTitle = safeTrim(shortTitle);
+        this.shortTitle = sanitizeToNull(shortTitle);
     }
 
     public String getTitle() {
@@ -475,7 +475,7 @@ public class Activity implements FileAttachable {
     }
 
     public void setTitle(String title) {
-        this.title = safeTrim(title);
+        this.title = sanitizeToNull(title);
     }
 
     public List<Obligation> getObligations() {

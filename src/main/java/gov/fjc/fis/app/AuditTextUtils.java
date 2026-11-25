@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
  * methods for transforming {@link OffsetDateTime} values into Eastern
  * {@link LocalDateTime} instances for display and reporting purposes.
  *
+ * @see DateUtils
  * @author Doug Mitchell
  */
 public final class AuditTextUtils {

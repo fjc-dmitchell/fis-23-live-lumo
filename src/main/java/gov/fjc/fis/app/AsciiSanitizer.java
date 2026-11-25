@@ -4,6 +4,8 @@ import java.text.Normalizer;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.stripToNull;
+
 /**
  * FIS utility class for sanitizing text values by converting Unicode characters
  * to their nearest ASCII equivalents and removing unsupported characters.
@@ -28,6 +30,15 @@ public final class AsciiSanitizer {
     private AsciiSanitizer() {
     }
 
+    /**
+     * Maps supported Unicode punctuation characters to their printable ASCII
+     * equivalents.
+     * <p>
+     * These replacements are applied after Unicode normalization and before
+     * unsupported characters are removed. Characters not contained in this map
+     * are preserved for subsequent processing.
+     * </p>
+     */
     private static final Map<Character, String> PUNCTUATION_MAP = Map.ofEntries(
             Map.entry('\u2018', "'"), Map.entry('\u2019', "'"),    // ‘ ’
             Map.entry('\u201C', "\""), Map.entry('\u201D', "\""),  // “ ”
@@ -38,7 +49,25 @@ public final class AsciiSanitizer {
             Map.entry('\u2212', "-")                                     // − (unicode minus sign)
     );
 
+    /**
+     * Pattern matching characters that are not printable ASCII characters,
+     * tabs, line feeds, or carriage returns.
+     * <p>
+     * Matching characters are removed after Unicode punctuation replacement
+     * and diacritical-mark removal have been completed.
+     * </p>
+     */
     private static final Pattern DISALLOWED = Pattern.compile("[^\\x20-\\x7E\\t\\n\\r]");
+
+    /**
+     * Pattern matching Unicode nonspacing marks produced during NFKD
+     * normalization.
+     * <p>
+     * Removing these marks strips diacritics from decomposed characters, such
+     * as converting {@code é} to {@code e}.
+     * </p>
+     */
+    private static final Pattern DIACRITICS = Pattern.compile("\\p{Mn}+");
 
     /**
      * Sanitizes the supplied text by:
@@ -71,7 +100,40 @@ public final class AsciiSanitizer {
             sb.append(PUNCTUATION_MAP.getOrDefault(c, String.valueOf(c)));
         }
 
-        String withoutDiacritics = sb.toString().replaceAll("\\p{Mn}+", "");
+        String withoutDiacritics = DIACRITICS.matcher(sb).replaceAll("");
         return DISALLOWED.matcher(withoutDiacritics).replaceAll("");
+    }
+
+    /**
+     * Sanitizes the supplied text and converts blank results to {@code null}.
+     * <p>
+     * This method first invokes {@link #sanitize(String)} to normalize Unicode
+     * characters, replace supported punctuation with ASCII equivalents, remove
+     * diacritical marks, and strip unsupported characters. The resulting value
+     * is then trimmed of leading and trailing whitespace and converted to
+     * {@code null} if empty.
+     * </p>
+     *
+     * <p>
+     * This method is useful when persisting optional text attributes where
+     * blank or whitespace-only values should be stored as {@code null}
+     * rather than empty strings.
+     * </p>
+     *
+     * <p>Examples:</p>
+     * <ul>
+     *     <li>{@code null} returns {@code null}</li>
+     *     <li>{@code "   "} returns {@code null}</li>
+     *     <li>{@code " José "} returns {@code "Jose"}</li>
+     *     <li>{@code "“Test”"} returns {@code "\"Test\""}</li>
+     * </ul>
+     *
+     * @param value the text to sanitize; may be {@code null}
+     * @return the sanitized and trimmed value, or {@code null} if the
+     *         resulting text is empty or contains only whitespace
+     */
+    public static String sanitizeToNull(String value) {
+       String sanitized = sanitize(value);
+       return stripToNull(sanitized);
     }
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static gov.fjc.fis.app.FisUtilities.cleanText;
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.FisConstants.JITF_FUND_CODE;
 import static gov.fjc.fis.app.FisConstants.JITF_BUDGET_ORG;
 
@@ -288,7 +288,7 @@ public class LoadDocumentsJob implements Job {
         purchaseDocument.setDocumentNumber(row.getDocumentNumber());
         purchaseDocument.setDocumentDate(row.getDocumentDate());
         purchaseDocument.setDocumentCreationDate(row.getDocumentCreationDate());
-        purchaseDocument.setTitle(cleanText(row.getTitle()));
+        purchaseDocument.setTitle(sanitizeToNull(row.getTitle()));
         purchaseDocument.setBudgetObjectClass(row.getBudgetObjectClass());
         purchaseDocument.setMajorObjectClass(row.getMajorObjectClass());
         purchaseDocument.setProject(row.getProject());
@@ -298,7 +298,7 @@ public class LoadDocumentsJob implements Job {
         purchaseDocument.setTaxIdType(row.getTaxIdType());
         purchaseDocument.setAddressCode(row.getAddressCode());
         purchaseDocument.setVendorCode(row.getVendorCode());
-        purchaseDocument.setVendorName(cleanText(row.getVendorName()));
+        purchaseDocument.setVendorName(sanitizeToNull(row.getVendorName()));
         purchaseDocument.setExpendedAmount(row.getExpendedAmount());
         purchaseDocument.setClosedAmount(row.getClosedAmount());
         purchaseDocument.setClosedDate(row.getClosedDate());
@@ -331,14 +331,14 @@ public class LoadDocumentsJob implements Job {
         travelDocument.setDocumentNumber(row.getDocumentNumber());
         travelDocument.setDocumentDate(row.getDocumentDate());
         travelDocument.setDocumentCreationDate(row.getDocumentCreationDate());
-        travelDocument.setTitle(cleanText(row.getTitle()));
+        travelDocument.setTitle(sanitizeToNull(row.getTitle()));
         travelDocument.setBudgetObjectClass(row.getBudgetObjectClass());
         travelDocument.setMajorObjectClass(row.getMajorObjectClass());
         travelDocument.setProject(row.getProject());
         travelDocument.setAmount(row.getAmount());
         travelDocument.setLineNumber(row.getLineNumber());
         travelDocument.setVendorCode(row.getVendorCode());
-        travelDocument.setVendorName(cleanText(row.getVendorName()));
+        travelDocument.setVendorName(sanitizeToNull(row.getVendorName()));
         travelDocument.setTravelStartDate(row.getTravelStartDate());
         travelDocument.setTravelEndDate(row.getTravelEndDate());
         travelDocument.setExpendedAmount(row.getExpendedAmount());

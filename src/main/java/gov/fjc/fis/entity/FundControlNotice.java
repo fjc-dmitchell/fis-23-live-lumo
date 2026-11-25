@@ -17,9 +17,9 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getAoSyncDateString;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 
 /**
  * Represents a Fund Control Notice (FCN) issued for an
@@ -182,7 +182,7 @@ public class FundControlNotice implements FileAttachable {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public String getEin() {
@@ -190,7 +190,7 @@ public class FundControlNotice implements FileAttachable {
     }
 
     public void setEin(String ein) {
-        this.ein = safeTrim(StringUtils.toUpperCase(ein));
+        this.ein = sanitizeToNull(StringUtils.toUpperCase(ein));
     }
 
     public String getBudgetOrg() {
@@ -198,7 +198,7 @@ public class FundControlNotice implements FileAttachable {
     }
 
     public void setBudgetOrg(String budgetOrg) {
-        this.budgetOrg = safeTrim(budgetOrg);
+        this.budgetOrg = sanitizeToNull(budgetOrg);
     }
 
     public BigDecimal getAmount() {

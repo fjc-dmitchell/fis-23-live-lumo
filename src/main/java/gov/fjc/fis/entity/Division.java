@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
 import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
-import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -146,7 +146,7 @@ public class Division {
     }
 
     public void setShortTitle(String shortTitle) {
-        this.shortTitle = safeTrim(shortTitle);
+        this.shortTitle = sanitizeToNull(shortTitle);
     }
 
     public List<DivisionAllocationAudit> getAuditAllocations() {
@@ -210,7 +210,7 @@ public class Division {
     }
 
     public void setTitle(String title) {
-        this.title = safeTrim(title);
+        this.title = sanitizeToNull(title);
     }
 
     public String getBudgetOrg() {
@@ -218,7 +218,7 @@ public class Division {
     }
 
     public void setBudgetOrg(String budgetOrg) {
-        this.budgetOrg = safeTrim(StringUtils.toUpperCase(budgetOrg));
+        this.budgetOrg = sanitizeToNull(StringUtils.toUpperCase(budgetOrg));
     }
 
     public List<Activity> getActivities() {

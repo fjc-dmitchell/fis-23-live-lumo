@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.safeTrim;
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 
 @JmixEntity
 @Table(name = "FIS_BONUS_PROJECTION", uniqueConstraints = {
@@ -91,7 +91,7 @@ public class BonusProjection {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public BigDecimal getAwarded() {

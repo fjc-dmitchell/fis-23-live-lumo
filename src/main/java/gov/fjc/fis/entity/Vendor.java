@@ -14,8 +14,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 
 /**
  * Represents a vendor or payee associated with financial obligations
@@ -107,7 +107,7 @@ public class Vendor {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public Boolean getActive() {
@@ -129,7 +129,7 @@ public class Vendor {
     }
 
     public void setCage(String cage) {
-        this.cage = safeTrim(cage);
+        this.cage = sanitizeToNull(cage);
     }
 
     public String getDuns() {
@@ -137,7 +137,7 @@ public class Vendor {
     }
 
     public void setDuns(String duns) {
-        this.duns = safeTrim(duns);
+        this.duns = sanitizeToNull(duns);
     }
 
     public String getZipCode() {
@@ -145,7 +145,7 @@ public class Vendor {
     }
 
     public void setZipCode(String zipCode) {
-        this.zipCode = safeTrim(zipCode);
+        this.zipCode = sanitizeToNull(zipCode);
     }
 
     public String getState() {
@@ -153,7 +153,7 @@ public class Vendor {
     }
 
     public void setState(String state) {
-        this.state = StringUtils.toUpperCase(safeTrim(state));
+        this.state = StringUtils.toUpperCase(sanitizeToNull(state));
     }
 
     public String getCity() {
@@ -161,7 +161,7 @@ public class Vendor {
     }
 
     public void setCity(String city) {
-        this.city = safeTrim(city);
+        this.city = sanitizeToNull(city);
     }
 
     public String getAddress2() {
@@ -169,7 +169,7 @@ public class Vendor {
     }
 
     public void setAddress2(String address2) {
-        this.address2 = safeTrim(address2);
+        this.address2 = sanitizeToNull(address2);
     }
 
     public String getAddress1() {
@@ -177,7 +177,7 @@ public class Vendor {
     }
 
     public void setAddress1(String address1) {
-        this.address1 = safeTrim(address1);
+        this.address1 = sanitizeToNull(address1);
     }
 
     public String getVendorCode() {
@@ -185,7 +185,7 @@ public class Vendor {
     }
 
     public void setVendorCode(String vendorCode) {
-        this.vendorCode = safeTrim(vendorCode);
+        this.vendorCode = sanitizeToNull(vendorCode);
     }
 
     public String getAddressCode() {
@@ -193,7 +193,7 @@ public class Vendor {
     }
 
     public void setAddressCode(String addressCode) {
-        this.addressCode = safeTrim(addressCode);
+        this.addressCode = sanitizeToNull(addressCode);
     }
 
     public String getEin() {
@@ -201,7 +201,7 @@ public class Vendor {
     }
 
     public void setEin(String ein) {
-        this.ein = safeTrim(ein);
+        this.ein = sanitizeToNull(ein);
     }
 
     public String getName() {
@@ -209,7 +209,7 @@ public class Vendor {
     }
 
     public void setName(String name) {
-        this.name = safeTrim(name);
+        this.name = sanitizeToNull(name);
     }
 
     public OffsetDateTime getLastModifiedDate() {

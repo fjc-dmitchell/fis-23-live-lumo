@@ -1,14 +1,6 @@
 package gov.fjc.fis.app;
 
-import gov.fjc.fis.entity.OutputType;
-import io.jmix.reports.entity.ReportOutputType;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
-import java.util.*;
-
-import static gov.fjc.fis.app.AsciiSanitizer.sanitize;
 
 public final class FisUtilities {
 
@@ -19,91 +11,7 @@ public final class FisUtilities {
         return LocalDateTime.now();
     }
 
-    public static ReportOutputType getReportOutputType(OutputType outputType) {
-        if ((outputType == null) || outputType.equals(OutputType.PDF)) {
-            return ReportOutputType.PDF;
-        } else {
-            return ReportOutputType.XLSX;
-        }
-    }
-
-    public static String getLocation(String city, String state) {
-        if (city == null) {
-            city = state;
-        } else {
-            if (state != null) {
-                city = city.concat(", ").concat(state);
-            }
-        }
-        return city;
-    }
-
-    /**
-     * calculates today less number of days, without time.
-     *
-     * @param days number of days to subtract from today
-     * @return java.util.Date
-     */
-//    public static Date getCurrentDateMinusDays(int days) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(Calendar.HOUR_OF_DAY, 0);
-//        calendar.set(Calendar.MINUTE, 0);
-//        calendar.set(Calendar.SECOND, 0);
-//        calendar.set(Calendar.MILLISECOND, 0);
-//        calendar.add(Calendar.DATE, -days);
-//
-//        return calendar.getTime();
-//    }
-
     public static LocalDate getCurrentDateMinusDays(int days) {
         return LocalDate.now().minusDays(days);
     }
-
-    //    public static int getNumberOfDaysFromToday(Date date) {
-//        if (date == null) {
-//            return 0;
-//        }
-//        long diffInMillies = Math.abs(getCurrentDateMinusDays(0).getTime() - date.getTime());
-//        return (int) TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-//    }
-
-    public static String formatListWithDelimiter(List<String> items, String delimiter) {
-        if (items == null || items.isEmpty()) {
-            return "";
-        }
-        if (items.size() == 1) {
-            return items.getFirst();
-        }
-
-        String allButLast = String.join(delimiter, items.subList(0, items.size() - 1));
-
-        return allButLast + " and " + items.getLast();
-    }
-
-    public static String safeTrim(String value) {
-        value = sanitize(value);
-        return value != null ? value.trim() : null;
-    }
-
-
-    // should probably use Doug's new AsciiSanitizer instead of this
-    public static String cleanText(String str) {
-        if (str == null) return null;
-        String text = str.trim();
-        if (text.isEmpty()) {
-            return null;
-        }
-        // strips off all non-ASCII characters
-        text = text.replaceAll("[^\\x00-\\x7F]", "");
-
-        // erases all the ASCII control characters
-        text = text.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "");
-
-        // removes non-printable characters from Unicode
-        text = text.replaceAll("\\p{C}", "");
-
-        return text;
-    }
-
-
 }

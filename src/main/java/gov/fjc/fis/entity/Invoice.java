@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.safeTrim;
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -132,7 +132,7 @@ public class Invoice implements FileAttachable {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public BigDecimal getAmount() {
@@ -148,7 +148,7 @@ public class Invoice implements FileAttachable {
     }
 
     public void setInvoiceNumber(String invoiceNumber) {
-        this.invoiceNumber = safeTrim(invoiceNumber);
+        this.invoiceNumber = sanitizeToNull(invoiceNumber);
     }
 
     public Obligation getObligation() {

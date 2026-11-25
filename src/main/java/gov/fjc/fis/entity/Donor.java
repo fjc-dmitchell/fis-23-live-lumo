@@ -14,8 +14,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.OffsetDateTime;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 
 /**
  * Represents a donor that contributes funds to the FJC Foundation.
@@ -112,7 +112,7 @@ public class Donor {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public String getEmail() {
@@ -120,7 +120,7 @@ public class Donor {
     }
 
     public void setEmail(String email) {
-        this.email = safeTrim(email);
+        this.email = sanitizeToNull(email);
     }
 
     public String getFax() {
@@ -128,7 +128,7 @@ public class Donor {
     }
 
     public void setFax(String fax) {
-        this.fax = safeTrim(fax);
+        this.fax = sanitizeToNull(fax);
     }
 
     public String getPhone() {
@@ -136,7 +136,7 @@ public class Donor {
     }
 
     public void setPhone(String phone) {
-        this.phone = safeTrim(phone);
+        this.phone = sanitizeToNull(phone);
     }
 
     public String getContact() {
@@ -144,7 +144,7 @@ public class Donor {
     }
 
     public void setContact(String contact) {
-        this.contact = safeTrim(contact);
+        this.contact = sanitizeToNull(contact);
     }
 
     public String getZipCode() {
@@ -152,7 +152,7 @@ public class Donor {
     }
 
     public void setZipCode(String zipCode) {
-        this.zipCode = safeTrim(zipCode);
+        this.zipCode = sanitizeToNull(zipCode);
     }
 
     public String getState() {
@@ -160,7 +160,7 @@ public class Donor {
     }
 
     public void setState(String state) {
-        this.state = safeTrim(StringUtils.toUpperCase(state));
+        this.state = sanitizeToNull(StringUtils.toUpperCase(state));
     }
 
     public String getCity() {
@@ -168,7 +168,7 @@ public class Donor {
     }
 
     public void setCity(String city) {
-        this.city = safeTrim(city);
+        this.city = sanitizeToNull(city);
     }
 
     public String getAddress2() {
@@ -176,7 +176,7 @@ public class Donor {
     }
 
     public void setAddress2(String address2) {
-        this.address2 = safeTrim(address2);
+        this.address2 = sanitizeToNull(address2);
     }
 
     public String getAddress1() {
@@ -184,7 +184,7 @@ public class Donor {
     }
 
     public void setAddress1(String address1) {
-        this.address1 = safeTrim(address1);
+        this.address1 = sanitizeToNull(address1);
     }
 
     public String getOrganization() {
@@ -192,7 +192,7 @@ public class Donor {
     }
 
     public void setOrganization(String organization) {
-        this.organization = safeTrim(organization);
+        this.organization = sanitizeToNull(organization);
     }
 
     public OffsetDateTime getLastModifiedDate() {

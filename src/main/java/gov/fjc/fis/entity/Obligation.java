@@ -17,9 +17,9 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getAoSyncDateString;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -255,7 +255,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setVendorCode(String vendorCode) {
-        this.vendorCode = safeTrim(vendorCode);
+        this.vendorCode = sanitizeToNull(vendorCode);
     }
 
     public List<FileAttachment> getAttachments() {
@@ -327,7 +327,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public String getBudgetOrg() {
@@ -335,7 +335,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setBudgetOrg(String budgetOrg) {
-        this.budgetOrg = safeTrim(budgetOrg);
+        this.budgetOrg = sanitizeToNull(budgetOrg);
     }
 
     public Boolean getUpdated() {
@@ -359,7 +359,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setAddressCode(String addressCode) {
-        this.addressCode = safeTrim(addressCode);
+        this.addressCode = sanitizeToNull(addressCode);
     }
 
     public String getEin() {
@@ -367,7 +367,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setEin(String ein) {
-        this.ein = safeTrim(StringUtils.toUpperCase(ein));
+        this.ein = sanitizeToNull(StringUtils.toUpperCase(ein));
     }
 
     public Boolean getStatus() {
@@ -383,7 +383,7 @@ public class Obligation implements FileAttachable {
     }
 
     public void setVendor(String vendor) {
-        this.vendor = safeTrim(vendor);
+        this.vendor = sanitizeToNull(vendor);
     }
 
     public Boolean getAoSend() {

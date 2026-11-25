@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.safeTrim;
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 
 @JmixEntity
 @Table(name = "FIS_JITF_TRANSFER", indexes = {
@@ -92,7 +92,7 @@ public class JitfTransfer {
     }
 
     public void setMemo(String memo) {
-        this.memo = safeTrim(memo);
+        this.memo = sanitizeToNull(memo);
     }
 
     public BigDecimal getAmount() {

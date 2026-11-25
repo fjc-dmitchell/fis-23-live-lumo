@@ -18,9 +18,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
 import static gov.fjc.fis.app.BigDecimalUtils.sumNullSafe;
-import static gov.fjc.fis.app.FisUtilities.*;
 import static java.util.Objects.requireNonNullElse;
 
 /**
@@ -138,7 +138,7 @@ public class AppropriationAdjustment {
     }
 
     public void setTitle(String title) {
-        this.title = safeTrim(title);
+        this.title = sanitizeToNull(title);
     }
 
     public Appropriation getAppropriation() {

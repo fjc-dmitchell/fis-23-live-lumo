@@ -1,5 +1,6 @@
 package gov.fjc.fis.reportdata;
 
+import gov.fjc.fis.app.StringUtils;
 import gov.fjc.fis.entity.Appropriation;
 import gov.fjc.fis.entity.Division;
 import gov.fjc.fis.entity.dto.ObligationDto;
@@ -28,7 +29,7 @@ public class OpenTravelObligationsReportData {
                                            LocalDate fromDate, LocalDate toDate) {
         budgetFiscalYear = appropriation == null ? "" : appropriation.getBudgetFiscalYear();
 
-        divisionTitles = formatListWithDelimiter(divisions.stream()
+        divisionTitles = StringUtils.joinWithAnd(divisions.stream()
                 .sorted(Comparator.comparing(Division::getDivisionCode))
                 .map(Division::getShortTitle).toList(), ", ");
 

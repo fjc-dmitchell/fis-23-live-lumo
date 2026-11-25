@@ -1,5 +1,6 @@
 package gov.fjc.fis.reportdata;
 
+import gov.fjc.fis.app.StringUtils;
 import gov.fjc.fis.entity.Appropriation;
 import gov.fjc.fis.entity.Branch;
 import gov.fjc.fis.entity.Division;
@@ -30,7 +31,7 @@ public class OpenObligationsReportData {
 
     public OpenObligationsReportData(Appropriation appropriation, Set<Division> divisions, Branch branch) {
         budgetFiscalYear = appropriation == null ? "" : appropriation.getBudgetFiscalYear();
-        String divisionTitles = formatListWithDelimiter(divisions.stream()
+        String divisionTitles = StringUtils.joinWithAnd(divisions.stream()
                 .sorted(Comparator.comparing(Division::getDivisionCode))
                 .map(Division::getShortTitle).toList(), ", ");
 

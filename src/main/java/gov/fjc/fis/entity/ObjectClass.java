@@ -17,8 +17,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static gov.fjc.fis.app.AsciiSanitizer.sanitizeToNull;
 import static gov.fjc.fis.app.AuditTextUtils.getCreatedModifiedString;
-import static gov.fjc.fis.app.FisUtilities.*;
 
 /**
  * Represents a budget object class (BOC) within an
@@ -151,7 +151,7 @@ public class ObjectClass {
     }
 
     public void setTitle(String title) {
-        this.title = safeTrim(title);
+        this.title = sanitizeToNull(title);
     }
 
     public String getBudgetObjectClass() {
