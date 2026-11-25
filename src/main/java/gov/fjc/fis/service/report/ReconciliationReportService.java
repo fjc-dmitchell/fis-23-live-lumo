@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -31,14 +32,71 @@ import java.util.List;
 import static gov.fjc.fis.app.FisUtilities.getDateTime;
 import static gov.fjc.fis.app.DateUtils.formatFilenameDateTime;
 
+/**
+ * Service responsible for generating reconciliation reports during the third
+ * step of JIFMS job processing.
+ * <p>
+ * JIFMS jobs are processed in three principal steps:
+ * </p>
+ * <ol>
+ *     <li>Loading documents received from JIFMS.</li>
+ *     <li>Validating and processing the loaded documents.</li>
+ *     <li>Generating and emailing reconciliation reports.</li>
+ * </ol>
+ * <p>
+ * This service contains the business logic for the third step. It identifies
+ * the appropriations to be reported, retrieves their reconciliation data,
+ * generates an Excel workbook for each appropriation, and packages the
+ * resulting workbooks as email attachments.
+ * </p>
+ * <p>
+ * Workbooks are initially generated from an Excel template by the Jmix report
+ * engine. Because the template contains a pivot table whose source is an Excel
+ * table, the generated workbook must be reopened as an Apache POI
+ * {@link XSSFWorkbook}. Each Excel table is then expanded to include all rows
+ * produced by the report data band. This ensures that the pivot table includes
+ * the complete reconciliation data when the workbook is opened and refreshed.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @since 2.3
+ */
 @Component("fis_ReconciliationReportService")
 public class ReconciliationReportService {
+
+    /**
+     * Service used to identify the appropriations included in the
+     * reconciliation reports.
+     */
     private final AppropriationService appropriationService;
+
+    /**
+     * Service used to retrieve reconciliation data for an appropriation.
+     */
     private final ObligationService obligationService;
+
+    /**
+     * Jmix report runner used to generate reconciliation workbooks from the
+     * configured report definition and Excel template.
+     */
     private final ReportRunner reportRunner;
 
+    /**
+     * Logger used to record reconciliation report generation failures.
+     */
     private static final Logger log = LoggerFactory.getLogger(ReconciliationReportService.class);
 
+    /**
+     * Creates a reconciliation report service.
+     *
+     * @param appropriationService the service used to retrieve the
+     *                             appropriations included in reconciliation
+     *                             reporting
+     * @param obligationService    the service used to retrieve reconciliation
+     *                             data for each appropriation
+     * @param reportRunner         the Jmix report runner used to generate the
+     *                             reconciliation workbooks
+     */
     public ReconciliationReportService(AppropriationService appropriationService,
                                        ObligationService obligationService,
                                        ReportRunner reportRunner) {
@@ -48,11 +106,24 @@ public class ReconciliationReportService {
     }
 
     /**
-     * generate a reconciliation report that has been modified by Apache POI. The report
-     * can be used as an email attachment or
+     * Generates a reconciliation report for the specified appropriation.
+     * <p>
+     * Reconciliation data is retrieved from the obligation service and passed
+     * to the Jmix report named {@code reconciliation}. After the report engine
+     * generates the Excel workbook, the workbook is reopened using Apache POI,
+     * and its Excel tables are expanded to include all rows produced by the
+     * report data band.
+     * </p>
+     * <p>
+     * The returned content is ready to be downloaded, persisted, or included
+     * as an email attachment.
+     * </p>
      *
-     * @param appropriation
-     * @return
+     * @param appropriation the appropriation for which to generate the
+     *                      reconciliation report
+     * @return the generated and post-processed XLSX workbook as a byte array
+     * @throws UncheckedIOException if the generated workbook cannot be read,
+     *                              modified, or written
      */
     public byte[] generateReportBytes(Appropriation appropriation) {
         var obligations = obligationService.getReconciliationDto(appropriation);
@@ -77,6 +148,17 @@ public class ReconciliationReportService {
         return content;
     }
 
+    /**
+     * Creates the file name for an appropriation's reconciliation report.
+     * <p>
+     * The file name identifies the appropriation's budget fiscal year and the
+     * date and time at which the file name was created. The returned name uses
+     * the {@code .xlsx} file extension.
+     * </p>
+     *
+     * @param appropriation the appropriation represented by the report
+     * @return the reconciliation report file name
+     */
     public String getFilename(Appropriation appropriation) {
         LocalDateTime reportDateTime = getDateTime();
         return String.format(
@@ -87,11 +169,25 @@ public class ReconciliationReportService {
     }
 
     /**
-     * creates reconciliation reports ready to be attached to email. reports are
-     * current fiscal year, prior fiscal year, two years ago, and (during October)
-     * three years ago.
+     * Generates the reconciliation reports to be included as email
+     * attachments.
+     * <p>
+     * Under normal circumstances, reports are generated for the current
+     * fiscal year and the two preceding fiscal years. During October, a fourth
+     * report is generated for the additional preceding fiscal year so that
+     * the oldest report is not removed during the transition to the new
+     * fiscal year.
+     * </p>
+     * <p>
+     * Each attachment contains a completed Excel workbook whose tables have
+     * been expanded to include all reconciliation data generated by the Jmix
+     * report engine.
+     * </p>
      *
-     * @return list of attachments (Excel workbooks)
+     * @return the reconciliation report attachments, one for each applicable
+     *         appropriation
+     * @throws UncheckedIOException if a generated workbook cannot be read,
+     *                              modified, or written
      */
     public List<EmailAttachment> getAttachments() {
         // don't drop off oldest fiscal year during October
@@ -112,12 +208,19 @@ public class ReconciliationReportService {
     }
 
     /**
-     * Expands every Excel Table (ListObject) on every sheet of a Jmix-generated
-     * XLSX so that its range covers the header row plus all rows the detail
-     * band actually produced, instead of just the single template row.
+     * Expands every Excel table in the supplied workbook to include all
+     * contiguous data rows generated from the report data bands.
+     * <p>
+     * Jmix generates the workbook from an Excel template whose table ranges
+     * initially cover only the template rows. This method reopens the generated
+     * workbook, examines every table on every worksheet, and updates each
+     * table's range and AutoFilter reference to cover the rows populated by the
+     * report engine.
+     * </p>
      *
-     * @param rawXlsx the bytes from reportOutputDocument.getContent()
-     * @return the same workbook with each table's range/autofilter corrected
+     * @param rawXlsx the XLSX workbook generated by the Jmix report engine
+     * @return the modified XLSX workbook as a byte array
+     * @throws IOException if the workbook cannot be read, modified, or written
      */
     private byte[] expandTablesToFitData(byte[] rawXlsx) throws IOException {
         try (XSSFWorkbook wb = new XSSFWorkbook(new ByteArrayInputStream(rawXlsx))) {
@@ -136,9 +239,23 @@ public class ReconciliationReportService {
     }
 
     /**
-     * Rewrites a single table's area to span from its header row down to the
-     * last row (within the table's original column span) that actually
-     * contains data, then updates its autofilter to match.
+     * Expands an Excel table to include all contiguous populated rows beneath
+     * its header.
+     * <p>
+     * The table's existing column boundaries are preserved. Beginning with the
+     * row immediately below the header, the method scans each row within those
+     * columns until it encounters the first row containing no data. The table
+     * range is then extended through the last populated row, and the table's
+     * AutoFilter reference is updated to match.
+     * </p>
+     * <p>
+     * An Excel table requires at least one row below its header. If no
+     * populated data row is found, the table retains at least the data row
+     * defined by the original template.
+     * </p>
+     *
+     * @param sheet the worksheet containing the table
+     * @param table the Excel table to expand
      */
     private void expandTable(XSSFSheet sheet, XSSFTable table) {
         AreaReference templateArea = table.getCellReferences();
