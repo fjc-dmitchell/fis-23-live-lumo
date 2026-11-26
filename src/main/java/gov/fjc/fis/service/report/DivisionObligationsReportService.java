@@ -30,7 +30,6 @@ import static gov.fjc.fis.app.BigDecimalUtils.sum;
  * {@link DivisionObligationReportData} object, along with a separate collection
  * containing only activities that have obligations.
  * </p>
- * @see gov.fjc.fis.reportdata.DivisionObligationReportData
  * @author Doug Mitchell
  */
 @Component("fis_DivisionObligationsReportService")

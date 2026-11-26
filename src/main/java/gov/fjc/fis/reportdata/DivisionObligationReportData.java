@@ -24,7 +24,6 @@ import static gov.fjc.fis.app.DateUtils.*;
  * object is constructed. The report timestamp is retained internally so that
  * the displayed report date and generated filename use the same date and time.
  * </p>
- * @see gov.fjc.fis.service.report.DivisionObligationsReportService
  * @author Doug Mitchell
  */
 public class DivisionObligationReportData {
