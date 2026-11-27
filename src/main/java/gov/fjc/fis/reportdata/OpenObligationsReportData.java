@@ -5,31 +5,78 @@ import gov.fjc.fis.entity.Appropriation;
 import gov.fjc.fis.entity.Branch;
 import gov.fjc.fis.entity.Division;
 import gov.fjc.fis.entity.dto.ObligationDto;
+import gov.fjc.fis.service.report.OpenObligationsReportService;
+import gov.fjc.fis.view.report.openobligationsreport.OpenObligationsReportView;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static gov.fjc.fis.app.BigDecimalUtils.sum;
 import static gov.fjc.fis.app.FisUtilities.*;
 import static gov.fjc.fis.app.DateUtils.*;
 
+/**
+ * Contains the data used to generate an Open Obligations Report.
+ * <p>
+ * The report identifies obligations that remain open beyond a specified aging
+ * threshold. In addition to the obligation records included in the report,
+ * this class stores the report parameters, organizational scope, report
+ * generation timestamp, and summary information used by the report template.
+ * </p>
+ *
+ * <p>
+ * The organizational scope may represent one or more divisions or a specific
+ * branch when the report is generated for a single division and branch.
+ * </p>
+ *
+ * @author Doug Mitchell
+ * @see OpenObligationsReportService
+ * @see OpenObligationsReportView
+ */
 public class OpenObligationsReportData {
 
+    /**
+     * Budget fiscal year associated with the report.
+     */
     private final String budgetFiscalYear;
+
+    /**
+     * Division or division-and-branch identifier describing the report scope.
+     */
     private final String divisionAndBranch;
+
+    /**
+     * Division or division-and-branch identifier describing the report scope.
+     */
     private final LocalDateTime reportDateTime;
 
-    private List<ObligationDto> obligations;
+    /**
+     * Open obligations included in the report.
+     */
+    private final List<ObligationDto> obligations;
 
-    private int numberOfDays;
-    private Date latestTravelDate;
-    private BigDecimal totalObligated;
-    private float averageDays;
+    /**
+     * Aging threshold, in days, used to identify open obligations.
+     */
+    private final int numberOfDays;
 
-    public OpenObligationsReportData(Appropriation appropriation, Set<Division> divisions, Branch branch) {
+    /**
+     * Creates report data for the Open Obligations Report.
+     *
+     * @param appropriation appropriation associated with the report
+     * @param divisions     divisions included in the report scope
+     * @param branch        branch included in the report scope, or {@code null} when the
+     *                      report spans multiple divisions or all branches
+     * @param obligations   open obligations included in the report
+     * @param numberOfDays  aging threshold, in days, used to determine whether an
+     *                      obligation is considered open
+     */
+    public OpenObligationsReportData(Appropriation appropriation,
+                                     Set<Division> divisions,
+                                     Branch branch,
+                                     List<ObligationDto> obligations,
+                                     int numberOfDays) {
         budgetFiscalYear = appropriation == null ? "" : appropriation.getBudgetFiscalYear();
         String divisionTitles = StringUtils.joinWithAnd(divisions.stream()
                 .sorted(Comparator.comparing(Division::getDivisionCode))
@@ -39,65 +86,81 @@ public class OpenObligationsReportData {
                 ? divisionTitles + "-" + branch.getTitle()
                 : divisionTitles;
 
+        this.obligations = obligations;
+        this.numberOfDays = numberOfDays;
+
         reportDateTime = getDateTime();
     }
 
+    /**
+     * Returns the budget fiscal year associated with the report.
+     *
+     * @return the budget fiscal year
+     */
     public String getBudgetFiscalYear() {
         return budgetFiscalYear;
     }
 
+    /**
+     * Returns the open obligations included in the report.
+     *
+     * @return the report obligations, or an empty list if none are available
+     */
     public List<ObligationDto> getObligations() {
-        return obligations;
+        return obligations == null ? List.of() : obligations;
     }
 
-    public void setObligations(List<ObligationDto> obligations) {
-        this.obligations = obligations;
-    }
-
-    public Integer getNumberOfObligations() {
+    /**
+     * Returns the number of obligations included in the report.
+     *
+     * @return the obligation count
+     */
+    public int getNumberOfObligations() {
         return obligations == null ? 0 : obligations.size();
     }
 
+    /**
+     * Returns the aging threshold used to identify open obligations.
+     *
+     * @return the number of days used by the report
+     */
     public int getNumberOfDays() {
         return numberOfDays;
     }
 
-    public void setNumberOfDays(int numberOfDays) {
-        this.numberOfDays = numberOfDays;
-    }
-
-    public Date getLatestTravelDate() {
-        return latestTravelDate;
-    }
-
-    public void setLatestTravelDate(Date latestTravelDate) {
-        this.latestTravelDate = latestTravelDate;
-    }
-
+    /**
+     * Returns the total obligated amount represented by all obligations in the
+     * report.
+     *
+     * @return the total obligated amount
+     */
     public BigDecimal getTotalObligated() {
-        return totalObligated;
+        return sum(obligations, ObligationDto::getAmount);
     }
 
-    public void setTotalObligated(BigDecimal totalObligated) {
-        this.totalObligated = totalObligated;
-    }
-
-    public float getAverageDays() {
-        return averageDays;
-    }
-
-    public void setAverageDays(float averageDays) {
-        this.averageDays = averageDays;
-    }
-
+    /**
+     * Returns the organizational scope of the report.
+     *
+     * @return the report division and branch identifier
+     */
     public String getDivisionAndBranch() {
         return divisionAndBranch;
     }
 
+    /**
+     * Returns the report generation date and time formatted for display.
+     *
+     * @return the formatted report generation date and time
+     */
     public String getReportDateTime() {
         return formatReportDateTime(reportDateTime);
     }
 
+    /**
+     * Returns the suggested file name for the generated report.
+     *
+     * @return the report file name without an extension
+     */
     public String getFileName() {
         return String.format(
                 "%s open obligations for FY %s as of %s",

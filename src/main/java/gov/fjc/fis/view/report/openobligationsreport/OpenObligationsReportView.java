@@ -11,6 +11,7 @@ import gov.fjc.fis.service.AppropriationService;
 import gov.fjc.fis.service.BranchService;
 import gov.fjc.fis.service.DivisionService;
 import gov.fjc.fis.service.report.OpenObligationsReportService;
+import gov.fjc.fis.reportdata.OpenObligationsReportData;
 import io.jmix.core.LoadContext;
 import io.jmix.core.session.SessionData;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
@@ -26,33 +27,47 @@ import io.jmix.reportsflowui.runner.UiReportRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.Set;
 
 import static gov.fjc.fis.app.FrameworkUtils.refreshField;
 
+/**
+ * View controller for the Open Obligations Report.
+ * <p>
+ * This view allows the user to select a budget fiscal year, one or more
+ * divisions, an optional branch, and an aging threshold used to identify open
+ * obligations. Additional reporting options are available when the selected
+ * appropriation is subject to the One Big Beautiful Bill Act (OBBBA).
+ * </p>
+ *
+ * <p>
+ * Available divisions and branches are automatically filtered based on the
+ * user's selections. When executed, the view delegates report data generation
+ * to {@link OpenObligationsReportService} and submits the resulting
+ * {@link OpenObligationsReportData} object to the reporting engine for XLSX
+ * generation and download.
+ * </p>
+ *
+ * @see OpenObligationsReportService
+ * @see OpenObligationsReportData
+ * @author Doug Mitchell
+ */
 @Route(value = "open-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenObligationsReportView")
 @ViewDescriptor(path = "open-obligations-report-view.xml")
 @DialogMode(closeOnEsc = true)
 public class OpenObligationsReportView extends StandardView {
+
+    /**
+     * Default number of days used when determining whether an obligation should
+     * be considered open.
+     */
+    private static final String DEFAULT_NUMBER_OF_DAYS = "15";
+
     @Autowired
     private SessionData sessionData;
     @Autowired
     private UiReportRunner uiReportRunner;
 
-    /**
-     * data loaders
-     */
-    @ViewComponent
-    private CollectionLoader<Appropriation> appropriationsDl;
-    @ViewComponent
-    private CollectionLoader<Division> divisionsDl;
-    @ViewComponent
-    private CollectionLoader<Branch> branchesDl;
-
-    /**
-     * services
-     */
     @Autowired
     private AppropriationService appropriationService;
     @Autowired
@@ -62,9 +77,13 @@ public class OpenObligationsReportView extends StandardView {
     @Autowired
     private OpenObligationsReportService openObligationsReportService;
 
-    /**
-     * screen components
-     */
+    @ViewComponent
+    private CollectionLoader<Appropriation> appropriationsDl;
+    @ViewComponent
+    private CollectionLoader<Division> divisionsDl;
+    @ViewComponent
+    private CollectionLoader<Branch> branchesDl;
+
     @ViewComponent
     private EntityComboBox<Appropriation> bfySelectorField;
     @ViewComponent
@@ -78,124 +97,157 @@ public class OpenObligationsReportView extends StandardView {
     @ViewComponent
     private JmixButton executeBtn;
 
-    Appropriation appropriation;
-    Set<Division> divisions;
-    Branch branch;
-
-
+    /**
+     * Initializes the view with the user's default budget fiscal year, default
+     * division selection, and default aging threshold.
+     *
+     * @param event the view lifecycle event
+     */
     @Subscribe
     protected void onBeforeShow(final BeforeShowEvent event) {
         appropriationsDl.load();
         bfySelectorField.setValue(appropriationService.getBfyEntryAppropriation(sessionData));
-        appropriation = bfySelectorField.getValue();
         divisionsDl.load();
-        divisionSelectorField.setValue(divisionService.findEducationDivision(appropriation));
-        divisions = divisionSelectorField.getValue();
-        numberOfDaysField.setValue("15"); // ask Nanticha whether this should be dropdown
+        divisionSelectorField.setValue(divisionService.findEducationDivision(bfySelectorField.getValue()));
+        numberOfDaysField.setValue(DEFAULT_NUMBER_OF_DAYS);
     }
 
+    /**
+     * Loads fiscal years available for report generation.
+     *
+     * @param loadContext the load context
+     * @return available report fiscal years
+     */
     @Install(to = "appropriationsDl", target = Target.DATA_LOADER)
     protected List<Appropriation> appropriationsDlLoadDelegate(final LoadContext<Appropriation> loadContext) {
         return appropriationService.fetchReportFiscalYears(sessionData);
     }
 
+    /**
+     * Loads divisions eligible for inclusion in the report for the selected
+     * fiscal year.
+     *
+     * @param loadContext the load context
+     * @return available divisions
+     */
     @Install(to = "divisionsDl", target = Target.DATA_LOADER)
     protected List<Division> divisionsDlLoadDelegate(final LoadContext<Division> loadContext) {
-        return divisionService.fetchNonFoundationDivisions(appropriation);
+        return divisionService.fetchNonFoundationDivisions(bfySelectorField.getValue());
     }
 
+    /**
+     * Loads branches for the currently selected division when branch-level
+     * filtering is available.
+     *
+     * @param loadContext the load context
+     * @return available branches
+     */
     @Install(to = "branchesDl", target = Target.DATA_LOADER)
     protected List<Branch> branchesDlLoadDelegate(final LoadContext<Branch> loadContext) {
-        var division = divisions.isEmpty() ? null : divisions.iterator().next();
-        return branchService.fetchBranches(division);
+        return branchService.fetchBranches(firstSelectedDivision());
     }
 
+    /**
+     * Generates the display label for division selection values.
+     *
+     * @param division the division being displayed
+     * @return the division title and code
+     */
     @Install(to = "divisionSelectorField", subject = "itemLabelGenerator")
     protected Object divisionSelectorFieldItemLabelGenerator(final Division division) {
         return division.getTitleAndCode();
     }
 
+    /**
+     * Generates the display label for branch selection values.
+     *
+     * @param branch the branch being displayed
+     * @return the branch title and code
+     */
     @Install(to = "branchSelectorField", subject = "itemLabelGenerator")
     protected Object branchSelectorFieldItemLabelGenerator(final Branch branch) {
         return branch.getTitleAndCode();
     }
 
+    /**
+     * Refreshes reporting options when the selected fiscal year changes.
+     * <p>
+     * OBBBA reporting availability, division selections, branch selection
+     * behavior, and report execution eligibility are updated to reflect the
+     * selected appropriation.
+     * </p>
+     *
+     * @param event the value change event
+     */
+    @Subscribe("bfySelectorField")
+    protected void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
+        if (event.getValue() != null) {
+            var obbbaApplicable = appropriationService.isOneBigBeautifulBillAct(event.getValue());
+            obbbaField.setVisible(obbbaApplicable);
+            obbbaField.setValue(false);
+            branchSelectorField.setHelperText(obbbaApplicable
+                    ? "enabled when selecting a single division without OBBBA"
+                    : "enabled when selecting a single division");
+        }
+        refreshField(divisionsDl, divisionSelectorField, Division::getDivisionCode);
+        updateExecuteBtn();
+    }
+
+    /**
+     * Updates branch-selection availability and report execution eligibility when
+     * the selected divisions change.
+     *
+     * @param event the value change event
+     */
+    @Subscribe("divisionSelectorField")
+    public void onDivisionSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Division>, Division> event) {
+        updateExecuteBtn();
+        updateBranchSelector();
+    }
+
+    /**
+     * Updates branch-selection availability when the OBBBA reporting option
+     * changes.
+     *
+     * @param event the value change event
+     */
     @Subscribe("obbbaField")
     public void onObbbaFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, Boolean> event) {
         updateBranchSelector();
     }
 
-    @Subscribe("bfySelectorField")
-    protected void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
-        appropriation = event.getValue();
-        var obbbaEnabled = appropriationService.isOneBigBeautifulBillAct(appropriation);
-        obbbaField.setVisible(obbbaEnabled);
-        obbbaField.setValue(false);
-        branchSelectorField.setHelperText(
-                obbbaEnabled ? "enabled when selecting a single division without OBBBA" : "enabled when selecting a single division");
-
-        refreshField(divisionsDl, divisionSelectorField, Division::getDivisionCode);
-    }
-
-
-    @Subscribe("divisionSelectorField")
-    public void onDivisionSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixMultiSelectComboBoxPicker<Division>, Division> event) {
-        divisions = event.getSource().getSelectedItems();
-        enableExecuteBtn();
-        updateBranchSelector();
-    }
-
-    private void updateBranchSelector() {
-        boolean hasSingleDivision = divisions.size() == 1;
-        boolean isObbbaEnabled = isObbbaApplicable();
-
-        branchSelectorField.setEnabled(hasSingleDivision && !isObbbaEnabled);
-        if (hasSingleDivision && !obbbaField.getValue()) {
-            refreshField(branchesDl, branchSelectorField, Branch::getBranchCode);
-        } else {
-            branchSelectorField.clear();
-            branchesDl.load();
-        }
-    }
-
-    private boolean isObbbaApplicable() {
-        return appropriationService.isOneBigBeautifulBillAct(appropriation)
-                && Boolean.TRUE.equals(obbbaField.getValue());
-    }
-
-    @Subscribe("branchSelectorField")
-    protected void onBranchSelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Branch>, Branch> event) {
-        branch = event.getValue();
-    }
-
-    private void enableExecuteBtn() {
-        executeBtn.setEnabled(!divisions.isEmpty());
-    }
-
+    /**
+     * Closes the dialog without generating the report.
+     *
+     * @param event the button click event
+     */
     @Subscribe(id = "cancelBtn", subject = "clickListener")
     protected void onCancelBtnClick(final ClickEvent<JmixButton> event) {
         closeWithDefaultAction();
     }
 
+    /**
+     * Generates and displays the Open Obligations Report using the selected
+     * reporting parameters.
+     * <p>
+     * Report data is assembled by {@link OpenObligationsReportService} and passed
+     * to the reporting engine for XLSX generation. The report executes
+     * asynchronously and is presented to the user when processing completes.
+     * </p>
+     *
+     * @param event the button click event
+     */
     @Subscribe(id = "executeBtn", subject = "clickListener")
     protected void onExecuteBtnClick(final ClickEvent<JmixButton> event) {
-        var appropriation = bfySelectorField.getValue();
-        var divisions = divisionSelectorField.getValue();
-        var branch = branchSelectorField.getValue();
-        var obbba = obbbaField.getValue();
+        var reportData = openObligationsReportService.generateReportData(
+                bfySelectorField.getValue(),
+                divisionSelectorField.getValue(),
+                branchSelectorField.getValue(),
+                parseNumberOfDays(),
+                isObbbaSelected());
 
-        int numberOfDays;
-        try {
-            numberOfDays = Integer.parseInt(numberOfDaysField.getValue());
-        } catch (NumberFormatException e) {
-            numberOfDays = 0;
-        }
-
-        var reportData = openObligationsReportService
-                .generateReportData(appropriation, divisions, branch, numberOfDays, obbba);
-
-        var fluentUiReportRunner = uiReportRunner.byReportCode("open-obligations");
-        fluentUiReportRunner.addParam("reportData", reportData)
+        uiReportRunner.byReportCode("open-obligations")
+                .addParam("reportData", reportData)
                 .withOutputType(ReportOutputType.XLSX)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)
@@ -203,5 +255,58 @@ public class OpenObligationsReportView extends StandardView {
                 .runAndShow();
 
         closeWithDefaultAction();
+    }
+
+    /**
+     * Enables or disables branch selection based on the current reporting
+     * criteria.
+     * <p>
+     * Branch-level filtering is available only when exactly one division is
+     * selected and OBBBA reporting is not enabled.
+     * </p>
+     */
+    private void updateBranchSelector() {
+        boolean branchSelectable = divisionSelectorField.getValue().size() == 1 && !isObbbaSelected();
+
+        branchSelectorField.setEnabled(branchSelectable);
+        if (branchSelectable) {
+            refreshField(branchesDl, branchSelectorField, Branch::getBranchCode);
+        } else {
+            branchSelectorField.clear();
+            branchesDl.load();
+        }
+    }
+
+    /**
+     * Updates the execute button state based on whether the required reporting
+     * parameters have been provided.
+     */
+    private void updateExecuteBtn() {
+        executeBtn.setEnabled(bfySelectorField.getValue() != null
+                && !divisionSelectorField.getValue().isEmpty());
+    }
+
+    /**
+     * The checkbox is only visible, and only ever set, for appropriations covered by the
+     * One Big Beautiful Bill Act, so its value is the whole answer.
+     */
+    private boolean isObbbaSelected() {
+        return Boolean.TRUE.equals(obbbaField.getValue());
+    }
+
+    private Division firstSelectedDivision() {
+        return divisionSelectorField.getValue().stream().findFirst().orElse(null);
+    }
+
+    /**
+     * @return the entered number of days, or {@code 0} (no end-date filter) when the field is
+     * empty or not a valid number
+     */
+    private int parseNumberOfDays() {
+        try {
+            return Integer.parseInt(numberOfDaysField.getValue());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
