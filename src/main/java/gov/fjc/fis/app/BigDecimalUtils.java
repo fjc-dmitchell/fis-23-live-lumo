@@ -128,4 +128,18 @@ public final class BigDecimalUtils {
         return Arrays.stream(decimals)
                 .anyMatch(bd -> bd != null && bd.signum() != 0);
     }
+
+    /**
+     * Checks whether at least one of the given amounts is non-null and greater than zero.
+     * Null values are ignored, and scale is irrelevant.
+     *
+     * @param decimals the amounts to check, may contain nulls
+     * @return {@code true} if at least one non-null value is greater than zero;
+     *         {@code false} if all values are {@code null}, zero, negative, or if
+     *         no values are supplied
+     */
+    public static boolean anyPositive(BigDecimal... decimals) {
+        return Arrays.stream(decimals)
+                .anyMatch(bd -> bd != null && bd.signum() > 0);
+    }
 }
