@@ -43,6 +43,8 @@ public final class FrameworkUtils {
     private FrameworkUtils() {
     }
 
+    // possibly rename refreshField to reloadAndPreserveSelection
+
     /**
      * Reloads the data for an {@link EntityComboBox} and restores the currently
      * selected value by matching entities using the provided key extractor.

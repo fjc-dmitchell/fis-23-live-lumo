@@ -29,6 +29,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static gov.fjc.fis.app.FrameworkUtils.refreshField;
+
 @Route(value = "open-travel-obligations-report-view", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_OpenTravelObligationsReportView")
 @ViewDescriptor(path = "open-travel-obligations-report-view.xml")
@@ -39,17 +41,11 @@ public class OpenTravelObligationsReportView extends StandardView {
     @Autowired
     private UiReportRunner uiReportRunner;
 
-    /**
-     * data loaders
-     */
     @ViewComponent
     private CollectionLoader<Appropriation> appropriationsDl;
     @ViewComponent
     private CollectionLoader<Division> divisionsDl;
 
-    /**
-     * services
-     */
     @Autowired
     private AppropriationService appropriationService;
     @Autowired
@@ -57,9 +53,6 @@ public class OpenTravelObligationsReportView extends StandardView {
     @Autowired
     private OpenTravelObligationsReportService openTravelObligationsReportService;
 
-    /**
-     * view components
-     */
     @ViewComponent
     private EntityComboBox<Appropriation> bfySelectorField;
     @ViewComponent
@@ -73,9 +66,6 @@ public class OpenTravelObligationsReportView extends StandardView {
     @ViewComponent
     private JmixButton executeBtn;
 
-    /**
-     * instance variables
-     */
     Appropriation appropriation;
 
     @Subscribe
@@ -117,17 +107,16 @@ public class OpenTravelObligationsReportView extends StandardView {
 
     @Subscribe("bfySelectorField")
     protected void onBfySelectorFieldComponentValueChange(final AbstractField.ComponentValueChangeEvent<EntityComboBox<Appropriation>, Appropriation> event) {
+
         appropriation = event.getValue();
-        obbbaField.setVisible(divisionService.findObbbaDivision(appropriation) != null);
-        divisionsDl.load();
-        if (!divisionSelectorField.getValue().isEmpty()) {
-            divisionSelectorField.setValue(
-                    divisionsDl.getContainer().getItems().stream()
-                            .filter(div -> divisionSelectorField.getValue().stream()
-                                    .anyMatch(oldDiv -> oldDiv.getDivisionCode().equals(div.getDivisionCode())))
-                            .collect(Collectors.toSet())
-            );
-        }
+
+        obbbaField.setVisible(
+                divisionService.findObbbaDivision(appropriation) != null
+        );
+
+        refreshField(divisionsDl, divisionSelectorField, Division::getDivisionCode
+        );
+
     }
 
     @Subscribe("divisionSelectorField")
@@ -172,17 +161,15 @@ public class OpenTravelObligationsReportView extends StandardView {
 
     @Subscribe(id = "executeBtn", subject = "clickListener")
     protected void onExecuteBtnClick(final ClickEvent<JmixButton> event) {
-        var appropriation = bfySelectorField.getValue();
-        var division = divisionSelectorField.getValue();
-        var beginDate = beginDateField.getValue();
-        var endDate = endDateField.getValue();
-        var obbba = obbbaField.getValue();
-
         var reportData = openTravelObligationsReportService.generateReportData(
-                appropriation, division, beginDate, endDate, obbba);
+                bfySelectorField.getValue(),
+                divisionSelectorField.getValue(),
+                beginDateField.getValue(),
+                endDateField.getValue(),
+                obbbaField.getValue());
 
-        var fluentUiReportRunner = uiReportRunner.byReportCode("open-travel-obligations");
-        fluentUiReportRunner.addParam("reportData", reportData)
+        uiReportRunner.byReportCode("open-travel-obligations")
+                .addParam("reportData", reportData)
                 .withOutputType(ReportOutputType.XLSX)
                 .withOutputNamePattern(reportData.getFileName())
                 .withParametersDialogShowMode(ParametersDialogShowMode.NO)

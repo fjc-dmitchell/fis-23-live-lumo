@@ -89,12 +89,18 @@ public class OpenTravelObligationsReportData {
 
     public String getDateString() {
         if (fromDate != null && toDate != null) {
-            return fromDate.toString().concat(" to ").concat(toDate.toString());
-        } else if (fromDate != null) {
+            return fromDate + " to " + toDate;
+        }
+
+        if (fromDate != null) {
             return fromDate.toString();
-        } else if (toDate != null) {
+        }
+
+        if (toDate != null) {
             return toDate.toString();
-        } else return "";
+        }
+
+        return "";
     }
 
     public String getFileName() {
