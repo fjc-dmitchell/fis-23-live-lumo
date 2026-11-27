@@ -141,7 +141,6 @@ public class OpenTravelObligationsReportService {
         List<ObligationDto> obligationDtos = obligationService.convertToDto(obligations);
 
         reportData.setObligations(obligationDtos);
-        reportData.setTotalObligated(sum(obligationDtos, ObligationDto::getAmount));
 
         return reportData;
     }
