@@ -48,6 +48,7 @@ import static gov.fjc.fis.app.FisConstants.JED_DIVISION_CODE;
 import static gov.fjc.fis.app.FisConstants.MPO_DIVISION_CODE;
 import static gov.fjc.fis.app.FisConstants.JITF_DIVISION_CODE;
 import static gov.fjc.fis.app.FisConstants.OBBBA_DIVISION_CODE;
+import static gov.fjc.fis.app.FrameworkUtils.refreshField;
 
 /**
  * Provides reusable search controls and query configuration for FIS entity
@@ -1206,26 +1207,5 @@ public class CustomSearchFragment extends Fragment<VerticalLayout> {
         refreshField(objectClassesDl, objectClassSearchField, ObjectClass::getBudgetObjectClass);
         refreshField(branchesDl, branchSearchField, Branch::getBranchCode);
         refreshField(groupsDl, groupSearchField, Group::getGroupCode);
-    }
-
-    // refactored to fisutility
-    private <T> void refreshField(CollectionLoader<T> loader,
-                                  EntityComboBox<T> field,
-                                  Function<T, ?> keyExtractor) {
-        loader.load();
-//        Optional.ofNullable(field.getValue())
-//                .map(keyExtractor)
-//                .flatMap(key -> loader.getContainer().getItems().stream()
-//                        .filter(item -> keyExtractor.apply(item).equals(key))
-//                        .findFirst())
-//                .ifPresentOrElse(field::setValue, () -> field.setValue(null));
-        field.setValue(
-                Optional.ofNullable(field.getValue())
-                        .map(keyExtractor)
-                        .flatMap(key -> loader.getContainer().getItems().stream()
-                                .filter(item -> keyExtractor.apply(item).equals(key))
-                                .findFirst())
-                        .orElse(null)
-        );
     }
 }

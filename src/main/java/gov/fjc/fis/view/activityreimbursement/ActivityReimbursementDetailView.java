@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static gov.fjc.fis.app.FrameworkUtils.refreshField;
+
 @Route(value = "activity-reimbursements/:id", layout = MainView.class)
 @ViewController(id = "fis_ActivityReimbursement.detail")
 @ViewDescriptor(path = "activity-reimbursement-detail-view.xml")
@@ -91,14 +93,10 @@ public class ActivityReimbursementDetailView extends StandardDetailView<Activity
     }
 
     private void checkObjectClass() {
-        objectClassesDl.load();
-        if (objectClassField.getValue() != null) {
-            objectClassField.setValue(
-                    objectClassesDl.getContainer().getItems().stream()
-                            .filter(boc -> boc.getBudgetObjectClass().equals(objectClassField.getValue().getBudgetObjectClass()))
-                            .findFirst()
-                            .orElse(null)
-            );
-        }
+        refreshField(
+                objectClassesDl,
+                objectClassField,
+                ObjectClass::getBudgetObjectClass
+        );
     }
 }

@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import static gov.fjc.fis.app.FrameworkUtils.refreshField;
+
 @Route(value = "jitf-transfers/:id", layout = DefaultMainViewParent.class)
 @ViewController(id = "fis_JitfTransfer.detail")
 @ViewDescriptor(path = "jitf-transfer-detail-view.xml")
@@ -109,28 +111,6 @@ public class JitfTransferDetailView extends StandardDetailView<JitfTransfer> {
     }
 
     private void checkObjectClass() {
-        objectClassesDl.load();
-        if (budgetObjectClassField.getValue() != null) {
-            budgetObjectClassField.setValue(
-                    objectClassesDl.getContainer().getItems().stream()
-                            .filter(boc -> boc.getBudgetObjectClass().equals(budgetObjectClassField.getValue().getBudgetObjectClass()))
-                            .findFirst()
-                            .orElse(null)
-            );
-        }
+        refreshField(objectClassesDl, budgetObjectClassField, ObjectClass::getBudgetObjectClass);
     }
-
-//    private void checkObjectClass() {
-//        objectClassesDl.load();
-//
-//        var currentBoc = budgetObjectClassField.getValue();
-//        if (currentBoc == null) return;
-//
-//        var match = objectClassesDl.getContainer().getItems().stream()
-//                .filter(boc -> boc.getBudgetObjectClass().equals(currentBoc.getBudgetObjectClass()))
-//                .findFirst()
-//                .orElse(null);
-//
-//        budgetObjectClassField.setValue(match);
-//    }
 }
