@@ -2,15 +2,15 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://jitfDashboardView.title">
     <data>
-        <collection id="jitfTransferDtoesDc" class="gov.fjc.fis.entity.dto.JitfTransferDto">
-            <loader id="jitfTransferDtoesDl" readOnly="true"/>
+        <collection id="jitfTransferDtosDc" class="gov.fjc.fis.entity.dto.JitfTransferDto">
+            <loader id="jitfTransferDtosDl" readOnly="true"/>
         </collection>
     </data>
     <layout>
         <hbox id="buttonsPanel" classNames="buttons-panel">
-            <button id="excelExportBtn" action="jitfDtoesDataGrid.excelExport"/>
+            <button id="excelExportBtn" action="jitfDtosDataGrid.excelExport"/>
         </hbox>
-        <dataGrid id="jitfDtoesDataGrid" dataContainer="jitfTransferDtoesDc" minWidth="100px" width="700px"
+        <dataGrid id="jitfDtosDataGrid" dataContainer="jitfTransferDtosDc" minWidth="100px" width="715px"
                   allRowsVisible="true">
             <actions>
                 <action id="excelExport" type="grdexp_excelExport"/>
