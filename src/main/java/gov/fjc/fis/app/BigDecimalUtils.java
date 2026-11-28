@@ -40,9 +40,9 @@ public final class BigDecimalUtils {
      * @param <T>       The type of elements in the collection. Zero for empty collections.
      * @return The aggregated BigDecimal value.
      */
-    public static <T> BigDecimal sumFiltered(Collection<T> source,
-                                             Predicate<? super T> filter,
-                                             Function<? super T, BigDecimal> extractor) {
+    public static <T> BigDecimal sum(Collection<T> source,
+                                     Predicate<? super T> filter,
+                                     Function<? super T, BigDecimal> extractor) {
         return source.stream()
                 .filter(filter)
                 .map(extractor)
@@ -60,7 +60,7 @@ public final class BigDecimalUtils {
      */
     public static <T> BigDecimal sum(Collection<T> source,
                                      Function<? super T, BigDecimal> extractor) {
-        return sumFiltered(source, _ -> true, extractor);
+        return sum(source, _ -> true, extractor);
     }
 
     /**
